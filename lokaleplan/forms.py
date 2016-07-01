@@ -1,0 +1,57 @@
+from django import forms
+
+from lokaleplan.parse import parse_perl, make_objects
+
+
+class PerlForm(forms.Form):
+    TIME_SLICES = [
+        (0, 'Formiddag (08:30-12:00)'),
+        (1, 'Eftermiddag (12:00-17:00)'),
+    ]
+
+    data = forms.CharField(widget=forms.Textarea)
+    time_slices = forms.ChoiceField(required=True, choices=TIME_SLICES)
+
+    def clean_time_slices(self):
+        i = int(self.cleaned_data['time_slices'])
+        slices = [
+            ('08.30--09.00', '09.00--09.30', '09.30--10.00', '10.00--10.30',
+             '10.30--11.00', '11.00--11.30', '11.30--12.00'),
+            ('12.00--12.30', '12.30--13.00', '13.00--13.30', '13.30--14.00',
+             '14.00--14.30', '14.30--15.00', '15.00--15.30', '15.30--16.00',
+             '16.00--17.00'),
+        ]
+        self.cleaned_data['time_slices'] = slices[i]
+        return self.cleaned_data['time_slices']
+
+    def clean(self):
+        data = self.cleaned_data['data']
+        time_slices = self.cleaned_data['time_slices']
+        parser_output = parse_perl(data, time_slices)
+        objects = make_objects(parser_output)
+        return {
+            'data': data,
+            'time_slices': time_slices,
+            'objects': objects,
+        }
+
+    def save(self):
+        objects = self.cleaned_data['objects']
+        (events, locations, participants,
+         event_locations, event_participants) = objects
+        for event in events:
+            event.save()
+        for location in locations:
+            location.save()
+        for participant in participants:
+            participant.save()
+        for event_location in event_locations:
+            # Update event_id, location_id
+            event_location.event = event_location.event
+            event_location.location = event_location.location
+            event_location.save()
+        for event_participant in event_participants:
+            # Update event_id, location_id
+            event_participant.event = event_participant.event
+            event_participant.participant = event_participant.participant
+            event_participant.save()
