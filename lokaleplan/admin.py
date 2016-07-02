@@ -3,6 +3,12 @@ from django.contrib import admin
 from lokaleplan.models import Participant, Location, Event
 
 
+class ParticipantAdmin(admin.ModelAdmin):
+    list_display = ['name', 'kind']
+    list_filter = ['kind']
+    search_fields = ['name']
+
+
 class EventAdmin(admin.ModelAdmin):
     list_display = [
         '__str__', 'day', 'start_time', 'end_time',
@@ -21,6 +27,6 @@ class EventAdmin(admin.ModelAdmin):
         return ', '.join(map(str, event.locations.all())) or None
 
 
-admin.site.register(Participant)
+admin.site.register(Participant, ParticipantAdmin)
 admin.site.register(Location)
 admin.site.register(Event, EventAdmin)

@@ -1,6 +1,7 @@
 from django import forms
 
 from lokaleplan.parse import parse_perl, make_objects
+from lokaleplan.models import Event
 
 
 class PerlForm(forms.Form):
@@ -39,6 +40,9 @@ class PerlForm(forms.Form):
         objects = self.cleaned_data['objects']
         (events, locations, participants,
          event_locations, event_participants) = objects
+        # We need the ids of the events, locations and participants we create
+        # so we can set up the proper many-to-many relations,
+        # so we cannot use bulk_create.
         for event in events:
             event.save()
         for location in locations:
@@ -49,9 +53,9 @@ class PerlForm(forms.Form):
             # Update event_id, location_id
             event_location.event = event_location.event
             event_location.location = event_location.location
-            event_location.save()
+        Event.locations.through.objects.bulk_create(event_locations)
         for event_participant in event_participants:
             # Update event_id, location_id
             event_participant.event = event_participant.event
             event_participant.participant = event_participant.participant
-            event_participant.save()
+        Event.participants.through.objects.bulk_create(event_participants)

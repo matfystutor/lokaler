@@ -16,11 +16,17 @@ Including another URLconf
 from django.conf.urls import url
 from django.contrib import admin
 
-from lokaleplan.views import Home, PerlView
+from lokaleplan.views import (
+    Home, PerlView, ParticipantDetail,
+    EventsByLocation,
+)
 
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
     url(r'^$', Home.as_view(), name='home'),
     url(r'^import/$', PerlView.as_view(), name='import'),
+    url(r'^hold/(?P<pk>[0-9]+)/$', ParticipantDetail.as_view(), name='participant_detail'),
+    url(r'^locations/$', EventsByLocation.as_view(),
+        name='locations'),
 ]

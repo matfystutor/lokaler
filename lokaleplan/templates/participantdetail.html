@@ -1,0 +1,23 @@
+<h1>{{ participant }}</h1>
+{% for day in days %}
+<h2>{{ day.name }}</h2>
+<table>
+<tbody>
+{% for event in day.events %}
+<tr><td>{{ event.get_display_time }}</td>
+    <td>{{ event.name }}</td>
+    <td>
+        {% for location in event.locations.all %}
+        {{ location }}
+        {% endfor %}
+    </td>
+    <td>
+        {% for p in event.participants.all %}
+        {{ p }}
+        {% endfor %}
+    </td>
+</tr>
+{% endfor %}
+</tbody>
+</table>
+{% endfor %}

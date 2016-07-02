@@ -6,8 +6,8 @@ class Participant(models.Model):
     PARTNER = 'partner'
 
     KIND = [
-        (RUSCLASS, 'rusclass'),
-        (PARTNER, 'partner'),
+        (RUSCLASS, 'Hold'),
+        (PARTNER, 'Andre'),
     ]
 
     name = models.CharField(max_length=50)
@@ -84,7 +84,16 @@ class Event(models.Model):
         if self.manual_time:
             return self.manual_time
         else:
-            return '%s-%s' % (self.start_time, self.end_time)
+            return self.display_time_interval(
+                self.start_time, self.end_time)
+
+    @staticmethod
+    def display_time_interval(start_time, end_time):
+        h1 = start_time.hour
+        m1 = start_time.minute
+        h2 = end_time.hour
+        m2 = end_time.minute
+        return '%02d:%02d-%02d:%02d' % (h1, m1, h2, m2)
 
     class Meta:
         ordering = ['day', 'start_time', 'name']

@@ -8,10 +8,11 @@ def parse_perl(data, time_slices):
     times = []
     for s in time_slices:
         a, b = s.split('--')
-        if times and times[-1] != a:
-            raise ValidationError(
-                "Invalid time slices: %r != %r" %
-                (times[-1], a))
+        if times:
+            if times[-1] != a:
+                raise ValidationError(
+                    "Invalid time slices: %r != %r" %
+                    (times[-1], a))
         else:
             times.append(a)
         times.append(b)
@@ -83,6 +84,13 @@ def make_objects(parser_output):
     participants, messages, locations, events = parser_output
 
     participant_objects = {}
+    for participant in Participant.objects.all():
+        if participant.kind == Participant.PARTNER:
+            key = '__' + participant.name
+        else:
+            key = participant.name
+        participant_objects[key] = participant
+
     for key in participants:
         m = messages.get(key, '')
         if key.startswith('__'):
@@ -91,14 +99,19 @@ def make_objects(parser_output):
         else:
             kind = Participant.RUSCLASS
             name = key
-        p = Participant(name=name, kind=kind, message=m)
-        participant_objects[key] = p
+        p = participant_objects.setdefault(
+            key, Participant(name=name, kind=kind))
+        if m:
+            p.message = m
 
     location_objects = {}
+    for location in Location.objects.all():
+        location_objects[location.name] = location
+
     for name in locations:
-        location_objects[name] = Location(
+        location_objects.setdefault(name, Location(
             name=name, official_name=name,
-            capacity='', kind=Location.CLASSROOM)
+            capacity='', kind=Location.CLASSROOM))
 
     event_objects = []
     event_locations = []
