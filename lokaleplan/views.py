@@ -73,13 +73,19 @@ class EventsByLocation(TemplateView):
         return events_by_location_by_day
 
     def get_time_slices(self, events_by_column):
-        events = (event for location_events in events_by_column.values()
-                  for event in location_events)
+        events = (event for events in events_by_column.values()
+                  for event in events)
         times = sorted(set(t for event in events
                            for t in [event.start_time, event.end_time]))
         return list(zip(times[:-1], times[1:]))
 
     def put_events_in_time_slices(self, events, time_slices):
+        """
+        Compute for each time slice the set of events in the time slice.
+        The events will be sorted in-place by start time.
+        The time slices must be adjacent and sorted.
+        Returns a list with an entry for each time slice with a set of events.
+        """
         assert all(a < b for a, b in time_slices)
         assert all(xb == ya for (xa, xb), (ya, yb) in
                    zip(time_slices[:-1], time_slices[1:]))
@@ -104,10 +110,16 @@ class EventsByLocation(TemplateView):
                     # Since cells are sorted by time, this event is
                     # not in any of the remaining cells.
                     break
+        assert len(cells) == len(time_slices)
+        assert all(
+            event.start_time <= end and start <= event.end_time
+            for (start, end), cell in zip(time_slices, cells)
+            for event in cell
+        )
         return cells
 
-    def process_column(self, location_events, time_slices):
-        cells = self.put_events_in_time_slices(location_events, time_slices)
+    def process_column(self, events, time_slices):
+        cells = self.put_events_in_time_slices(events, time_slices)
         column = []
         for i, cell in enumerate(cells):
             if i > 0 and cell == cells[i-1]:
@@ -125,17 +137,33 @@ class EventsByLocation(TemplateView):
             column.append({'span': span,
                            'events': list(cell),
                            'participants': cell_participants})
+        assert len(column) == len(time_slices)
         return column
+
+    def construct_table(self, locations, events_by_location, time_slices):
+        columns = []
+        for location in locations:
+            events = events_by_location.pop(location, [])
+            column = self.process_column(events, time_slices)
+            for cell in column:
+                cell['location'] = location
+            columns.append(column)
+        # Transpose columns to get row_cells
+        row_cells = list(zip(*columns))
+        rows = []
+        for (start, end), row in zip(time_slices, row_cells):
+            time_display = Event.display_time_interval(start, end)
+            rows.append(dict(
+                time_display=time_display, start=start, end=end, cells=row))
+        return rows
 
     def get_context_data(self, **kwargs):
         context_data = super().get_context_data(**kwargs)
 
         locations = list(Location.objects.all())
         n_columns = 10
-        location_sets = [
-            locations[i:i+n_columns]
-            for i in range(0, len(locations), n_columns)
-        ]
+        location_sets = [locations[i:i+n_columns]
+                         for i in range(0, len(locations), n_columns)]
 
         events_by_location_by_day = self.get_events_by_column()
 
@@ -145,26 +173,10 @@ class EventsByLocation(TemplateView):
             time_slices = self.get_time_slices(events_by_location)
 
             for locations in location_sets:
-                columns = []
-                for location in locations:
-                    location_events = events_by_location.pop(location, [])
-                    column = self.process_column(location_events, time_slices)
-                    for cell in column:
-                        cell['location'] = location
-                    columns.append(column)
-                # Transpose columns to get row_cells
-                row_cells = list(zip(*columns))
-                rows = []
-                for (start, end), row in zip(time_slices, row_cells):
-                    time_display = Event.display_time_interval(start, end)
-                    rows.append(
-                        {'time_display': time_display,
-                         'start': start, 'end': end, 'cells': row})
-                tables.append(
-                    {'key': day_key,
-                     'name': day_name,
-                     'locations': locations,
-                     'rows': rows})
+                rows = self.construct_table(
+                    locations, events_by_location, time_slices)
+                tables.append(dict(key=day_key, name=day_name,
+                                   locations=locations, rows=rows))
 
         context_data['tables'] = tables
         return context_data
