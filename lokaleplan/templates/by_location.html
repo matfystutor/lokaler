@@ -1,24 +1,22 @@
-{% for day in days %}
-<h1>{{ day.name }}</h1>
+{% for table in tables %}
+<h1>{{ table.name }}</h1>
 <table border=1>
 <thead>
 <tr>
     <th>Tidspunkt</th>
-    {% for location in day.locations %}
+    {% for location in table.locations %}
     <th>{{ location }}</th>
     {% endfor %}
 </tr>
 </thead>
 <tbody>
-{% for row in day.rows %}
+{% for row in table.rows %}
 <tr>
     <th>{{ row.time_display }}</th>
     {% for cell in row.cells %}
     {% if cell.span %}
     <td rowspan="{{ cell.span }}">
-        {% for event in cell.events %}
-        {{ event }}
-        {% endfor %}
+	{{ cell.participants }}
     </td>
     {% endif %}
     {% endfor %}
