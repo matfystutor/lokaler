@@ -62,15 +62,27 @@ def summarize_participants(participants):
 class EventsByLocation(TemplateView):
     template_name = 'by_location.html'
 
-    def get_events_by_column(self):
-        events_by_location_by_day = {}
+    def get_events(self):
         qs = Event.objects.all()
         qs = qs.prefetch_related('locations', 'participants')
+        return qs
+
+    def partition_events(self, qs):
+        header = list(Location.objects.all())
+        days = Event.DAYS
+        event_sets = {}
         for event in qs:
             for location in event.locations.all():
-                events_by_location_by_day.setdefault(
+                event_sets.setdefault(
                     event.day, {}).setdefault(location, []).append(event)
-        return events_by_location_by_day
+
+        assert all(isinstance(v, dict) for v in event_sets.values())
+        assert all(isinstance(l, list) for v in event_sets.values()
+                   for l in v.values())
+        assert all(isinstance(e, Event) for v in event_sets.values()
+                   for l in v.values() for e in l)
+
+        return event_sets, days, header
 
     def get_time_slices(self, events_by_column):
         # Flatten events_by_column.values()
@@ -121,7 +133,7 @@ class EventsByLocation(TemplateView):
                    for event in cell)
         return cells
 
-    def merge_repeating_cells(self, cells, time_slices):
+    def merge_repeating_cells(self, cells):
         column = []
         for i, cell in enumerate(cells):
             if i > 0 and cell == cells[i-1]:
@@ -138,14 +150,14 @@ class EventsByLocation(TemplateView):
         assert sum(c['span'] for c in column) == len(cells)
         return column
 
-    def construct_table(self, locations, events_by_location, time_slices):
+    def construct_table(self, header, events_by_key, time_slices):
         columns = []
-        for location in locations:
-            events = events_by_location.pop(location, [])
+        for key in header:
+            events = events_by_key.pop(key, [])
             cells = self.put_events_in_time_slices(events, time_slices)
             column = self.merge_repeating_cells(cells)
             for cell in column:
-                cell['location'] = location
+                # cell['location'] = location
                 participants = set(p for event in cell['events']
                                    for p in event.participants.all())
                 cell['participants'] = summarize_participants(participants)
@@ -162,23 +174,24 @@ class EventsByLocation(TemplateView):
     def get_context_data(self, **kwargs):
         context_data = super().get_context_data(**kwargs)
 
-        locations = list(Location.objects.all())
+        qs = self.get_events()
+        event_sets, days, header = self.partition_events(qs)
         n_columns = 10
-        location_sets = [locations[i:i+n_columns]
-                         for i in range(0, len(locations), n_columns)]
-
-        events_by_location_by_day = self.get_events_by_column()
+        header_sets = [header[i:i+n_columns]
+                       for i in range(0, len(header), n_columns)]
 
         tables = []
-        for day_key, day_name in Event.DAYS:
-            events_by_location = events_by_location_by_day.pop(day_key, [])
-            time_slices = self.get_time_slices(events_by_location)
+        for day_key, day_name in days:
+            day_events = event_sets.pop(day_key, [])
+            time_slices = self.get_time_slices(day_events)
 
-            for locations in location_sets:
-                rows = self.construct_table(
-                    locations, events_by_location, time_slices)
+            assert len(day_events) > 0
+            for header in header_sets:
+                rows = self.construct_table(header, day_events, time_slices)
+                assert all(h not in day_events for h in header)
                 tables.append(dict(key=day_key, name=day_name,
-                                   locations=locations, rows=rows))
+                                   header=header, rows=rows))
+            assert len(day_events) == 0
 
         context_data['tables'] = tables
         return context_data
