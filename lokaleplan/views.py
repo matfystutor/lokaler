@@ -73,10 +73,13 @@ class EventsByLocation(TemplateView):
         return events_by_location_by_day
 
     def get_time_slices(self, events_by_column):
+        # Flatten events_by_column.values()
         events = (event for events in events_by_column.values()
                   for event in events)
+        # Distinct time points
         times = sorted(set(t for event in events
                            for t in [event.start_time, event.end_time]))
+        # Time points to time intervals
         return list(zip(times[:-1], times[1:]))
 
     def put_events_in_time_slices(self, events, time_slices):
@@ -86,12 +89,14 @@ class EventsByLocation(TemplateView):
         The time slices must be adjacent and sorted.
         Returns a list with an entry for each time slice with a set of events.
         """
+        # All time slices have positive length
         assert all(a < b for a, b in time_slices)
+        # All neighboring time slices are adjacent
         assert all(xb == ya for (xa, xb), (ya, yb) in
                    zip(time_slices[:-1], time_slices[1:]))
         events.sort(key=lambda event: event.start_time)
-        done_cells = 0
         cells = [set() for time_slice in time_slices]
+        done_cells = 0
         for event in events:
             remaining_cells = zip(
                 time_slices[done_cells:], cells[done_cells:])
@@ -111,42 +116,39 @@ class EventsByLocation(TemplateView):
                     # not in any of the remaining cells.
                     break
         assert len(cells) == len(time_slices)
-        assert all(
-            event.start_time <= end and start <= event.end_time
-            for (start, end), cell in zip(time_slices, cells)
-            for event in cell
-        )
+        assert all(event.start_time <= end and start <= event.end_time
+                   for (start, end), cell in zip(time_slices, cells)
+                   for event in cell)
         return cells
 
-    def process_column(self, events, time_slices):
-        cells = self.put_events_in_time_slices(events, time_slices)
+    def merge_repeating_cells(self, cells, time_slices):
         column = []
         for i, cell in enumerate(cells):
             if i > 0 and cell == cells[i-1]:
+                # This cell is contained in the previous cell
+                # so it should not be output
                 span = 0
             else:
                 span = 1
-                while (i+span < len(cells) and
-                        cell == cells[i+span]):
+                while i+span < len(cells) and cell == cells[i+span]:
                     span += 1
-            cell_participants = set(
-                p for event in cell
-                for p in event.participants.all())
-            cell_participants = summarize_participants(
-                cell_participants)
             column.append({'span': span,
-                           'events': list(cell),
-                           'participants': cell_participants})
-        assert len(column) == len(time_slices)
+                           'events': list(cell)})
+        assert len(column) == len(cells)
+        assert sum(c['span'] for c in column) == len(cells)
         return column
 
     def construct_table(self, locations, events_by_location, time_slices):
         columns = []
         for location in locations:
             events = events_by_location.pop(location, [])
-            column = self.process_column(events, time_slices)
+            cells = self.put_events_in_time_slices(events, time_slices)
+            column = self.merge_repeating_cells(cells)
             for cell in column:
                 cell['location'] = location
+                participants = set(p for event in cell['events']
+                                   for p in event.participants.all())
+                cell['participants'] = summarize_participants(participants)
             columns.append(column)
         # Transpose columns to get row_cells
         row_cells = list(zip(*columns))
