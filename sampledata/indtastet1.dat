@@ -1,0 +1,1393 @@
+#	
+# 15/08-2014: Lokalegruppen (lokaler@matfystutor.dk)
+# Holdnavne der starter med __ (to underscores) kommer med i 
+# lokale_vs_tid_pr_dag, men ikke med i de øvrige to skemaer.
+#
+
+
+COMMENT
+
+HOLD = DAT1
+
+/%/ Se studiestartsprogrammet for præcise tidspunkter!  \\ Der \textbf{SKAL} være ro omkring eksamenslokaler. \\ Ignorer de lokaler, der er sat på til CS-lab. Følg CS-lab-planen. \\ Dataloger møder kl. 8:30 torsdag til CS-lab. \\
+
+\vspace{1cm} {\Large Hvis I afviger fra tidsplanen \textbf{SKAL} Buret$^{TM}$ vide det!}/%/
+
+HOLD = DAT2
+
+/%/ Se studiestartsprogrammet for præcise tidspunkter!  \\ Der \textbf{SKAL} være ro omkring eksamenslokaler. \\ Ignorer de lokaler, der er sat på til CS-lab. Følg CS-lab-planen. \\ Dataloger møder kl. 8:30 torsdag til CS-lab. \\
+
+\vspace{1cm} {\Large Hvis I afviger fra tidsplanen \textbf{SKAL} Buret$^{TM}$ vide det!}/%/
+
+HOLD = DAT3
+
+/%/ Se studiestartsprogrammet for præcise tidspunkter!  \\ Der \textbf{SKAL} være ro omkring eksamenslokaler. \\ Ignorer de lokaler, der er sat på til CS-lab. Følg CS-lab-planen. \\ Dataloger møder kl. 8:30 torsdag til CS-lab. \\
+
+\vspace{1cm} {\Large Hvis I afviger fra tidsplanen \textbf{SKAL} Buret$^{TM}$ vide det!}/%/
+
+HOLD = DAT4
+
+/%/ Se studiestartsprogrammet for præcise tidspunkter!  \\ Der \textbf{SKAL} være ro omkring eksamenslokaler. \\ Ignorer de lokaler, der er sat på til CS-lab. Følg CS-lab-planen. \\ Dataloger møder kl. 8:30 torsdag til CS-lab. \\
+
+\vspace{1cm} {\Large Hvis I afviger fra tidsplanen \textbf{SKAL} Buret$^{TM}$ vide det!}/%/
+
+HOLD = DAT5
+
+/%/ Se studiestartsprogrammet for præcise tidspunkter!  \\ Der \textbf{SKAL} være ro omkring eksamenslokaler. \\ Ignorer de lokaler, der er sat på til CS-lab. Følg CS-lab-planen.  \\ Dataloger møder kl. 8:30 torsdag til CS-lab. \\
+
+\vspace{1cm} {\Large Hvis I afviger fra tidsplanen \textbf{SKAL} Buret$^{TM}$ vide det!}/%/
+
+HOLD = DAT6
+
+/%/ Se studiestartsprogrammet for præcise tidspunkter!  \\ Der \textbf{SKAL} være ro omkring eksamenslokaler. \\ Ignorer de lokaler, der er sat på til CS-lab. Følg CS-lab-planen. \\ Dataloger møder kl. 8:30 torsdag til CS-lab. \\
+
+\vspace{1cm} {\Large Hvis I afviger fra tidsplanen \textbf{SKAL} Buret$^{TM}$ vide det!}/%/
+
+HOLD = DAT7
+
+/%/ Se studiestartsprogrammet for præcise tidspunkter!  \\ Der \textbf{SKAL} være ro omkring eksamenslokaler. \\ Ignorer de lokaler, der er sat på til CS-lab. Følg CS-lab-planen. \\ Dataloger møder kl. 8:30 torsdag til CS-lab. \\
+
+\vspace{1cm} {\Large Hvis I afviger fra tidsplanen \textbf{SKAL} Buret$^{TM}$ vide det!}/%/
+
+
+HOLD = DATAM
+
+/%/ Se studiestartsprogrammet for præcise tidspunkter!  \\ Der \textbf{SKAL} være ro omkring eksamenslokaler. \\ Ignorer de lokaler, der er sat på til CS-lab. Følg CS-lab-planen. \\ Dataloger møder kl. 8:30 torsdag til CS-lab. \\
+
+\vspace{1cm} {\Large Hvis I afviger fra tidsplanen \textbf{SKAL} Buret$^{TM}$ vide det!}/%/
+
+HOLD = IT1
+
+/%/ Se studiestartsprogrammet for præcise tidspunkter! \\ Der \textbf{SKAL} være ro omkring eksamenslokaler. \\IT'ere møder kl. 8:30 torsdag til CS-lab. \\
+
+\vspace{1cm} {\Large Hvis I afviger fra tidsplanen \textbf{SKAL} Buret$^{TM}$ vide det!}/%/
+
+HOLD = IT2
+
+/%/ Se studiestartsprogrammet for præcise tidspunkter! \\ Der \textbf{SKAL} være ro omkring eksamenslokaler. \\IT'ere møder kl. 8:30 torsdag til CS-lab. \\
+
+\vspace{1cm} {\Large Hvis I afviger fra tidsplanen \textbf{SKAL} Buret$^{TM}$ vide det!}/%/
+
+HOLD = IT3
+
+/%/ Se studiestartsprogrammet for præcise tidspunkter! \\ Der \textbf{SKAL} være ro omkring eksamenslokaler. \\IT'ere møder kl. 8:30 torsdag til CS-lab. \\
+
+\vspace{1cm} {\Large Hvis I afviger fra tidsplanen \textbf{SKAL} Buret$^{TM}$ vide det!}/%/
+
+HOLD = MAT1 
+
+/%/ Se studiestartsprogrammet for præcise tidspunkter! \\ Der \textbf{SKAL} være ro omkring eksamenslokaler. \\ 
+
+\vspace{1cm} {\Large Hvis I afviger fra tidsplanen \textbf{SKAL} Buret$^{TM}$ vide det!}/%/
+
+HOLD = MAT2 
+
+/%/ Se studiestartsprogrammet for præcise tidspunkter! \\ Der \textbf{SKAL} være ro omkring eksamenslokaler. \\ 
+
+\vspace{1cm} {\Large Hvis I afviger fra tidsplanen \textbf{SKAL} Buret$^{TM}$ vide det!}/%/
+
+HOLD = MAT3 
+
+/%/ Se studiestartsprogrammet for præcise tidspunkter! \\ Der \textbf{SKAL} være ro omkring eksamenslokaler. \\ 
+
+\vspace{1cm} {\Large Hvis I afviger fra tidsplanen \textbf{SKAL} Buret$^{TM}$ vide det!}/%/
+
+HOLD = MAT4 
+
+/%/ Se studiestartsprogrammet for præcise tidspunkter! \\ Der \textbf{SKAL} være ro omkring eksamenslokaler. \\ 
+
+\vspace{1cm} {\Large Hvis I afviger fra tidsplanen \textbf{SKAL} Buret$^{TM}$ vide det!}/%/
+
+HOLD = MØK1 
+
+/%/ Se studiestartsprogrammet for præcise tidspunkter! \\ Der \textbf{SKAL} være ro omkring eksamenslokaler. \\ 
+
+\vspace{1cm} {\Large Hvis I afviger fra tidsplanen \textbf{SKAL} Buret$^{TM}$ vide det!}/%/
+
+
+HOLD = MØK2
+
+/%/ Se studiestartsprogrammet for præcise tidspunkter! \\ Der \textbf{SKAL} være ro omkring eksamenslokaler. \\ 
+
+\vspace{0.5cm} {\Large Hvis I afviger fra tidsplanen \textbf{SKAL} Buret$^{TM}$ vide det!}/%/
+
+HOLD = MØK3
+
+/%/ Se studiestartsprogrammet for præcise tidspunkter! \\ Der \textbf{SKAL} være ro omkring eksamenslokaler. \\ 
+
+\vspace{0.5cm} {\Large Hvis I afviger fra tidsplanen \textbf{SKAL} Buret$^{TM}$ vide det!}/%/
+
+HOLD = MØK4
+
+/%/ Se studiestartsprogrammet for præcise tidspunkter! \\ Der \textbf{SKAL} være ro omkring eksamenslokaler. \\ 
+
+\vspace{0.5cm} {\Large Hvis I afviger fra tidsplanen \textbf{SKAL} Buret$^{TM}$ vide det!}/%/
+
+
+HOLD = FYS1
+
+/%/  Se studiestartsprogrammet for præcise tidspunkter! \\ Der \textbf{SKAL} være ro omkring eksamenslokaler. \\ 
+
+\vspace{1cm} {\Large Hvis I afviger fra tidsplanen \textbf{SKAL} Buret$^{TM}$ vide det!}/%/
+
+HOLD = FYS2
+
+/%/  Se studiestartsprogrammet for præcise tidspunkter! \\ Der \textbf{SKAL} være ro omkring eksamenslokaler. \\ 
+
+\vspace{1cm} {\Large Hvis I afviger fra tidsplanen \textbf{SKAL} Buret$^{TM}$ vide det!}/%/
+
+
+HOLD = FYS3
+
+/%/  Se studiestartsprogrammet for præcise tidspunkter! \\ Der \textbf{SKAL} være ro omkring eksamenslokaler. \\ 
+
+\vspace{1cm} {\Large Hvis I afviger fra tidsplanen \textbf{SKAL} Buret$^{TM}$ vide det!}/%/
+
+
+HOLD = FYS4
+
+/%/  Se studiestartsprogrammet for præcise tidspunkter! \\ Der \textbf{SKAL} være ro omkring eksamenslokaler. \\ 
+
+\vspace{1cm} {\Large Hvis I afviger fra tidsplanen \textbf{SKAL} Buret$^{TM}$ vide det!}/%/
+
+
+HOLD = FYS5
+
+/%/  Se studiestartsprogrammet for præcise tidspunkter! \\ Der \textbf{SKAL} være ro omkring eksamenslokaler. \\ 
+
+\vspace{1cm} {\Large Hvis I afviger fra tidsplanen \textbf{SKAL} Buret$^{TM}$ vide det!}/%/
+
+
+
+HOLD = NA1
+
+/%/ Se studiestartsprogrammet for præcise tidspunkter!  \\ Der \textbf{SKAL} være ro omkring eksamenslokaler. \\
+
+\vspace{0.5cm} {\Large Hvis I afviger fra tidsplanen \textbf{SKAL} Buret$^{TM}$ vide det!}/%/
+
+HOLD = NA2
+
+/%/ Se studiestartsprogrammet for præcise tidspunkter!  \\ Der \textbf{SKAL} være ro omkring eksamenslokaler. \\
+
+\vspace{0.5cm} {\Large Hvis I afviger fra tidsplanen \textbf{SKAL} Buret$^{TM}$ vide det!}/%/
+
+HOLD = NA3
+
+/%/ Se studiestartsprogrammet for præcise tidspunkter!  \\ Der \textbf{SKAL} være ro omkring eksamenslokaler. \\
+
+\vspace{0.5cm} {\Large Hvis I afviger fra tidsplanen \textbf{SKAL} Buret$^{TM}$ vide det!}/%/
+
+
+/COMMENT
+
+DAG = Onsdag
+
+HOLD = DAT1
+
+Mat Kant, Registrering 
+Mat Kant, Registrering
+Mat Kant, Registrering
+,
+Aula, Dekanvelkomst
+,
+PBA, Institutvelkomst
+
+
+HOLD = DAT2
+
+Mat Kant, Registrering 
+Mat Kant, Registrering
+Mat Kant, Registrering
+,
+Aula, Dekanvelkomst
+,
+PBA, Institutvelkomst
+
+
+HOLD = DAT3
+
+Mat Kant, Registrering 
+Mat Kant, Registrering
+Mat Kant, Registrering
+,
+Aula, Dekanvelkomst
+,
+PBA, Institutvelkomst
+
+
+HOLD = DAT4
+
+Mat Kant, Registrering 
+Mat Kant, Registrering
+Mat Kant, Registrering
+,
+Aula, Dekanvelkomst
+,
+PBA, Institutvelkomst
+
+
+HOLD = DAT5
+
+Mat Kant, Registrering 
+Mat Kant, Registrering
+Mat Kant, Registrering
+,
+Aula, Dekanvelkomst
+,
+PBA, Institutvelkomst
+
+
+HOLD = DAT6
+
+Mat Kant, Registrering 
+Mat Kant, Registrering
+Mat Kant, Registrering
+,
+Aula, Dekanvelkomst
+,
+PBA, Institutvelkomst
+
+
+HOLD = DAT7
+
+Mat Kant, Registrering 
+Mat Kant, Registrering
+Mat Kant, Registrering
+,
+Aula, Dekanvelkomst
+,
+PBA, Institutvelkomst
+
+
+HOLD = DATAM
+
+Mat Kant, Registrering 
+Mat Kant, Registrering
+Mat Kant, Registrering
+,
+Aula, Dekanvelkomst
+,
+PBA, Institutvelkomst
+
+
+HOLD = IT1
+
+Mat Kant, Registrering 
+Mat Kant, Registrering
+Mat Kant, Registrering
+,
+Aula, Dekanvelkomst
+,
+PBA, Institutvelkomst
+
+
+HOLD = IT2
+
+Mat Kant, Registrering 
+Mat Kant, Registrering
+Mat Kant, Registrering
+,
+Aula, Dekanvelkomst
+,
+PBA, Institutvelkomst
+
+
+HOLD = IT3
+
+Mat Kant, Registrering 
+Mat Kant, Registrering
+Mat Kant, Registrering
+,
+Aula, Dekanvelkomst
+,
+PBA, Institutvelkomst
+
+
+HOLD = FYS1
+
+Fys Kant, Registrering
+Fys Kant, Registrering
+,
+Sø Aud, Dekanvelkomst
+,
+Fys Aud, Institutvelkomst
+Fys Aud, Institutvelkomst
+
+
+HOLD = FYS2
+
+Fys Kant, Registrering
+Fys Kant, Registrering
+,
+Sø Aud, Dekanvelkomst
+,
+Fys Aud, Institutvelkomst
+Fys Aud, Institutvelkomst
+
+
+HOLD = FYS3
+
+Fys Kant, Registrering
+Fys Kant, Registrering
+,
+Sø Aud, Dekanvelkomst
+,
+Fys Aud, Institutvelkomst
+Fys Aud, Institutvelkomst
+
+
+HOLD = FYS4
+
+Fys Kant, Registrering
+Fys Kant, Registrering
+,
+Sø Aud, Dekanvelkomst
+,
+Fys Aud, Institutvelkomst
+Fys Aud, Institutvelkomst
+
+
+HOLD = FYS5
+
+Fys Kant, Registrering
+Fys Kant, Registrering
+,
+Sø Aud, Dekanvelkomst
+,
+Fys Aud, Institutvelkomst
+Fys Aud, Institutvelkomst
+
+
+HOLD = NA1
+
+iNANO Foyer, Registrering
+iNANO Foyer, Registrering
+,
+Sø Aud, Dekanvelkomst
+,
+Nano Aud, Centervelkomst
+Nano Aud, Centervelkomst
+
+
+HOLD = NA2
+
+iNANO Foyer, Registrering
+iNANO Foyer, Registrering
+,
+Sø Aud, Dekanvelkomst
+,
+Nano Aud, Centervelkomst
+Nano Aud, Centervelkomst
+
+
+HOLD = NA3
+
+iNANO Foyer, Registrering
+iNANO Foyer, Registrering
+,
+Sø Aud, Dekanvelkomst
+,
+Nano Aud, Centervelkomst
+Nano Aud, Centervelkomst
+
+
+HOLD = MAT1
+
+Matlab, Registrering
+Matlab, Registrering
+,
+Sø Aud, Dekanvelkomst
+,
+Aud E, Institutvelkomst
+Aud E, Institutvelkomst
+
+
+HOLD = MAT2
+
+Matlab, Registrering
+Matlab, Registrering
+,
+Sø Aud, Dekanvelkomst
+,
+Aud E, Institutvelkomst
+Aud E, Institutvelkomst
+
+
+HOLD = MAT3
+
+Matlab, Registrering
+Matlab, Registrering
+,
+Sø Aud, Dekanvelkomst
+,
+Aud E, Institutvelkomst
+Aud E, Institutvelkomst
+
+
+HOLD = MAT4
+
+Matlab, Registrering
+Matlab, Registrering
+,
+Sø Aud, Dekanvelkomst
+,
+Aud E, Institutvelkomst
+Aud E, Institutvelkomst
+
+
+HOLD = MØK1
+
+Vandrehallen, Registrering
+Vandrehallen, Registrering
+,
+Sø Aud, Dekanvelkomst
+,
+Aud E, Institutvelkomst
+Aud E, Institutvelkomst
+
+
+HOLD = MØK2
+
+Vandrehallen, Registrering
+Vandrehallen, Registrering
+,
+Sø Aud, Dekanvelkomst
+,
+Aud E, Institutvelkomst
+Aud E, Institutvelkomst
+
+
+HOLD = MØK3
+
+Vandrehallen, Registrering
+Vandrehallen, Registrering
+,
+Sø Aud, Dekanvelkomst
+,
+Aud E, Institutvelkomst
+Aud E, Institutvelkomst
+
+
+HOLD = MØK4
+
+Vandrehallen, Registrering
+Vandrehallen, Registrering
+,
+Sø Aud, Dekanvelkomst
+,
+Aud E, Institutvelkomst
+Aud E, Institutvelkomst
+
+
+HOLD = __TKM
+
+,
+,
+,
+,
+,
+,
+,
+
+
+HOLD = __Nano
+
+,
+,
+,
+,
+,
+,
+,
+
+
+HOLD = __SAC
+
+Aud G1,
+Aud G1,
+Aud G1,
+Aud G1,
+Aud G1,
+Aud G1,
+Aud G1,
+
+
+HOLD = __Arne
+
+,
+IT-121,
+IT-121,
+,
+,
+,
+,
+
+
+HOLD = __Arne2
+
+IT-120,
+IT-120,
+IT-120,
+IT-120,
+IT-120,
+IT-120,
+IT-120,
+
+
+HOLD = __Charlotte
+
+1520-616,
+1520-616,
+1520-616,
+1520-616,
+1520-616,
+1520-616,
+1520-616,
+
+
+HOLD = __JournalClub
+
+,
+,
+,
+,
+,
+,
+,
+
+HOLD = __Karin
+
+,
+,
+,
+,
+,
+,
+,
+
+HOLD = __Anders
+
+,
+,
+,
+,
+,
+,
+Lille Aud,
+
+/DAG
+
+
+
+DAG = Torsdag
+
+
+
+
+HOLD = DAT1
+
+, CS-Lab 
+, CS-Lab 
+, CS-Lab 
+, CS-Lab
+Nygaard-192, Arbejdsformer 
+Nygaard-192, Arbejdsformer 
+PBA, Studievejledning
+
+HOLD = DAT2
+
+Ada-018, CS-Lab 
+Ada-018, CS-Lab 
+Ada-018, CS-Lab 
+Ada-018, CS-Lab
+Ada-018, Arbejdsformer 
+Ada-018, Arbejdsformer 
+PBA, Studievejledning
+
+
+HOLD = DAT3
+
+Ada-026, CS-Lab 
+Ada-026, CS-Lab 
+Ada-026, CS-Lab 
+Ada-026, CS-Lab
+Ada-026, Arbejdsformer 
+Ada-026, Arbejdsformer 
+PBA, Studievejledning
+
+
+HOLD = DAT4
+
+Chomsky, CS-Lab 
+Chomsky, CS-Lab 
+Chomsky, CS-Lab 
+Chomsky, CS-Lab
+Ada-018, Arbejdsformer 
+Ada-018, Arbejdsformer 
+PBA, Studievejledning
+
+
+HOLD = DAT5
+
+PBA, CS-Lab 
+PBA, CS-Lab 
+PBA, CS-Lab 
+PBA, CS-Lab
+Stibitz-1, Arbejdsformer 
+Stibitz-1, Arbejdsformer 
+PBA, Studievejledning
+
+
+HOLD = DAT6
+
+Lille Aud, CS-Lab 
+Lille Aud, CS-Lab 
+Lille Aud, CS-Lab 
+Lille Aud, CS-Lab
+Stibitz-2, Arbejdsformer 
+Stibitz-2, Arbejdsformer 
+PBA, Studievejledning
+
+
+HOLD = DAT7
+
+, CS-Lab 
+, CS-Lab 
+, CS-Lab 
+, CS-Lab
+Nygaard-184, Arbejdsformer 
+Nygaard-184, Arbejdsformer 
+PBA, Studievejledning
+
+
+HOLD = DATAM
+
+, CS-Lab 
+, CS-Lab 
+, CS-Lab 
+, CS-Lab
+Nygaard-184, Arbejdsformer 
+Nygaard-184, Arbejdsformer 
+Nygaard-184, Datamatikerinfo
+
+
+HOLD = IT1
+
+, CS-Lab 
+, CS-Lab 
+, CS-Lab 
+, CS-Lab
+Lille Aud, Studievejledning
+Aud D1, Gå til Ny Munkegade
+Aud D1, Rundvisning
+
+HOLD = IT2
+
+, CS-Lab 
+, CS-Lab 
+, CS-Lab 
+, CS-Lab
+Lille Aud, Studievejledning
+1520-516, Gå til Ny Munkegade
+1520-516, Rundvisning
+
+HOLD = IT3
+
+, CS-Lab 
+, CS-Lab 
+, CS-Lab 
+, CS-Lab
+Lille Aud, Studievejledning
+Aud D2, Gå til Ny Munkegade
+Aud D2, Rundvisning
+
+
+HOLD = FYS1
+
+,
+Fys Aud, Studievejledning
+Fys Aud, Studievejledning
+Fys Aud, Forelæsning
+Fys Aud, Forelæsning
+1525-215, Holdtime
+1525-215, Holdtime
+
+HOLD = FYS2
+
+,
+Fys Aud, Studievejledning
+Fys Aud, Studievejledning
+Fys Aud, Forelæsning
+Fys Aud, Forelæsning
+1525-219, Holdtime
+1525-219, Holdtime
+
+HOLD = FYS3
+
+,
+Fys Aud, Studievejledning
+Fys Aud, Studievejledning
+Fys Aud, Forelæsning
+Fys Aud, Forelæsning
+1525-223, Holdtime
+1525-223, Holdtime
+
+HOLD = FYS4
+
+,
+Fys Aud, Studievejledning
+Fys Aud, Studievejledning
+Fys Aud, Forelæsning
+Fys Aud, Forelæsning
+1525-229, Holdtime
+1525-229, Holdtime
+
+HOLD = FYS5
+
+,
+Fys Aud, Studievejledning
+Fys Aud, Studievejledning
+Fys Aud, Forelæsning
+Fys Aud, Forelæsning
+1525-231, Holdtime
+1525-231, Holdtime
+
+
+HOLD = NA1
+
+,
+,
+Nano Aud, Studievejledning
+Nano Aud, Nanoshow
+Nano Aud, Nanoshow
+1593-218, Frokost
+1593-218, Frokost
+
+HOLD = NA2
+
+,
+,
+Nano Aud, Studievejledning
+Nano Aud, Nanoshow
+Nano Aud, Nanoshow
+1593-222, Frokost
+1593-222, Frokost
+
+
+HOLD = NA3
+
+,
+,
+Nano Aud, Studievejledning
+Nano Aud, Nanoshow
+Nano Aud, Nanoshow
+1593-226, Frokost
+1593-226, Frokost
+
+
+
+HOLD = MAT1
+
+,
+,
+Aud E, Studievejledning
+D0.1, Holdets Time
+D0.1, Holdets Time
+D0.1, Frokost
+D0.1, Frokost
+
+HOLD = MAT2
+
+,
+,
+Aud E, Studievejledning
+D0.2, Holdets Time
+D0.2, Holdets Time
+D0.2, Frokost
+D0.2, Frokost
+
+HOLD = MAT3
+
+,
+,
+Aud E, Studievejledning
+D0.3, Holdets Time
+D0.3, Holdets Time
+D0.3, Frokost
+D0.3, Frokost
+
+HOLD = MAT4
+
+,
+,
+Aud E, Studievejledning
+Koll G, Holdets Time
+Koll G, Holdets Time
+Koll G, Frokost
+Koll G, Frokost
+
+
+HOLD = MØK1
+
+,
+Koll G4, Holdets Time
+Aud D1, Studievejledning
+Aud D1, Forelæsning
+Aud D1, Forelæsning
+Koll G4, Frokost
+Koll G4, Frokost
+
+
+HOLD = MØK2
+
+,
+Koll G3.1, Holdets Time
+Aud D1, Studievejledning
+Aud D1, Forelæsning
+Aud D1, Forelæsning
+Koll G3.1, Frokost
+Koll G3.1, Frokost
+
+HOLD = MØK3
+
+,
+Koll G3.2, Holdets Time
+Aud D1, Studievejledning
+Aud D1, Forelæsning
+Aud D1, Forelæsning
+Koll G3.2, Frokost
+Koll G3.2, Frokost
+
+HOLD = MØK4
+
+,
+Koll G3.3, Holdets Time
+Aud D1, Studievejledning
+Aud D1, Forelæsning
+Aud D1, Forelæsning
+Koll G3.3, Frokost
+Koll G3.3, Frokost
+
+
+HOLD = __TKM
+
+Aud E,
+,
+,
+,
+,
+,
+,
+
+
+HOLD = __Nano
+
+,
+,
+,
+,
+,
+,
+,
+
+
+HOLD = __SAC
+
+,
+,
+,
+,
+,
+,
+,
+
+
+
+HOLD = __Arne
+
+IT-121,
+IT-121,
+IT-121,
+IT-121,
+IT-121,
+IT-121,
+IT-121,
+
+
+HOLD = __Arne2
+
+,
+,
+,
+,
+,
+,
+,
+
+
+HOLD = __Charlotte
+
+1520-616,
+1520-616,
+1520-616,
+1520-616,
+1520-616,
+1520-616,
+1520-616,
+
+HOLD = __JournalClub
+
+,
+,
+,
+1520-516,
+1520-516,
+,
+,
+
+HOLD = __Lene
+
+Aud F,
+Aud F,
+Aud F,
+Aud F,
+Aud F,
+Aud F,
+Aud F,
+
+
+HOLD = __Lene2
+
+Aud G2,
+Aud G2,
+Aud G2,
+Aud G2,
+Aud G2,
+Aud G2,
+Aud G2,
+
+
+HOLD = __Karin
+
+1520-316,
+1520-316,
+1520-316,
+1520-316,
+1520-316,
+1520-316,
+1520-316,
+
+HOLD = __Anders
+
+,
+,
+,
+,
+,
+,
+,
+
+/DAG
+
+DAG = Fredag
+
+HOLD = DAT1
+
+D0.1, Teoretiske øvelser
+D0.1, Teoretiske øvelser
+D0.1, Teoretiske øvelser
+Aud E, Dias og oplæg
+Aud E, Dias og oplæg
+1525-215, Frokost
+1525-215, Frokost
+
+
+HOLD = DAT2
+
+D0.2, Teoretiske øvelser
+D0.2, Teoretiske øvelser
+D0.2, Teoretiske øvelser
+Aud E, Dias og oplæg
+Aud E, Dias og oplæg
+1525-219, Frokost
+1525-219, Frokost
+
+
+HOLD = DAT3
+
+D0.3, Teoretiske øvelser
+D0.3, Teoretiske øvelser
+D0.3, Teoretiske øvelser
+Aud E, Dias og oplæg
+Aud E, Dias og oplæg
+1525-223, Frokost
+1525-223, Frokost
+
+
+HOLD = DAT4
+
+Koll G, Teoretiske øvelser
+Koll G, Teoretiske øvelser
+Koll G, Teoretiske øvelser
+Aud E, Dias og oplæg
+Aud E, Dias og oplæg
+1525-229, Frokost
+1525-229, Frokost
+
+
+HOLD = DAT5
+
+Koll G3, Teoretiske øvelser
+Koll G3, Teoretiske øvelser
+Koll G3, Teoretiske øvelser
+Aud E, Dias og oplæg
+Aud E, Dias og oplæg
+1525-231, Frokost
+1525-231, Frokost
+
+
+HOLD = DAT6
+
+Koll G4, Teoretiske øvelser
+Koll G4, Teoretiske øvelser
+Koll G4, Teoretiske øvelser
+Aud E, Dias og oplæg
+Aud E, Dias og oplæg
+1520-316, Frokost
+1520-316, Frokost
+
+
+HOLD = DAT7
+
+Koll D, Teoretiske øvelser
+Koll D, Teoretiske øvelser
+Koll D, Teoretiske øvelser
+Aud E, Dias og oplæg
+Aud E, Dias og oplæg
+1520-516, Frokost
+1520-516, Frokost
+
+
+HOLD = DATAM
+
+Koll D, Teoretiske øvelser
+Koll D, Teoretiske øvelser
+Koll D, Teoretiske øvelser
+Aud E, Dias og oplæg
+Aud E, Dias og oplæg
+1520-516, Frokost
+1520-516, Frokost
+
+
+HOLD = IT1
+
+Koll G3.1, Teoretiske øvelser
+Koll G3.1, Teoretiske øvelser
+Koll G3.1, Teoretiske øvelser
+Aud E, Dias og oplæg
+Aud E, Dias og oplæg
+Aud D1, Forelæsning
+Aud D1, Forelæsning
+
+HOLD = IT2
+
+Koll G3.2, Teoretiske øvelser
+Koll G3.2, Teoretiske øvelser
+Koll G3.2, Teoretiske øvelser
+Aud E, Dias og oplæg
+Aud E, Dias og oplæg
+Aud D1, Forelæsning
+Aud D1, Forelæsning
+
+
+HOLD = IT3
+
+Koll G3.3, Teoretiske øvelser
+Koll G3.3, Teoretiske øvelser
+Koll G3.3, Teoretiske øvelser
+Aud E, Dias og oplæg
+Aud E, Dias og oplæg
+Aud D1, Forelæsning
+Aud D1, Forelæsning
+
+
+HOLD = FYS1
+
+,
+1525-215, Teoretiske øvelser
+1525-215, Teoretiske øvelser
+1525-215, Teoretiske øvelser
+1525-215, Holdtime
+Nano Aud, Dias og oplæg
+Nano Aud, Dias og oplæg
+
+HOLD = FYS2
+
+,
+1525-219, Teoretiske øvelser
+1525-219, Teoretiske øvelser
+1525-219, Teoretiske øvelser
+1525-219, Holdtime
+Nano Aud, Dias og oplæg
+Nano Aud, Dias og oplæg
+
+
+HOLD = FYS3
+
+,
+1525-223, Teoretiske øvelser
+1525-223, Teoretiske øvelser
+1525-223, Teoretiske øvelser
+1525-223, Holdtime
+Nano Aud, Dias og oplæg
+Nano Aud, Dias og oplæg
+
+
+HOLD = FYS4
+
+,
+1525-229, Teoretiske øvelser
+1525-229, Teoretiske øvelser
+1525-229, Teoretiske øvelser
+1525-229, Holdtime
+Nano Aud, Dias og oplæg
+Nano Aud, Dias og oplæg
+
+
+HOLD = FYS5
+
+,
+1525-231, Teoretiske øvelser
+1525-231, Teoretiske øvelser
+1525-231, Teoretiske øvelser
+1525-231, Holdtime
+Nano Aud, Dias og oplæg
+Nano Aud, Dias og oplæg
+
+
+HOLD = NA1
+
+1593-218, Teoretiske øvelser
+1593-218, Teoretiske øvelser
+1593-218, Teoretiske øvelser
+Aud D1, Forelæsning
+Aud D1, Forelæsning
+1593-218, Frokost
+1593-218, Frokost
+
+HOLD = NA2
+
+1593-222, Teoretiske øvelser
+1593-222, Teoretiske øvelser
+1593-222, Teoretiske øvelser
+Aud D1, Forelæsning
+Aud D1, Forelæsning
+1593-222, Frokost
+1593-222, Frokost
+
+
+HOLD = NA3
+
+1593-226, Teoretiske øvelser
+1593-226, Teoretiske øvelser
+1593-226, Teoretiske øvelser
+Aud D1, Forelæsning
+Aud D1, Forelæsning
+1593-226, Frokost
+1593-226, Frokost
+
+
+HOLD = MAT1
+
+,
+Aud E, Dias og oplæg
+Aud E, Dias og oplæg
+D0.1, Teoretiske øvelser
+D0.1, Teoretiske øvelser
+D0.1, Teoretiske ovelser
+D0.1, Holdtime
+
+HOLD = MAT2
+
+,
+Aud E, Dias og oplæg
+Aud E, Dias og oplæg
+D0.2, Teoretiske øvelser
+D0.2, Teoretiske øvelser
+D0.2, Teoretiske ovelser
+D0.2, Holdtime
+
+
+HOLD = MAT3
+
+,
+Aud E, Dias og oplæg
+Aud E, Dias og oplæg
+D0.3, Teoretiske øvelser
+D0.3, Teoretiske øvelser
+D0.3, Teoretiske ovelser
+D0.3, Holdtime
+
+
+HOLD = MAT4
+
+,
+Aud E, Dias og oplæg
+Aud E, Dias og oplæg
+Koll G, Teoretiske øvelser
+Koll G, Teoretiske øvelser
+Koll G, Teoretiske ovelser
+Koll G, Holdtime
+
+
+HOLD = MØK1
+
+,
+Aud E, Dias og oplæg
+Aud E, Dias og oplæg
+Koll G4, Teoretiske øvelser
+Koll G4, Teoretiske øvelser
+Koll G4, Teoretiske ovelser
+Koll G4, Holdtime
+
+
+HOLD = MØK2
+
+,
+Aud E, Dias og oplæg
+Aud E, Dias og oplæg
+Koll G3.1, Teoretiske øvelser
+Koll G3.1, Teoretiske øvelser
+Koll G3.1, Teoretiske ovelser
+Koll G3.1, Holdtime
+
+
+HOLD = MØK3
+
+,
+Aud E, Dias og oplæg
+Aud E, Dias og oplæg
+Koll G3.2, Teoretiske øvelser
+Koll G3.2, Teoretiske øvelser
+Koll G3.2, Teoretiske ovelser
+Koll G3.2, Holdtime
+
+
+HOLD = MØK4
+
+,
+Aud E, Dias og oplæg
+Aud E, Dias og oplæg
+Koll G3.3, Teoretiske øvelser
+Koll G3.3, Teoretiske øvelser
+Koll G3.3, Teoretiske ovelser
+Koll G3.3, Holdtime
+
+
+HOLD = __TKM
+
+,
+,
+,
+,
+,
+Aud E,
+Aud E,
+
+
+HOLD = __Nano
+
+,
+,
+,
+Nano Aud,
+Nano Aud,
+,
+,
+
+
+
+HOLD = __SAC
+
+Fys Aud,
+Fys Aud,
+Fys Aud,
+Fys Aud,
+Fys Aud,
+Fys Aud,
+Fys Aud,
+
+
+HOLD = __Arne
+
+IT-121,
+IT-121,
+IT-121,
+IT-121,
+IT-121,
+IT-121,
+IT-121,
+
+HOLD = __Arne2
+
+,
+,
+,
+,
+,
+,
+,
+
+
+HOLD = __Charlotte
+
+1520-616,
+1520-616,
+1520-616,
+1520-616,
+1520-616,
+1520-616,
+1520-616,
+
+HOLD = __JournalClub
+
+,
+,
+,
+,
+,
+,
+,
+
+
+HOLD = __Karin
+
+,
+,
+,
+,
+,
+,
+,
+
+HOLD = __Anders
+
+,
+,
+,
+,
+,
+,
+,
+
+HOLD = __Klaus
+
+,
+,
+,
+,
+,
+Aud G1,
+Aud G1,
+
+/DAG

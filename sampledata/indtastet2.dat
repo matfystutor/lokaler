@@ -1,0 +1,1505 @@
+#
+# 15/08-2014: Lokalegruppen (lokaler@matfystutor.dk)
+# Holdnavne der starter med __ (to underscores) kommer med i 
+# lokale_vs_tid_pr_dag, men ikke med i de øvrige to skemaer.
+#
+
+
+DAG = Onsdag
+
+HOLD = DAT1
+
+Nygaard-192, Mød dit hold og frokost
+Nygaard-192, Mød dit hold og frokost
+Nygaard-192, Mød dit hold og frokost
+Nygaard-192, Holdtime
+Nygaard-192, Holdtime
+Nygaard-192, Rundvisning i IT-byen
+Nygaard-192, Rundvisning i IT-byen
+Aud D1, Gå til Ny Munkegade
+, SØØL
+
+HOLD = DAT2
+
+Ada-020, Mød dit hold og frokost
+Ada-020, Mød dit hold og frokost
+Ada-020, Mød dit hold og frokost
+Ada-020, Holdtime
+Ada-020, Holdtime
+Ada-020, Rundvisning i IT-byen
+Ada-020, Rundvisning i IT-byen
+Aud D1, Gå til Ny Munkegade
+, SØØL
+
+
+HOLD = DAT3
+
+Ada-026, Mød dit hold og frokost
+Ada-026, Mød dit hold og frokost
+Ada-026, Mød dit hold og frokost
+Ada-026, Holdtime
+Ada-026, Holdtime
+Ada-026, Rundvisning i IT-byen
+Ada-026, Rundvisning i IT-byen
+Aud D1, Gå til Ny Munkegade
+, SØØL
+
+
+HOLD = DAT4
+
+Ada-018, Mød dit hold og frokost
+Ada-018, Mød dit hold og frokost
+Ada-018, Mød dit hold og frokost
+Ada-018, Holdtime
+Ada-018, Holdtime
+Ada-018, Rundvisning i IT-byen
+Ada-018, Rundvisning i IT-byen
+Aud D1, Gå til Ny Munkegade
+, SØØL
+
+
+HOLD = DAT5
+
+Stibitz-1, Mød dit hold og frokost
+Stibitz-1, Mød dit hold og frokost
+Stibitz-1, Mød dit hold og frokost
+Stibitz-1, Holdtime
+Stibitz-1, Holdtime
+Stibitz-1, Rundvisning i IT-byen
+Stibitz-1, Rundvisning i IT-byen
+Aud D1, Gå til Ny Munkegade
+, SØØL
+
+
+HOLD = DAT6
+
+Stibitz-2, Mød dit hold og frokost
+Stibitz-2, Mød dit hold og frokost
+Stibitz-2, Mød dit hold og frokost
+Stibitz-2, Holdtime
+Stibitz-2, Holdtime
+Stibitz-2, Rundvisning i IT-byen
+Stibitz-2, Rundvisning i IT-byen
+Aud D1, Gå til Ny Munkegade
+, SØØL
+
+
+HOLD = DAT7
+
+Nygaard-184, Mød dit hold og frokost
+Nygaard-184, Mød dit hold og frokost
+Nygaard-184, Mød dit hold og frokost
+Nygaard-184, Holdtime
+Nygaard-184, Holdtime
+Nygaard-184, Rundvisning i IT-byen
+Nygaard-184, Rundvisning i IT-byen
+Aud D1, Gå til Ny Munkegade
+, SØØL
+
+
+HOLD = DATAM
+
+Nygaard-184, Mød dit hold og frokost
+Nygaard-184, Mød dit hold og frokost
+Nygaard-184, Mød dit hold og frokost
+Nygaard-184, Holdtime
+Nygaard-184, Holdtime
+Nygaard-184, Rundvisning i IT-byen
+Nygaard-184, Rundvisning i IT-byen
+Aud D1, Gå til Ny Munkegade
+, SØØL
+
+
+HOLD = IT1
+
+IT-121, Mød dit hold og frokost
+IT-121, Mød dit hold og frokost
+IT-121, Mød dit hold og frokost
+IT-121, Rundvisning i IT-byen
+IT-121, Rundvisning i IT-byen
+IT-121, Holdtime
+IT-121, Holdtime
+Aud D1, Gå til Ny Munkegade
+, SØØL
+
+
+HOLD = IT2
+
+IT-129, Mød dit hold og frokost
+IT-129, Mød dit hold og frokost
+IT-129, Mød dit hold og frokost
+IT-129, Rundvisning i IT-byen
+IT-129, Rundvisning i IT-byen
+IT-129, Holdtime
+IT-129, Holdtime
+Aud D1, Gå til Ny Munkegade
+, SØØL
+
+
+HOLD = IT3
+
+IT-131, Mød dit hold og frokost
+IT-131, Mød dit hold og frokost
+IT-131, Mød dit hold og frokost
+IT-131, Rundvisning i IT-byen
+IT-131, Rundvisning i IT-byen
+IT-131, Holdtime
+IT-131, Holdtime
+Aud D1, Gå til Ny Munkegade
+, SØØL
+
+
+HOLD = FYS1
+
+1525-215, Mød dit hold og frokost
+1525-215, Mød dit hold og frokost
+1525-215, Holdtime
+1525-215, Rundvisning i Ny Munkegade og Nanohuset
+1525-215, Rundvisning i Ny Munkegade og Nanohuset
+1525-215, Rundvisning i Ny Munkegade og Nanohuset
+Fys Aud, Forelæsning
+Fys Aud, Forelæsning
+, SØØL
+
+
+HOLD = FYS2
+
+1525-219, Mød dit hold og frokost
+1525-219, Mød dit hold og frokost
+1525-219, Holdtime
+1525-219, Rundvisning i Ny Munkegade og Nanohuset
+1525-219, Rundvisning i Ny Munkegade og Nanohuset
+1525-219, Rundvisning i Ny Munkegade og Nanohuset
+Fys Aud, Forelæsning
+Fys Aud, Forelæsning
+, SØØL
+
+
+HOLD = FYS3
+
+1525-223, Mød dit hold og frokost
+1525-223, Mød dit hold og frokost
+1525-223, Holdtime
+1525-223, Rundvisning i Ny Munkegade og Nanohuset
+1525-223, Rundvisning i Ny Munkegade og Nanohuset
+1525-223, Rundvisning i Ny Munkegade og Nanohuset
+Fys Aud, Forelæsning
+Fys Aud, Forelæsning
+, SØØL
+
+
+HOLD = FYS4
+
+1525-229, Mød dit hold og frokost
+1525-229, Mød dit hold og frokost
+1525-229, Holdtime
+1525-229, Rundvisning i Ny Munkegade og Nanohuset
+1525-229, Rundvisning i Ny Munkegade og Nanohuset
+1525-229, Rundvisning i Ny Munkegade og Nanohuset
+Fys Aud, Forelæsning
+Fys Aud, Forelæsning
+, SØØL
+
+
+HOLD = FYS5
+
+1525-231, Mød dit hold og frokost
+1525-231, Mød dit hold og frokost
+1525-231, Holdtime
+1525-231, Rundvisning i Ny Munkegade og Nanohuset
+1525-231, Rundvisning i Ny Munkegade og Nanohuset
+1525-231, Rundvisning i Ny Munkegade og Nanohuset
+Fys Aud, Forelæsning
+Fys Aud, Forelæsning
+, SØØL
+
+
+HOLD = NA1
+
+1593-218, Mød dit hold og frokost
+1593-218, Mød dit hold og frokost
+1593-218, Mød dit hold og frokost
+1593-218, Rundvisning, iNANO og Ny Munkegade
+1593-218, Rundvisning, iNANO og Ny Munkegade
+1593-218, Rundvisning, iNANO og Ny Munkegade
+1525-215, Holdtime
+1525-215, Holdtime
+, SØØL
+
+
+HOLD = NA2
+
+1593-222, Mød dit hold og frokost
+1593-222, Mød dit hold og frokost
+1593-222, Mød dit hold og frokost
+1593-222, Rundvisning, iNANO og Ny Munkegade
+1593-222, Rundvisning, iNANO og Ny Munkegade
+1593-222, Rundvisning, iNANO og Ny Munkegade
+1525-219, Holdtime
+1525-219, Holdtime
+, SØØL
+
+
+HOLD = NA3
+
+1593-226, Mød dit hold og frokost
+1593-226, Mød dit hold og frokost
+1593-226, Mød dit hold og frokost
+1593-226, Rundvisning, iNANO og Ny Munkegade
+1593-226, Rundvisning, iNANO og Ny Munkegade
+1593-226, Rundvisning, iNANO og Ny Munkegade
+1525-223, Holdtime
+1525-223, Holdtime
+, SØØL
+
+
+HOLD = MAT1
+
+D0.1, Mød dit hold og frokost
+D0.1, Mød dit hold og frokost
+D0.1, Rundvisning i Ny Munkegade
+D0.1, Rundvisning i Ny Munkegade
+Aud E, Forelæsning
+Aud E, Forelæsning
+D0.1, Holdtime
+D0.1, Holdtime
+, SØØL
+
+
+HOLD = MAT2
+
+D0.2, Mød dit hold og frokost
+D0.2, Mød dit hold og frokost
+D0.2, Rundvisning i Ny Munkegade
+D0.2, Rundvisning i Ny Munkegade
+Aud E, Forelæsning
+Aud E, Forelæsning
+D0.2, Holdtime
+D0.2, Holdtime
+, SØØL
+
+
+HOLD = MAT3
+
+D0.3, Mød dit hold og frokost
+D0.3, Mød dit hold og frokost
+D0.3, Rundvisning i Ny Munkegade
+D0.3, Rundvisning i Ny Munkegade
+Aud E, Forelæsning
+Aud E, Forelæsning
+D0.3, Holdtime
+D0.3, Holdtime
+, SØØL
+
+
+HOLD = MAT4
+
+Koll G, Mød dit hold og frokost
+Koll G, Mød dit hold og frokost
+Koll G, Rundvisning i Ny Munkegade
+Koll G, Rundvisning i Ny Munkegade
+Aud E, Forelæsning
+Aud E, Forelæsning
+Koll G, Holdtime
+Koll G, Holdtime
+, SØØL
+
+
+
+HOLD = MØK1
+
+Koll G4, Mød dit hold og frokost
+Koll G4, Mød dit hold og frokost
+Koll G4, Rundvisning i Ny Munkegade
+Koll G4, Rundvisning i Ny Munkegade
+Aud E, Forelæsning
+Aud E, Forelæsning
+Koll G4, Holdtime
+Koll G4, Holdtime
+, SØØL
+
+
+HOLD = MØK2
+
+Koll G3.1, Mød dit hold og frokost
+Koll G3.1, Mød dit hold og frokost
+Koll G3.1, Rundvisning i Ny Munkegade
+Koll G3.1, Rundvisning i Ny Munkegade
+Aud E, Forelæsning
+Aud E, Forelæsning
+Koll G3.1, Holdtime
+Koll G3.1, Holdtime
+, SØØL
+
+
+HOLD = MØK3
+
+Koll G3.2, Mød dit hold og frokost
+Koll G3.2, Mød dit hold og frokost
+Koll G3.2, Rundvisning i Ny Munkegade
+Koll G3.2, Rundvisning i Ny Munkegade
+Aud E, Forelæsning
+Aud E, Forelæsning
+Koll G3.2, Holdtime
+Koll G3.2, Holdtime
+, SØØL
+
+
+HOLD = MØK4
+
+Koll G3.3, Mød dit hold og frokost
+Koll G3.3, Mød dit hold og frokost
+Koll G3.3, Rundvisning i Ny Munkegade
+Koll G3.3, Rundvisning i Ny Munkegade
+Aud E, Forelæsning
+Aud E, Forelæsning
+Koll G3.3, Holdtime
+Koll G3.3, Holdtime
+, SØØL
+
+
+HOLD = __TKM
+
+,
+,
+,
+,
+,
+,
+,
+,
+,
+
+
+HOLD = __SAC
+
+Aud G1,
+Aud G1,
+Aud G1,
+Aud G1,
+Aud G1,
+Aud G1,
+Aud G1,
+Aud G1,
+Aud G1,
+
+
+HOLD = __Arne
+
+,
+,
+,
+,
+,
+,
+,
+,
+,
+
+HOLD = __Arne2
+
+Turing-014,
+Turing-014,
+Turing-014,
+Turing-014,
+Turing-014,
+Turing-014,
+Turing-014,
+Turing-014,
+Turing-014,
+
+HOLD = __Arne3
+
+IT-120,
+IT-120,
+IT-120,
+IT-120,
+IT-120,
+IT-120,
+IT-120,
+IT-120,
+IT-120,
+
+HOLD = __Charlotte
+
+1520-616,
+1520-616,
+1520-616,
+1520-616,
+1520-616,
+1520-616,
+1520-616,
+1520-616,
+1520-616,
+
+
+HOLD = __Karin
+
+,
+,
+,
+,
+,
+,
+,
+,
+,
+
+HOLD = __Jane
+
+,
+,
+,
+,
+,
+,
+,
+,
+Aud D3,
+
+
+HOLD = __Io
+
+,
+,
+,
+,
+,
+,
+,
+,
+,
+
+HOLD = __Marianne
+
+,
+,
+,
+,
+,
+,
+Aud E,
+Aud E,
+,
+
+
+HOLD = __Anders
+
+Lille Aud,
+,
+,
+,
+,
+,
+,
+,
+,
+
+
+/DAG
+
+DAG = Torsdag
+
+
+
+HOLD = DAT1
+
+D0.1, Gå til Ny Munkegade
+D0.1, Frokost
+D0.1, Frokost
+D0.1, Rundvisning i Ny Munkegade
+Aud D1, ParXafari 
+Aud D1, ParXafari 
+Aud D1, ParXafari 
+Aud D1, ParXafari 
+Aud D1, ParXafari 
+
+
+HOLD = DAT2
+
+D0.2, Gå til Ny Munkegade
+D0.2, Frokost
+D0.2, Frokost
+D0.2, Rundvisning i Ny Munkegade
+Aud D1, ParXafari 
+Aud D1, ParXafari 
+Aud D1, ParXafari 
+Aud D1, ParXafari 
+Aud D1, ParXafari 
+
+
+HOLD = DAT3
+
+D0.3, Gå til Ny Munkegade
+D0.3, Frokost
+D0.3, Frokost
+D0.3, Rundvisning i Ny Munkegade
+Aud D1, ParXafari 
+Aud D1, ParXafari 
+Aud D1, ParXafari 
+Aud D1, ParXafari 
+Aud D1, ParXafari 
+
+
+HOLD = DAT4
+
+Koll G, Gå til Ny Munkegade
+Koll G, Frokost
+Koll G, Frokost
+Koll G, Rundvisning i Ny Munkegade
+Aud D1, ParXafari 
+Aud D1, ParXafari 
+Aud D1, ParXafari 
+Aud D1, ParXafari 
+Aud D1, ParXafari 
+
+
+HOLD = DAT5
+
+Koll G3, Gå til Ny Munkegade
+Koll G3, Frokost
+Koll G3, Frokost
+Koll G3, Rundvisning i Ny Munkegade
+Aud D1, ParXafari 
+Aud D1, ParXafari 
+Aud D1, ParXafari 
+Aud D1, ParXafari 
+Aud D1, ParXafari 
+
+
+HOLD = DAT6
+
+1520-516, Gå til Ny Munkegade
+1520-516, Frokost
+1520-516, Frokost
+1520-516, Rundvisning i Ny Munkegade
+Aud D1, ParXafari 
+Aud D1, ParXafari 
+Aud D1, ParXafari 
+Aud D1, ParXafari 
+Aud D1, ParXafari 
+
+
+HOLD = DAT7
+
+Koll D, Gå til Ny Munkegade
+Koll D, Frokost
+Koll D, Frokost
+Koll D, Rundvisning i Ny Munkegade
+Aud D1, ParXafari 
+Aud D1, ParXafari 
+Aud D1, ParXafari 
+Aud D1, ParXafari 
+Aud D1, ParXafari 
+
+HOLD = DATAM
+
+Nygaard-184, Datamatikerinfo
+Koll D, Gå til Ny Munkegade
+Koll D, Frokost
+Koll D, Rundvisning i Ny Munkegade
+Aud D1, ParXafari 
+Aud D1, ParXafari 
+Aud D1, ParXafari 
+Aud D1, ParXafari 
+Aud D1, ParXafari 
+
+
+HOLD = IT1
+
+Aud D1, Frokost
+Aud D1, Frokost
+Aud D2, Arbejdsformer
+Aud D2, Arbejdsformer
+Aud D2, ParXafari 
+Aud D2, ParXafari 
+Aud D2, ParXafari 
+Aud D2, ParXafari 
+Aud D2, ParXafari 
+
+
+HOLD = IT2
+
+Aud G1, Frokost
+Aud G1, Frokost
+Aud D2, Arbejdsformer
+Aud D2, Arbejdsformer
+Aud D2, ParXafari 
+Aud D2, ParXafari 
+Aud D2, ParXafari 
+Aud D2, ParXafari 
+Aud D2, ParXafari 
+
+
+HOLD = IT3
+
+Aud D2, Frokost
+Aud D2, Frokost
+Aud D2, Arbejdsformer
+Aud D2, Arbejdsformer
+Aud D2, ParXafari 
+Aud D2, ParXafari 
+Aud D2, ParXafari 
+Aud D2, ParXafari 
+Aud D2, ParXafari 
+
+
+
+HOLD = FYS1
+
+1525-215, Frokost
+1525-215, Frokost
+1525-215, Arbejdsformer
+1525-215, Arbejdsformer
+Aud D2, ParXafari 
+Aud D2, ParXafari 
+Aud D2, ParXafari 
+Aud D2, ParXafari 
+Aud D2, ParXafari 
+
+
+HOLD = FYS2
+
+1525-219, Frokost
+1525-219, Frokost
+1525-219, Arbejdsformer
+1525-219, Arbejdsformer
+Aud D2, ParXafari 
+Aud D2, ParXafari 
+Aud D2, ParXafari 
+Aud D2, ParXafari 
+Aud D2, ParXafari 
+
+
+HOLD = FYS3
+
+1525-223, Frokost
+1525-223, Frokost
+1525-223, Arbejdsformer
+1525-223, Arbejdsformer
+Aud D2, ParXafari 
+Aud D2, ParXafari 
+Aud D2, ParXafari 
+Aud D2, ParXafari 
+Aud D2, ParXafari 
+
+
+HOLD = FYS4
+
+1525-229, Frokost
+1525-229, Frokost
+1525-229, Arbejdsformer
+1525-229, Arbejdsformer
+Aud D2, ParXafari 
+Aud D2, ParXafari 
+Aud D2, ParXafari 
+Aud D2, ParXafari 
+Aud D2, ParXafari 
+
+
+HOLD = FYS5
+
+1525-231, Frokost
+1525-231, Frokost
+1525-231, Arbejdsformer
+1525-231, Arbejdsformer
+Aud D2, ParXafari 
+Aud D2, ParXafari 
+Aud D2, ParXafari 
+Aud D2, ParXafari 
+Aud D2, ParXafari 
+
+
+HOLD = NA1
+
+1593-218, Arbejdsformer
+1593-218, Arbejdsformer
+1593-218, Holdtime
+1593-218, Holdtime
+Aud D3, ParXafari 
+Aud D3, ParXafari 
+Aud D3, ParXafari 
+Aud D3, ParXafari 
+Aud D3, ParXafari 
+
+
+HOLD = NA2
+
+1593-222, Arbejdsformer
+1593-222, Arbejdsformer
+1593-222, Holdtime
+1593-222, Holdtime
+Aud D3, ParXafari 
+Aud D3, ParXafari 
+Aud D3, ParXafari 
+Aud D3, ParXafari 
+Aud D3, ParXafari 
+
+
+HOLD = NA3
+
+1593-226, Arbejdsformer
+1593-226, Arbejdsformer
+1593-226, Holdtime
+1593-226, Holdtime
+Aud D3, ParXafari 
+Aud D3, ParXafari 
+Aud D3, ParXafari 
+Aud D3, ParXafari 
+Aud D3, ParXafari 
+
+
+HOLD = MAT1
+
+Aud D3, Arbejdsformer
+Aud D3, Arbejdsformer
+Aud E, Forelæsning
+Aud E, Forelæsning
+Aud D4, ParXafari 
+Aud D4, ParXafari 
+Aud D4, ParXafari 
+Aud D4, ParXafari 
+Aud D4, ParXafari 
+
+
+HOLD = MAT2
+
+Aud D3, Arbejdsformer
+Aud D3, Arbejdsformer
+Aud E, Forelæsning
+Aud E, Forelæsning
+Aud D4, ParXafari 
+Aud D4, ParXafari 
+Aud D4, ParXafari 
+Aud D4, ParXafari 
+Aud D4, ParXafari 
+
+
+HOLD = MAT3
+
+Aud D4, Arbejdsformer
+Aud D4, Arbejdsformer
+Aud E, Forelæsning
+Aud E, Forelæsning
+Aud D4, ParXafari 
+Aud D4, ParXafari 
+Aud D4, ParXafari 
+Aud D4, ParXafari 
+Aud D4, ParXafari 
+
+
+HOLD = MAT4
+
+Aud D4, Arbejdsformer
+Aud D4, Arbejdsformer
+Aud E, Forelæsning
+Aud E, Forelæsning
+Aud D4, ParXafari 
+Aud D4, ParXafari 
+Aud D4, ParXafari 
+Aud D4, ParXafari 
+Aud D4, ParXafari 
+
+
+HOLD = MØK1
+
+Koll G4, Holdtime
+Koll G4, Holdtime
+Aud D1, Arbejdsformer
+Aud D1, Arbejdsformer
+Aud D3, ParXafari 
+Aud D3, ParXafari 
+Aud D3, ParXafari 
+Aud D3, ParXafari 
+Aud D3, ParXafari 
+
+
+HOLD = MØK2
+
+Koll G3.1, Holdtime
+Koll G3.1, Holdtime
+Aud D1, Arbejdsformer
+Aud D1, Arbejdsformer
+Aud D3, ParXafari 
+Aud D3, ParXafari 
+Aud D3, ParXafari 
+Aud D3, ParXafari 
+Aud D3, ParXafari 
+
+HOLD = MØK3
+
+Koll G3.2, Holdtime
+Koll G3.2, Holdtime
+Aud G1, Arbejdsformer
+Aud G1, Arbejdsformer
+Aud D3, ParXafari 
+Aud D3, ParXafari 
+Aud D3, ParXafari 
+Aud D3, ParXafari 
+Aud D3, ParXafari 
+
+HOLD = MØK4
+
+Koll G3.3, Holdtime
+Koll G3.3, Holdtime
+Aud G1, Arbejdsformer
+Aud G1, Arbejdsformer
+Aud D3, ParXafari 
+Aud D3, ParXafari 
+Aud D3, ParXafari 
+Aud D3, ParXafari 
+Aud D3, ParXafari 
+
+
+HOLD = __TKM
+
+,
+,
+,
+,
+Aud E,
+Aud E,
+Aud E,
+Aud E,
+,
+
+
+HOLD = __SAC
+
+,
+,
+,
+,
+,
+,
+,
+,
+,
+
+
+
+HOLD = __Arne
+
+IT-121,
+IT-121,
+IT-121,
+IT-121,
+IT-121,
+IT-121,
+IT-121,
+IT-121,
+IT-121,
+
+HOLD = __Arne2
+
+,
+,
+,
+,
+,
+,
+,
+,
+,
+
+HOLD = __Arne3
+
+,
+,
+,
+,
+,
+,
+,
+,
+,
+
+HOLD = __Charlotte
+
+1520-616,
+1520-616,
+1520-616,
+1520-616,
+1520-616,
+1520-616,
+1520-616,
+1520-616,
+1520-616,
+
+
+HOLD = __Lene
+
+Aud F,
+Aud F,
+Aud F,
+Aud F,
+Aud F,
+Aud F,
+Aud F,
+Aud F,
+Aud F,
+
+
+HOLD = __Lene2
+
+Aud G2,
+Aud G2,
+Aud G2,
+Aud G2,
+Aud G2,
+Aud G2,
+Aud G2,
+Aud G2,
+Aud G2,
+
+
+HOLD = __Karin
+
+1520-316,
+1520-316,
+1520-316,
+1520-316,
+1520-316,
+1520-316,
+1520-316,
+1520-316,
+1520-316,
+
+HOLD = __Jane
+
+,
+,
+,
+,
+,
+,
+,
+,
+,
+
+HOLD = __Io
+
+,
+,
+,
+,
+,
+,
+,
+,
+,
+
+HOLD = __Marianne
+
+,
+,
+,
+,
+,
+,
+,
+,
+,
+
+HOLD = __Anders
+
+,
+,
+,
+,
+,
+,
+,
+,
+,
+
+/DAG
+
+DAG = Fredag
+
+
+HOLD = DAT1
+
+Aud D1, Forelæsning
+Aud D1, Forelæsning
+Aud F, Rusteater
+Aud F, Rusteater
+Aud D1, Hytte
+Aud D1, Hytte
+Aud I, Fysikshow
+Aud I, Fysikshow
+,
+
+
+HOLD = DAT2
+
+Aud D1, Forelæsning
+Aud D1, Forelæsning
+Aud F, Rusteater
+Aud F, Rusteater
+Aud G1, Hytte
+Aud G1, Hytte
+Aud I, Fysikshow
+Aud I, Fysikshow
+,
+
+
+HOLD = DAT3
+
+Aud D1, Forelæsning
+Aud D1, Forelæsning
+Aud F, Rusteater
+Aud F, Rusteater
+Aud G1, Hytte
+Aud G1, Hytte
+Aud I, Fysikshow
+Aud I, Fysikshow
+,
+
+
+HOLD = DAT4
+
+Aud D1, Forelæsning
+Aud D1, Forelæsning
+Aud F, Rusteater
+Aud F, Rusteater
+Aud D1, Hytte
+Aud D1, Hytte
+Aud I, Fysikshow
+Aud I, Fysikshow
+,
+
+
+HOLD = DAT5
+
+Aud D2, Forelæsning
+Aud D2, Forelæsning
+Aud F, Rusteater
+Aud F, Rusteater
+Aud G2, Hytte
+Aud G2, Hytte
+Aud I, Fysikshow
+Aud I, Fysikshow
+,
+
+
+HOLD = DAT6
+
+Aud D2, Forelæsning
+Aud D2, Forelæsning
+Aud F, Rusteater
+Aud F, Rusteater
+Aud G2, Hytte
+Aud G2, Hytte
+Aud I, Fysikshow
+Aud I, Fysikshow
+,
+
+
+HOLD = DAT7
+
+Aud D2, Forelæsning
+Aud D2, Forelæsning
+Aud F, Rusteater
+Aud F, Rusteater
+Aud D1, Hytte
+Aud D1, Hytte
+Aud I, Fysikshow
+Aud I, Fysikshow
+,
+
+
+HOLD = DATAM
+
+Aud D2, Forelæsning
+Aud D2, Forelæsning
+Aud F, Rusteater
+Aud F, Rusteater
+Aud D1, Hytte
+Aud D1, Hytte
+Aud I, Fysikshow
+Aud I, Fysikshow
+,
+
+
+HOLD = IT1
+
+1520-316, Frokost
+1520-316, Frokost
+Aud F, Rusteater
+Aud F, Rusteater
+Aud D2, Hytte
+Aud D2, Hytte
+Aud I, Fysikshow
+Aud I, Fysikshow
+,
+
+
+HOLD = IT2
+
+1520-516, Frokost
+1520-516, Frokost
+Aud F, Rusteater
+Aud F, Rusteater
+Aud D2, Hytte
+Aud D2, Hytte
+Aud I, Fysikshow
+Aud I, Fysikshow
+,
+
+
+HOLD = IT3
+
+Koll D, Frokost
+Koll D, Frokost
+Aud F, Rusteater
+Aud F, Rusteater
+Aud D2, Hytte
+Aud D2, Hytte
+Aud I, Fysikshow
+Aud I, Fysikshow
+,
+
+
+HOLD = FYS1
+
+1525-215, Frokost
+1525-215, Frokost
+Aud D1, Hytte
+Aud D1, Hytte
+Aud I, Fysikshow
+Aud I, Fysikshow
+Aud F, Rusteater
+Aud F, Rusteater
+,
+
+
+HOLD = FYS2
+
+1525-219, Frokost
+1525-219, Frokost
+Aud G1, Hytte
+Aud G1, Hytte
+Aud I, Fysikshow
+Aud I, Fysikshow
+Aud F, Rusteater
+Aud F, Rusteater
+,
+
+
+HOLD = FYS3
+
+1525-223, Frokost
+1525-223, Frokost
+Aud D1, Hytte
+Aud D1, Hytte
+Aud I, Fysikshow
+Aud I, Fysikshow
+Aud F, Rusteater
+Aud F, Rusteater
+,
+
+
+HOLD = FYS4
+
+1525-229, Frokost
+1525-229, Frokost
+Aud G1, Hytte
+Aud G1, Hytte
+Aud I, Fysikshow
+Aud I, Fysikshow
+Aud F, Rusteater
+Aud F, Rusteater
+,
+
+
+HOLD = FYS5
+
+1525-231, Frokost
+1525-231, Frokost
+Aud D1, Hytte
+Aud D1, Hytte
+Aud I, Fysikshow
+Aud I, Fysikshow
+Aud F, Rusteater
+Aud F, Rusteater
+,
+
+
+HOLD = NA1
+
+Nano Aud, Dias og oplæg
+Nano Aud, Dias og oplæg
+Aud D2, Hytte
+Aud D2, Hytte
+Aud I, Fysikshow
+Aud I, Fysikshow
+Aud F, Rusteater
+Aud F, Rusteater
+,
+
+
+HOLD = NA2
+
+Nano Aud, Dias og oplæg
+Nano Aud, Dias og oplæg
+Aud D2, Hytte
+Aud D2, Hytte
+Aud I, Fysikshow
+Aud I, Fysikshow
+Aud F, Rusteater
+Aud F, Rusteater
+,
+
+
+HOLD = NA3
+
+Nano Aud, Dias og oplæg
+Nano Aud, Dias og oplæg
+Aud D2, Hytte
+Aud D2, Hytte
+Aud I, Fysikshow
+Aud I, Fysikshow
+Aud F, Rusteater
+Aud F, Rusteater
+,
+
+
+HOLD = MAT1
+
+D0.1, Frokost
+D0.1, Frokost
+Aud I, Fysikshow
+Aud I, Fysikshow
+Aud F, Rusteater
+Aud F, Rusteater
+Aud G1, Hytte
+Aud G1, Hytte
+,
+
+
+HOLD = MAT2
+
+D0.2, Frokost
+D0.2, Frokost
+Aud I, Fysikshow
+Aud I, Fysikshow
+Aud F, Rusteater
+Aud F, Rusteater
+Aud G1, Hytte
+Aud G1, Hytte
+,
+
+
+HOLD = MAT3
+
+D0.3, Frokost
+D0.3, Frokost
+Aud I, Fysikshow
+Aud I, Fysikshow
+Aud F, Rusteater
+Aud F, Rusteater
+Aud G2, Hytte
+Aud G2, Hytte
+,
+
+
+HOLD = MAT4
+
+Koll G, Frokost
+Koll G, Frokost
+Aud I, Fysikshow
+Aud I, Fysikshow
+Aud F, Rusteater
+Aud F, Rusteater
+Aud G2, Hytte
+Aud G2, Hytte
+,
+
+
+HOLD = MØK1
+
+Koll G4, Frokost
+Koll G4, Frokost
+Aud I, Fysikshow
+Aud I, Fysikshow
+Aud F, Rusteater
+Aud F, Rusteater
+Aud D1, Hytte
+Aud D1, Hytte
+,
+
+HOLD = MØK2
+
+Koll G3.1, Frokost
+Koll G3.1, Frokost
+Aud I, Fysikshow
+Aud I, Fysikshow
+Aud F, Rusteater
+Aud F, Rusteater
+Aud D1, Hytte
+Aud D1, Hytte
+,
+
+
+HOLD = MØK3
+
+Koll G3.2, Frokost
+Koll G3.2, Frokost
+Aud I, Fysikshow
+Aud I, Fysikshow
+Aud F, Rusteater
+Aud F, Rusteater
+Aud D2, Hytte
+Aud D2, Hytte
+,
+
+
+HOLD = MØK4
+
+Koll G3.3, Frokost
+Koll G3.3, Frokost
+Aud I, Fysikshow
+Aud I, Fysikshow
+Aud F, Rusteater
+Aud F, Rusteater
+Aud D2, Hytte
+Aud D2, Hytte
+,
+
+
+HOLD = __TKM
+
+Aud E,
+Aud E,
+Aud E,
+Aud E,
+Aud E,
+Aud E,
+Aud E,
+Aud E,
+Aud E,
+
+
+
+HOLD = __SAC
+
+Fys Aud,
+Fys Aud,
+Fys Aud,
+Fys Aud,
+Fys Aud,
+Fys Aud,
+Fys Aud,
+Fys Aud,
+Fys Aud,
+
+HOLD = __Arne
+
+IT-121,
+IT-121,
+IT-121,
+IT-121,
+IT-121,
+IT-121,
+IT-121,
+IT-121,
+IT-121,
+
+HOLD = __Arne2
+
+,
+,
+,
+,
+,
+,
+,
+,
+,
+
+HOLD = __Arne3
+
+,
+,
+,
+,
+,
+,
+,
+,
+,
+
+HOLD = __Charlotte
+
+1520-616,
+1520-616,
+1520-616,
+1520-616,
+1520-616,
+1520-616,
+1520-616,
+1520-616,
+1520-616,
+
+HOLD = __Karin
+
+,
+,
+,
+,
+,
+,
+,
+,
+,
+
+HOLD = __Jane
+
+,
+,
+,
+,
+,
+,
+,
+,
+,
+
+HOLD = __Io
+
+,
+,
+1525-231,
+1525-231,
+1525-231,
+1525-231,
+1525-231,
+1525-231,
+1525-231,
+
+HOLD = __Marianne
+
+,
+,
+,
+,
+,
+,
+,
+,
+,
+
+HOLD = __Anders
+
+,
+,
+,
+,
+,
+,
+,
+,
+,
+
+/DAG
