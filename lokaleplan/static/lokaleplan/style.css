@@ -98,6 +98,7 @@ tr:nth-child(even) {
 }
 
 .event-table tbody td.empty {
+    color: #666;
     background-color: #f9f9f9;
 }
 

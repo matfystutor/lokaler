@@ -72,18 +72,25 @@ class EventTable(TemplateView):
         qs = qs.prefetch_related('locations', 'participants')
         return qs
 
-    def get_cell_text(self, events):
+    def get_cell(self, events):
         mode = self.kwargs.get('mode')
+        class_ = ''
         if mode == 'locations':
             participants = set(p for event in events
                                for p in event.participants.all())
             text = summarize_participants(participants)
+            if not text:
+                class_ = 'empty'
         elif mode == 'participants':
             text = '\n'.join(str(location) for event in events
                              for location in event.locations.all())
+            if not text:
+                class_ = 'empty'
+                if events:
+                    text = '(%s)' % ', '.join(str(event) for event in events)
         else:
             raise Exception(mode)
-        return text
+        return text, class_
 
     def partition_events(self, qs):
         days = Event.DAYS
@@ -179,7 +186,7 @@ class EventTable(TemplateView):
             cells = self.put_events_in_time_slices(events, time_slices)
             column = self.merge_repeating_cells(cells)
             for cell in column:
-                cell['text'] = self.get_cell_text(cell['events'])
+                cell['text'], cell['class'] = self.get_cell(cell['events'])
             columns.append(column)
         # Transpose columns to get row_cells
         row_cells = list(zip(*columns))

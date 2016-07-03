@@ -20,7 +20,7 @@
     {% for cell in row.cells %}
     {% if cell.span %}
     <td rowspan="{{ cell.span }}"
-        class="{% if cell.text %}{% else %}empty{% endif %}">
+        class="{{ cell.class }}">
 	{{ cell.text }}
     </td>
     {% endif %}
