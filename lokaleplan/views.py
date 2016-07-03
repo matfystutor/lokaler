@@ -1,3 +1,5 @@
+import re
+
 from django.views.generic import TemplateView, FormView
 from django.shortcuts import redirect, get_object_or_404
 
@@ -97,13 +99,14 @@ class EventTable(TemplateView):
         event_sets = {}
         mode = self.kwargs.get('mode')
         if mode == 'locations':
-            header = list(Location.objects.all())
+            header_sets = self.get_location_sets()
             for event in qs:
                 for location in event.locations.all():
                     event_sets.setdefault(
                         event.day, {}).setdefault(location, []).append(event)
+
         elif mode == 'participants':
-            header = list(Participant.objects.all())
+            header_sets = self.get_participant_sets()
             for event in qs:
                 for p in event.participants.all():
                     event_sets.setdefault(
@@ -111,11 +114,44 @@ class EventTable(TemplateView):
         else:
             raise Exception(mode)
 
-        n_columns = 10
-        header_sets = [header[i:i+n_columns]
-                       for i in range(0, len(header), n_columns)]
-
         return event_sets, days, header_sets
+
+    def get_participant_sets(self):
+        classes = {}
+        other = []
+        for p in Participant.objects.all():
+            if p.kind != Participant.RUSCLASS:
+                other.append(p)
+            else:
+                classes.setdefault(p.name[0], set()).add(p)
+        try:
+            classes['fysnan'] = classes.pop('F') | classes.pop('N')
+        except KeyError:
+            pass
+        class_lists = [
+            sorted(classes[k], key=str) for k in sorted(classes.keys())]
+        n_column = 10
+        other = sorted(other, key=str)
+        other_lists = [other[i:i+n_column]
+                       for i in range(0, len(other), n_column)]
+        return class_lists + other_lists
+
+    def get_location_sets(self):
+        katrinebjerg = []
+        campus = []
+        katrinebjerg_pattern = r'^(Ada|Chomsky|IT|Ny|PBA|Stibitz|Turing).*$'
+        for l in Location.objects.all():
+            if re.match(katrinebjerg_pattern, l.name):
+                katrinebjerg.append(l)
+            else:
+                campus.append(l)
+        location_lists = []
+        for group in (campus, katrinebjerg):
+            group.sort(key=str)
+            n_column = 10
+            l = [group[i:i+n_column] for i in range(0, len(group), n_column)]
+            location_lists.extend(l)
+        return location_lists
 
     def get_time_slices(self, events_by_column, header):
         # Flatten events_by_column.values()
