@@ -1,1 +1,16 @@
-Hej
+<h1>Lokaleplan</h1>
+<p><a href="{% url 'locations' %}">Oversigt over lokaler</a></p>
+<p><a href="{% url 'participants' %}">Oversigt over hold</a></p>
+<table>
+    <thead>
+        <tr><th>Navn</th><th>Type</th></tr>
+    </thead>
+    <tbody>
+        {% for participant in participants %}
+        <tr><td><a href="{% url 'participant_detail' pk=participant.pk %}">
+                    {{ participant }}</a></td>
+            <td>{{ participant.get_kind_display }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>

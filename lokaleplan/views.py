@@ -8,6 +8,11 @@ from lokaleplan.models import Participant, Event, Location
 class Home(TemplateView):
     template_name = 'home.html'
 
+    def get_context_data(self, **kwargs):
+        context_data = super().get_context_data(**kwargs)
+        context_data['participants'] = Participant.objects.all()
+        return context_data
+
 
 class PerlView(FormView):
     form_class = PerlForm
