@@ -106,10 +106,10 @@ class EventTable(TemplateView):
 
         return event_sets, days, header
 
-    def get_time_slices(self, events_by_column):
+    def get_time_slices(self, events_by_column, header):
         # Flatten events_by_column.values()
-        events = (event for events in events_by_column.values()
-                  for event in events)
+        events = (event for k in header
+                  for event in events_by_column.get(k, []))
         # Distinct time points
         times = sorted(set(t for event in events
                            for t in [event.start_time, event.end_time]))
@@ -214,10 +214,10 @@ class EventTable(TemplateView):
         tables = []
         for day_key, day_name in days:
             day_events = event_sets.pop(day_key, [])
-            time_slices = self.get_time_slices(day_events)
 
             assert len(day_events) > 0
             for header in header_sets:
+                time_slices = self.get_time_slices(day_events, header)
                 rows = self.construct_table(header, day_events, time_slices)
                 assert all(h not in day_events for h in header)
                 tables.append(dict(key=day_key, name=day_name,
