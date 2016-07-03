@@ -259,7 +259,6 @@ class EventTable(TemplateView):
         for day_key, day_name in days:
             day_events = event_sets.pop(day_key, [])
 
-            assert len(day_events) > 0
             for header in header_sets:
                 time_slices = self.get_time_slices(day_events, header)
                 rows = self.construct_table(header, day_events, time_slices)
