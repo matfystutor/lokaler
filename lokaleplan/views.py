@@ -59,28 +59,45 @@ def summarize_participants(participants):
         for k in sorted(groups.keys()))
 
 
-class EventsByLocation(TemplateView):
-    template_name = 'by_location.html'
+class EventTable(TemplateView):
+    template_name = 'eventtable.html'
 
     def get_events(self):
         qs = Event.objects.all()
         qs = qs.prefetch_related('locations', 'participants')
         return qs
 
+    def get_cell_text(self, events):
+        mode = self.kwargs.get('mode')
+        if mode == 'locations':
+            participants = set(p for event in events
+                               for p in event.participants.all())
+            text = summarize_participants(participants)
+        elif mode == 'participants':
+            text = '\n'.join(str(location) for event in events
+                             for location in event.locations.all())
+        else:
+            raise Exception(mode)
+        return text
+
     def partition_events(self, qs):
-        header = list(Location.objects.all())
         days = Event.DAYS
         event_sets = {}
-        for event in qs:
-            for location in event.locations.all():
-                event_sets.setdefault(
-                    event.day, {}).setdefault(location, []).append(event)
-
-        assert all(isinstance(v, dict) for v in event_sets.values())
-        assert all(isinstance(l, list) for v in event_sets.values()
-                   for l in v.values())
-        assert all(isinstance(e, Event) for v in event_sets.values()
-                   for l in v.values() for e in l)
+        mode = self.kwargs.get('mode')
+        if mode == 'locations':
+            header = list(Location.objects.all())
+            for event in qs:
+                for location in event.locations.all():
+                    event_sets.setdefault(
+                        event.day, {}).setdefault(location, []).append(event)
+        elif mode == 'participants':
+            header = list(Participant.objects.all())
+            for event in qs:
+                for p in event.participants.all():
+                    event_sets.setdefault(
+                        event.day, {}).setdefault(p, []).append(event)
+        else:
+            raise Exception(mode)
 
         return event_sets, days, header
 
@@ -157,10 +174,7 @@ class EventsByLocation(TemplateView):
             cells = self.put_events_in_time_slices(events, time_slices)
             column = self.merge_repeating_cells(cells)
             for cell in column:
-                # cell['location'] = location
-                participants = set(p for event in cell['events']
-                                   for p in event.participants.all())
-                cell['participants'] = summarize_participants(participants)
+                cell['text'] = self.get_cell_text(cell['events'])
             columns.append(column)
         # Transpose columns to get row_cells
         row_cells = list(zip(*columns))
@@ -176,6 +190,18 @@ class EventsByLocation(TemplateView):
 
         qs = self.get_events()
         event_sets, days, header = self.partition_events(qs)
+        day_keys = set(k for k, v in days)
+
+        assert isinstance(event_sets, dict)
+        assert all(d in day_keys for d in event_sets.keys())
+        assert all(isinstance(v, dict) for v in event_sets.values())
+        assert all(h in header for v in event_sets.values()
+                   for h in v.keys())
+        assert all(isinstance(l, list) for v in event_sets.values()
+                   for l in v.values())
+        assert all(isinstance(e, Event) for v in event_sets.values()
+                   for l in v.values() for e in l)
+
         n_columns = 10
         header_sets = [header[i:i+n_columns]
                        for i in range(0, len(header), n_columns)]

@@ -16,7 +16,7 @@
     {% for cell in row.cells %}
     {% if cell.span %}
     <td rowspan="{{ cell.span }}">
-	{{ cell.participants }}
+	{{ cell.text }}
     </td>
     {% endif %}
     {% endfor %}

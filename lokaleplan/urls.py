@@ -18,7 +18,7 @@ from django.contrib import admin
 
 from lokaleplan.views import (
     Home, PerlView, ParticipantDetail,
-    EventsByLocation,
+    EventTable,
 )
 
 
@@ -27,6 +27,8 @@ urlpatterns = [
     url(r'^$', Home.as_view(), name='home'),
     url(r'^import/$', PerlView.as_view(), name='import'),
     url(r'^hold/(?P<pk>[0-9]+)/$', ParticipantDetail.as_view(), name='participant_detail'),
-    url(r'^locations/$', EventsByLocation.as_view(),
-        name='locations'),
+    url(r'^locations/$', EventTable.as_view(),
+        name='locations', kwargs=dict(mode='locations')),
+    url(r'^participants/$', EventTable.as_view(),
+        name='participants', kwargs=dict(mode='participants')),
 ]
