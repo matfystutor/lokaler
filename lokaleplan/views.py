@@ -111,7 +111,11 @@ class EventTable(TemplateView):
         else:
             raise Exception(mode)
 
-        return event_sets, days, header
+        n_columns = 10
+        header_sets = [header[i:i+n_columns]
+                       for i in range(0, len(header), n_columns)]
+
+        return event_sets, days, header_sets
 
     def get_time_slices(self, events_by_column, header):
         # Flatten events_by_column.values()
@@ -201,22 +205,19 @@ class EventTable(TemplateView):
         context_data = super().get_context_data(**kwargs)
 
         qs = self.get_events()
-        event_sets, days, header = self.partition_events(qs)
+        event_sets, days, header_sets = self.partition_events(qs)
         day_keys = set(k for k, v in days)
+        all_headers = set(h for header_set in header_sets for h in header_set)
 
         assert isinstance(event_sets, dict)
         assert all(d in day_keys for d in event_sets.keys())
         assert all(isinstance(v, dict) for v in event_sets.values())
-        assert all(h in header for v in event_sets.values()
+        assert all(h in all_headers for v in event_sets.values()
                    for h in v.keys())
         assert all(isinstance(l, list) for v in event_sets.values()
                    for l in v.values())
         assert all(isinstance(e, Event) for v in event_sets.values()
                    for l in v.values() for e in l)
-
-        n_columns = 10
-        header_sets = [header[i:i+n_columns]
-                       for i in range(0, len(header), n_columns)]
 
         tables = []
         for day_key, day_name in days:
