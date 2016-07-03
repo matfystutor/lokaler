@@ -1,0 +1,9 @@
+{% extends "lokaleplan/base.html" %}
+{% block title %}Importér gammel lokaleplan{% endblock %}
+{% block content %}
+<h1>Importér gammel lokaleplan</h1>
+<form method="post">{% csrf_token %}
+{{ form.as_p }}
+<input type="submit" value="Importér" />
+</form>
+{% endblock %}

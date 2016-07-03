@@ -6,7 +6,7 @@ from lokaleplan.models import Participant, Event, Location
 
 
 class Home(TemplateView):
-    template_name = 'home.html'
+    template_name = 'lokaleplan/home.html'
 
     def get_context_data(self, **kwargs):
         context_data = super().get_context_data(**kwargs)
@@ -16,7 +16,7 @@ class Home(TemplateView):
 
 class PerlView(FormView):
     form_class = PerlForm
-    template_name = 'perlform.html'
+    template_name = 'lokaleplan/perlform.html'
 
     def form_valid(self, form):
         form.save()
@@ -24,7 +24,7 @@ class PerlView(FormView):
 
 
 class ParticipantDetail(TemplateView):
-    template_name = 'participantdetail.html'
+    template_name = 'lokaleplan/participantdetail.html'
 
     def get_participant(self):
         return get_object_or_404(
@@ -65,7 +65,7 @@ def summarize_participants(participants):
 
 
 class EventTable(TemplateView):
-    template_name = 'eventtable.html'
+    template_name = 'lokaleplan/eventtable.html'
 
     def get_events(self):
         qs = Event.objects.all()

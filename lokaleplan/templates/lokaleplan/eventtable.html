@@ -1,6 +1,10 @@
+{% extends "lokaleplan/base.html" %}
+{% block title %}Den store tabel{% endblock %}
+{% block content %}
+<h1>Den store tabel</h1>
 {% for table in tables %}
-<h1>{{ table.name }}</h1>
-<table border=1>
+<h2>{{ table.name }}</h2>
+<table class="event-table">
 <thead>
 <tr>
     <th>Tidspunkt</th>
@@ -15,7 +19,8 @@
     <th>{{ row.time_display }}</th>
     {% for cell in row.cells %}
     {% if cell.span %}
-    <td rowspan="{{ cell.span }}">
+    <td rowspan="{{ cell.span }}"
+        class="{% if cell.text %}{% else %}empty{% endif %}">
 	{{ cell.text }}
     </td>
     {% endif %}
@@ -25,3 +30,4 @@
 </tbody>
 </table>
 {% endfor %}
+{% endblock %}
