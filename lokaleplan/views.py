@@ -239,10 +239,19 @@ class EventTable(TemplateView):
         # Transpose columns to get row_cells
         row_cells = list(zip(*column_cells))
         row_rowspans = list(zip(*column_rowspans))
+        row_colspans = []
+        for cells, rowspans in zip(row_cells, row_rowspans):
+            row_colspans.append(
+                self.merge_repeating_cells(zip(cells, rowspans)))
+        assert sum(
+            rowspan * colspan
+            for rowspans, colspans in zip(row_rowspans, row_colspans)
+            for rowspan, colspan in zip(rowspans, colspans)
+        ) == sum(len(row) for row in row_cells)
 
         rows = []
-        for (start, end), cells, rowspans in zip(time_slices, row_cells, row_rowspans):
-            colspans = self.merge_repeating_cells(zip(cells, rowspans))
+        row_data = zip(time_slices, row_cells, row_rowspans, row_colspans)
+        for (start, end), cells, rowspans, colspans in row_data:
             row = []
             for events, rowspan, colspan in zip(cells, rowspans, colspans):
                 text, class_ = self.get_cell(events)
