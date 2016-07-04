@@ -23,11 +23,14 @@
 <tr>
     <th>{{ row.time_display }}</th>
     {% for cell in row.cells %}
-    {% if cell.span %}
-    <td rowspan="{{ cell.span }}"
+    {% if cell.rowspan %}
+    {% if cell.colspan %}
+    <td rowspan="{{ cell.rowspan }}"
+	colspan="{{ cell.colspan }}"
         class="{{ cell.class }}">
 	{{ cell.text }}
     </td>
+    {% endif %}
     {% endif %}
     {% endfor %}
 </tr>

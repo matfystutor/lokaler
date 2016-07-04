@@ -242,11 +242,12 @@ class EventTable(TemplateView):
 
         rows = []
         for (start, end), cells, rowspans in zip(time_slices, row_cells, row_rowspans):
+            colspans = self.merge_repeating_cells(zip(cells, rowspans))
             row = []
-            for events, rowspan in zip(cells, rowspans):
+            for events, rowspan, colspan in zip(cells, rowspans, colspans):
                 text, class_ = self.get_cell(events)
                 row.append({
-                    'span': rowspan,
+                    'rowspan': rowspan, 'colspan': colspan,
                     'events': events, 'text': text, 'class': class_,
                 })
             time_display = Event.display_time_interval(start, end)
