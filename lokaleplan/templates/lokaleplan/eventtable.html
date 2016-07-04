@@ -5,6 +5,11 @@
 {% for table in tables %}
 <h2>{{ table.name }}</h2>
 <table class="event-table">
+<colgroup>
+<col />
+{% for h in table.header %}<col id="column-{{ table.key }}-{{ h.pk }}" />
+{% endfor %}
+</colgroup>
 <thead>
 <tr>
     <th>Tidspunkt</th>

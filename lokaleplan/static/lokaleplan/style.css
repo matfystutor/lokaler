@@ -121,3 +121,17 @@ tr:nth-child(even) {
 .participant-schedule .name, .participant-schedule .location {
     width: 150px;
 }
+
+col:target {
+    animation: initial-highlight 1s linear;
+    background-color: rgba(255,255,0,0.1);
+}
+
+@keyframes initial-highlight {
+    0% {
+        background-color: rgba(255,255,0,1);
+    }
+    100% {
+        background-color: rgba(255,255,0,0.1);
+    }
+}
