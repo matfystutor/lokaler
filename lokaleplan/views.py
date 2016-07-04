@@ -234,20 +234,30 @@ class EventTable(TemplateView):
         for key in header:
             events = events_by_key.pop(key, [])
             cells = self.put_events_in_time_slices(events, time_slices)
-            column_rowspans.append(self.merge_repeating_cells(cells))
             column_cells.append(cells)
+            column_rowspans.append(self.merge_repeating_cells(cells))
+
+        assert len(column_cells) == len(column_rowspans) == len(header)
+        assert all(len(c) == len(time_slices) for c in column_cells)
+        assert all(len(c) == len(time_slices) for c in column_rowspans)
+
         # Transpose columns to get row_cells
         row_cells = list(zip(*column_cells))
         row_rowspans = list(zip(*column_rowspans))
+        assert len(row_cells) == len(row_rowspans) == len(time_slices)
+        assert all(len(r) == len(header) for r in row_cells)
+        assert all(len(r) == len(header) for r in row_rowspans)
+
         row_colspans = []
         for cells, rowspans in zip(row_cells, row_rowspans):
             row_colspans.append(
                 self.merge_repeating_cells(zip(cells, rowspans)))
+
+        # The sum of cell areas should equal the number of cells
         assert sum(
-            rowspan * colspan
-            for rowspans, colspans in zip(row_rowspans, row_colspans)
-            for rowspan, colspan in zip(rowspans, colspans)
-        ) == sum(len(row) for row in row_cells)
+            row_rowspans[i][j] * row_colspans[i][j]
+            for i in range(len(time_slices)) for j in range(len(header))
+        ) == len(header) * len(time_slices)
 
         rows = []
         row_data = zip(time_slices, row_cells, row_rowspans, row_colspans)
