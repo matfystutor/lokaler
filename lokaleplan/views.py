@@ -213,7 +213,8 @@ class EventTable(TemplateView):
         return cells
 
     def merge_repeating_cells(self, cells):
-        column = []
+        cells = list(cells)
+        spans = []
         for i, cell in enumerate(cells):
             if i > 0 and cell == cells[i-1]:
                 # This cell is contained in the previous cell
@@ -223,25 +224,31 @@ class EventTable(TemplateView):
                 span = 1
                 while i+span < len(cells) and cell == cells[i+span]:
                     span += 1
-            column.append({'span': span,
-                           'events': list(cell)})
-        assert len(column) == len(cells)
-        assert sum(c['span'] for c in column) == len(cells)
-        return column
+            spans.append(span)
+        assert sum(spans) == len(cells)
+        return spans
 
     def construct_table(self, header, events_by_key, time_slices):
-        columns = []
+        column_cells = []
+        column_rowspans = []
         for key in header:
             events = events_by_key.pop(key, [])
             cells = self.put_events_in_time_slices(events, time_slices)
-            column = self.merge_repeating_cells(cells)
-            for cell in column:
-                cell['text'], cell['class'] = self.get_cell(cell['events'])
-            columns.append(column)
+            column_rowspans.append(self.merge_repeating_cells(cells))
+            column_cells.append(cells)
         # Transpose columns to get row_cells
-        row_cells = list(zip(*columns))
+        row_cells = list(zip(*column_cells))
+        row_rowspans = list(zip(*column_rowspans))
+
         rows = []
-        for (start, end), row in zip(time_slices, row_cells):
+        for (start, end), cells, rowspans in zip(time_slices, row_cells, row_rowspans):
+            row = []
+            for events, rowspan in zip(cells, rowspans):
+                text, class_ = self.get_cell(events)
+                row.append({
+                    'span': rowspan,
+                    'events': events, 'text': text, 'class': class_,
+                })
             time_display = Event.display_time_interval(start, end)
             rows.append(dict(
                 time_display=time_display, start=start, end=end, cells=row))
