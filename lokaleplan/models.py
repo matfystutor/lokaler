@@ -95,5 +95,26 @@ class Event(models.Model):
         m2 = end_time.minute
         return '%02d:%02d-%02d:%02d' % (h1, m1, h2, m2)
 
+    def parallel_key(self):
+        return (self.name, self.day, self.start_time, self.end_time,
+                self.manual_time)
+
+    @classmethod
+    def add_parallel_events(cls, qs):
+        """
+        Given a QuerySet over Event objects, construct a new QuerySet
+        containing the same Event objects as well as any Events that have
+        the same name and time.
+        """
+        res = cls.objects.none()
+        values = qs.values_list(
+            'name', 'day', 'start_time', 'end_time', 'manual_time')
+        for name, day, start_time, end_time, manual_time in values:
+            res = res | cls.objects.filter(
+                name=name, day=day, start_time=start_time, end_time=end_time,
+                manual_time=manual_time)
+        return res
+
+
     class Meta:
         ordering = ['day', 'start_time', 'name']
