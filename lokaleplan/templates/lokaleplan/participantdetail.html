@@ -1,4 +1,5 @@
 {% extends "lokaleplan/base.html" %}
+{% load lokaleplan %}
 {% block title %}{{ participant }}{% endblock %}
 {% block content %}
 <h1>{{ participant }}</h1>
@@ -19,25 +20,24 @@
     <td class="location">
         <div>
         {% for location in event.locations.all %}
-        {{ location }}
+        {% table_link day.key location %}
         {% endfor %}
         </div>
         {% for e in event.extra %}
         <div class="extra">
-        {% for l in e.locations.all %}{{ l }}
+        {% for l in e.locations.all %}{% table_link day.key l %}
         {% endfor %}
         </div>
         {% endfor %}
     </td>
     <td class="participants">
         <div>
-        {% for p in event.participants.all %}
-        {{ p }}
+        {% for p in event.participants.all %}{% table_link day.key p %}
         {% endfor %}
         </div>
         {% for e in event.extra %}
         <div class="extra">
-        {% for p in e.participants.all %}{{ p }}
+        {% for p in e.participants.all %}{% table_link day.key p %}
         {% endfor %}
         </div>
         {% endfor %}

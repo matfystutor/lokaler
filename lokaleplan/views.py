@@ -57,6 +57,7 @@ class ParticipantDetail(TemplateView):
                 e.extra = extra_by_key.pop(e.parallel_key(), [])
                 e.extra.sort(key=lambda ex: str(ex.participants.all()[0]))
             days.append({
+                'key': day_key,
                 'name': day_name,
                 'events': events,
             })
