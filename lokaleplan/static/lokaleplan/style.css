@@ -105,3 +105,19 @@ tr:nth-child(even) {
 .event-table tbody tr {
     background-color: transparent;
 }
+
+.participant-schedule {
+    width: 100%;
+}
+.participant-schedule td {
+    vertical-align: top;
+}
+.participant-schedule .extra {
+    color: #666;
+}
+.participant-schedule .time {
+    width: 90px;
+}
+.participant-schedule .name, .participant-schedule .location {
+    width: 150px;
+}

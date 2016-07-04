@@ -3,20 +3,43 @@
 {% block content %}
 <h1>{{ participant }}</h1>
 {% for day in days %}
-<h2>{{ day.name }}</h2>
-<table>
+<table class="participant-schedule">
+<thead>
+    <tr>
+        <th>{{ day.name }}</th>
+        <th>Navn</th>
+        <th>Sted</th>
+        <th>Hold</th>
+    </tr>
+</thead>
 <tbody>
 {% for event in day.events %}
-<tr><td>{{ event.get_display_time }}</td>
-    <td>{{ event.name }}</td>
-    <td>
+<tr><td class="time">{{ event.get_display_time }}</td>
+    <td class="name">{{ event.name }}</td>
+    <td class="location">
+        <div>
         {% for location in event.locations.all %}
         {{ location }}
         {% endfor %}
+        </div>
+        {% for e in event.extra %}
+        <div class="extra">
+        {% for l in e.locations.all %}{{ l }}
+        {% endfor %}
+        </div>
+        {% endfor %}
     </td>
-    <td>
+    <td class="participants">
+        <div>
         {% for p in event.participants.all %}
         {{ p }}
+        {% endfor %}
+        </div>
+        {% for e in event.extra %}
+        <div class="extra">
+        {% for p in e.participants.all %}{{ p }}
+        {% endfor %}
+        </div>
         {% endfor %}
     </td>
 </tr>
