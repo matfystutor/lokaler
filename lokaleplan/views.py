@@ -193,10 +193,9 @@ class EventTable(TemplateView):
                 time_slices[done_cells:], cells[done_cells:])
             for (cell_start, cell_end), cell in remaining_cells:
                 if cell_end <= event.start_time:
-                    # Since events are sorted by start_time, none
-                    # of the next events are in this cell, so we
-                    # are completely done with it; skip it next
-                    # time.
+                    # Since events are sorted by start_time, none of the next
+                    # events are in this cell, so we are completely done with
+                    # it; skip it next time.
                     done_cells += 1
                 elif cell_start < event.end_time:
                     # (event.start_time, event.end_time) overlaps
@@ -217,8 +216,8 @@ class EventTable(TemplateView):
         spans = []
         for i, cell in enumerate(cells):
             if i > 0 and cell == cells[i-1]:
-                # This cell is contained in the previous cell
-                # so it should not be output
+                # This cell is contained in the previous cell,
+                # so it should not be output.
                 span = 0
             else:
                 span = 1
@@ -265,10 +264,8 @@ class EventTable(TemplateView):
             row = []
             for events, rowspan, colspan in zip(cells, rowspans, colspans):
                 text, class_ = self.get_cell(events)
-                row.append({
-                    'rowspan': rowspan, 'colspan': colspan,
-                    'events': events, 'text': text, 'class': class_,
-                })
+                row.append({'rowspan': rowspan, 'colspan': colspan,
+                            'events': events, 'text': text, 'class': class_})
             time_display = Event.display_time_interval(start, end)
             rows.append(dict(
                 time_display=time_display, start=start, end=end, cells=row))

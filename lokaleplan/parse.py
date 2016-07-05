@@ -10,9 +10,8 @@ def parse_perl(data, time_slices):
         a, b = s.split('--')
         if times:
             if times[-1] != a:
-                raise ValidationError(
-                    "Invalid time slices: %r != %r" %
-                    (times[-1], a))
+                raise ValidationError("Invalid time slices: %r != %r" %
+                                      (times[-1], a))
         else:
             times.append(a)
         times.append(b)
@@ -54,8 +53,7 @@ def parse_perl(data, time_slices):
             location = location.strip()
             name = name.strip()
             key = (participant, day)
-            event_parts.setdefault(key, []).append(
-                (location, name))
+            event_parts.setdefault(key, []).append((location, name))
             if location:
                 locations.add(location)
 
@@ -123,17 +121,13 @@ def make_objects(parser_output):
                   start_time=start_time, end_time=end_time)
         event_objects.append(o)
         if location:
-            event_locations.append(
-                Event.locations.through(
-                    event=o, location=location_objects[location]))
+            event_locations.append(Event.locations.through(
+                event=o, location=location_objects[location]))
         for participant in p_list:
-            event_participants.append(
-                Event.participants.through(
-                    event=o,
-                    participant=participant_objects[participant]))
+            event_participants.append(Event.participants.through(
+                event=o, participant=participant_objects[participant]))
 
-    return (
-        event_objects,
-        list(location_objects.values()),
-        list(participant_objects.values()),
-        event_locations, event_participants)
+    return (event_objects,
+            list(location_objects.values()),
+            list(participant_objects.values()),
+            event_locations, event_participants)

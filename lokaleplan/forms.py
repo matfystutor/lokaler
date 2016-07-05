@@ -55,7 +55,7 @@ class PerlForm(forms.Form):
             event_location.location = event_location.location
         Event.locations.through.objects.bulk_create(event_locations)
         for event_participant in event_participants:
-            # Update event_id, location_id
+            # Update event_id, participant_id
             event_participant.event = event_participant.event
             event_participant.participant = event_participant.participant
         Event.participants.through.objects.bulk_create(event_participants)
