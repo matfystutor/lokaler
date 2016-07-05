@@ -91,9 +91,11 @@ tr:nth-child(even) {
     background-color: #f9f9f9;
 }
 
+.event-table th {
+    width: 80px;
+}
 .event-table tbody td {
     border: 1px solid rgba(0,0,0,0.137);
-    width: 80px;
     text-align: center;
 }
 
