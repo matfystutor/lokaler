@@ -124,17 +124,32 @@ tr:nth-child(even) {
     width: 150px;
 }
 
+col {
+    background-color: white;
+    animation: cancel-highlight 1s linear;
+}
 col:target {
     animation: initial-highlight 1s linear;
-    background-color: rgba(255,255,0,0.1);
 }
 
 @keyframes initial-highlight {
     0% {
-        background-color: rgba(255,255,0,1);
+        background-color: yellow;
     }
     100% {
-        background-color: rgba(255,255,0,0.1);
+        background-color: white;
+    }
+}
+
+@keyframes cancel-highlight {
+    0% {
+        background-color: #ffffff;
+    }
+    99% {
+        background-color: #fffffe;
+    }
+    100% {
+        background-color: #ffffff;
     }
 }
 
