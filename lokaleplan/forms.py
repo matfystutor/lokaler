@@ -1,8 +1,13 @@
+import logging
 from django import forms
+from django.db.models.sql.datastructures import EmptyResultSet
 
 from lokaleplan.parse import parse_perl, make_objects
 from lokaleplan.models import Event
 from lokaleplan.fields import MinuteTimeField
+
+
+logger = logging.getLogger('lokaleplan')
 
 
 class PerlForm(forms.Form):
@@ -107,11 +112,174 @@ class EventForm(forms.Form):
 
     def save(self):
         data = self.cleaned_data
-        pks = [event.pk for event in self.events]
-        qs = Event.objects.filter(pk__in=pks)
-        qs.update(name=data['name'], day=data['day'],
-                  start_time=data['start_time'], end_time=data['end_time'],
-                  manual_time=data['manual_time'])
+        simple_fields = {k: data[k] for k in
+                         'name day start_time end_time manual_time'.split()}
+        old_events = {event.pk: event for event in self.events}
+        events_by_location_set = {}
+        # Invariant: each event in self.events is in either old_events or
+        # events_by_location_set
+
+        participants = {}
+        for event in self.events:
+            for participant in event.participants.all():
+                if participant.pk in participants:
+                    event.participants.remove(participant)
+                else:
+                    participants[participant.pk] = event
+
+        # QuerySet of Event-Location edges to remove
+        remove_locs_qs = Event.locations.through.objects.none()
+        # List of Event-Location edges to add (bulk create)
+        add_loc_objects = []
+        # List of Events to bulk create
+        add_events = []
+        # QuerySet of Event-Participant edges to remove
+        remove_parts_qs = Event.participants.through.objects.none()
+        # List of Event-Participant edges to add (bulk create)
+        add_part_objects = []
+
+        old_participants = frozenset(participants.keys())
+        new_participants = frozenset(data['participants'])
+
+        # First, we disassociate any participants that are no longer part of
+        # the event.
+        if old_participants - new_participants:
+            qs = Event.participants.through.objects.filter(
+                event_id__in=old_events.keys(),
+                participant_id__in=old_participants - new_participants)
+            remove_parts_qs = remove_parts_qs | qs
+
+        # Then, we update events for the participants that were already part of
+        # the event.
+        for participant_id in old_participants & new_participants:
+            k = 'locations_%s' % participant_id
+            new_locs = frozenset(data[k])
+            event = participants.pop(participant_id)
+            current_locs = frozenset(
+                loc.pk for loc in event.locations.all())
+            if new_locs in events_by_location_set:
+                # Someone was nice enough to create exactly the event we
+                # want to be in.
+                new_event = events_by_location_set[new_locs]
+                if new_event != event:
+                    # Remove us from the old event.
+                    qs = Event.participants.through.objects.filter(
+                        event_id=event.pk, participant_id=participant_id)
+                    remove_parts_qs = remove_parts_qs | qs
+                    # Add us to the new one.
+                    add_part_objects.append(
+                        Event.participants.through(
+                            event=new_event,
+                            participant_id=participant_id))
+            elif event.pk in old_events:
+                # This event has not been used yet;
+                # use it for this participant
+                old_events.pop(event.pk)
+
+                remove_locs = current_locs - new_locs
+                add_locs = new_locs - current_locs
+                if remove_locs:
+                    qs = Event.locations.through.objects.filter(
+                        event_id=event.pk, location_id__in=remove_locs)
+                    remove_locs_qs = remove_locs_qs | qs
+                add_loc_objects.extend(
+                    Event.locations.through(
+                        event=event, location_id=l)
+                    for l in add_locs)
+                events_by_location_set[new_locs] = event
+            else:
+                # The event containing this participant was used by another
+                # participant. Create a new event.
+                new_event = Event(**simple_fields)
+                add_events.append(new_event)
+                add_loc_objects.extend(
+                    Event.locations.through(
+                        event=new_event, location_id=l)
+                    for l in new_locs)
+                events_by_location_set[new_locs] = new_event
+
+                # Remove us from the old event.
+                qs = Event.participants.through.objects.filter(
+                    event_id=event.pk, participant_id=participant_id)
+                remove_parts_qs = remove_parts_qs | qs
+                # Add us to the new one.
+                add_part_objects.append(
+                    Event.participants.through(
+                        event=new_event,
+                        participant_id=participant_id))
+
+        # Finally, we add new participants to the event.
+        for participant_id in new_participants - old_participants:
+            k = 'locations_%s' % participant_id
+            new_locs = frozenset(data[k])
+            if new_locs in events_by_location_set:
+                # Someone was nice enough to create exactly the event we
+                # want to be in.
+                new_event = events_by_location_set[new_locs]
+                # Add us to the new one.
+                add_part_objects.append(
+                    Event.participants.through(
+                        event=new_event,
+                        participant_id=participant_id))
+            else:
+                # Create a new event.
+                new_event = Event(**simple_fields)
+                add_events.append(new_event)
+                add_loc_objects.extend(
+                    Event.locations.through(
+                        event=new_event, location_id=l)
+                    for l in new_locs)
+                events_by_location_set[new_locs] = new_event
+                # Add us to the new event.
+                add_part_objects.append(
+                    Event.participants.through(
+                        event=new_event,
+                        participant_id=participant_id))
+
+        try:
+            str(remove_locs_qs.query)
+        except EmptyResultSet:
+            pass
+        else:
+            logger.debug("Remove Event-Location edges: %s",
+                         remove_locs_qs.query)
+            remove_locs_qs.delete()
+        try:
+            str(remove_parts_qs.query)
+        except EmptyResultSet:
+            pass
+        else:
+            logger.debug("Remove Event-Participant edges: %s",
+                         remove_parts_qs.query)
+            remove_parts_qs.delete()
+
+        if add_events:
+            logger.debug("Add events: %s", add_events)
+            for event in add_events:
+                event.save()
+
+        for edge in add_loc_objects + add_part_objects:
+            edge.event = edge.event  # Update edge.event_id
+
+        if add_loc_objects:
+            logger.debug("Add Event-Location edges: %s", add_loc_objects)
+            Event.locations.through.objects.bulk_create(add_loc_objects)
+
+        if add_part_objects:
+            logger.debug("Add Event-Participant edges: %s", add_part_objects)
+            Event.participants.through.objects.bulk_create(add_part_objects)
+
+        if old_events:
+            deleted = Event.objects.filter(id__in=old_events.keys()).delete()[0]
+            logger.debug("Deleted %s Events: %s", deleted, old_events)
+
+        update_event_ids = [
+            e.pk for e in events_by_location_set.values()
+            if any(getattr(e, k) != v for k, v in simple_fields.items())]
+        if update_event_ids:
+            update_event_qs = Event.objects.filter(pk__in=update_event_ids)
+            update_count = update_event_qs.update(**simple_fields)
+            logger.debug("Updated %s Events", update_count)
 
     def participant_locations(self):
         return [self['locations_%s' % p.pk] for p in self.participants]
