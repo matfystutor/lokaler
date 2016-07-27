@@ -20,7 +20,7 @@
     <td>{{ event.start_time }}</td>
     <td>{{ event.end_time }}</td>
     <td>{{ event.manual_time }}</td>
-    <td>{{ event.name }}</td>
+    <td><a href="{% url 'event_update' pk=event.pk %}">{{ event.name }}</a></td>
     {% else %}
     <td></td>
     <td></td>

@@ -18,7 +18,7 @@ from django.contrib import admin
 
 from lokaleplan.views import (
     Home, PerlView, ParticipantDetail,
-    EventTable, EventList,
+    EventTable, EventList, EventUpdate,
 )
 
 
@@ -32,4 +32,5 @@ urlpatterns = [
     url(r'^participants/$', EventTable.as_view(),
         name='participants', kwargs=dict(mode='participants')),
     url(r'^events/$', EventList.as_view(), name='events'),
+    url(r'^event/(?P<pk>\d+)/$', EventUpdate.as_view(), name='event_update'),
 ]

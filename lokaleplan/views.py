@@ -3,7 +3,7 @@ import re
 from django.views.generic import TemplateView, FormView, ListView
 from django.shortcuts import redirect, get_object_or_404
 
-from lokaleplan.forms import PerlForm
+from lokaleplan.forms import PerlForm, EventForm
 from lokaleplan.models import Participant, Event, Location
 
 
@@ -307,3 +307,27 @@ class EventTable(TemplateView):
 
 class EventList(ListView):
     queryset = Event.objects.all()
+
+
+class EventUpdate(FormView):
+    form_class = EventForm
+    template_name = 'lokaleplan/event_form.html'
+
+    def dispatch(self, request, *args, **kwargs):
+        event = get_object_or_404(Event, pk=self.kwargs['pk'])
+        events = sorted(event.get_parallel_events(), key=lambda e: e.pk)
+        if event != events[0]:
+            return redirect('event_update', pk=events[0].pk)
+        self.events = events
+        return super(EventUpdate, self).dispatch(request, *args, **kwargs)
+
+    def get_form_kwargs(self):
+        kwargs = super(EventUpdate, self).get_form_kwargs()
+        kwargs['events'] = self.events
+        kwargs['locations'] = Location.objects.all()
+        kwargs['participants'] = Participant.objects.all()
+        return kwargs
+
+    def form_valid(self, form):
+        form.save()
+        return redirect('events')

@@ -1,0 +1,9 @@
+{% extends "lokaleplan/base.html" %}
+{% block title %}Redigér programpunkt{% endblock %}
+{% block content %}
+<h1>Redigér programpunkt</h1>
+<form method="post">{% csrf_token %}
+{{ form.as_p }}
+<input type="submit" value="Gem" />
+</form>
+{% endblock %}

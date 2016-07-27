@@ -59,3 +59,54 @@ class PerlForm(forms.Form):
             event_participant.event = event_participant.event
             event_participant.participant = event_participant.participant
         Event.participants.through.objects.bulk_create(event_participants)
+
+
+class EventForm(forms.Form):
+    name = forms.CharField()
+    day = forms.ChoiceField(choices=Event.DAYS)
+    start_time = forms.TimeField()
+    end_time = forms.TimeField()
+    manual_time = forms.CharField(required=False)
+
+    participants = forms.TypedMultipleChoiceField(coerce=int)
+
+    def __init__(self, **kwargs):
+        self.events = kwargs.pop('events')
+        self.locations = kwargs.pop('locations')
+        self.participants = kwargs.pop('participants')
+
+        event = self.events[0]
+        initial_participants = []
+        initial_locations = {}
+        for e in self.events:
+            event_locations = [l.pk for l in e.locations.all()]
+            for p in e.participants.all():
+                k = 'locations_%s' % p.pk
+                initial_participants.append(p.pk)
+                initial_locations[k] = event_locations
+
+        initial = dict(
+            name=event.name, day=event.day, start_time=event.start_time,
+            end_time=event.end_time, manual_time=event.manual_time,
+            participants=initial_participants, **initial_locations)
+        initial.update(kwargs.get('initial', {}))
+        kwargs['initial'] = initial
+
+        super(EventForm, self).__init__(**kwargs)
+
+        participant_choices = [(p.pk, p.name) for p in self.participants]
+        self.fields['participants'].choices = participant_choices
+
+        location_choices = [(l.pk, l.name) for l in self.locations]
+        for p in self.participants:
+            k = 'locations_%s' % p.pk
+            self.fields[k] = forms.TypedMultipleChoiceField(
+                coerce=int, choices=location_choices, label=str(p))
+
+    def save(self):
+        data = self.cleaned_data
+        pks = [event.pk for event in self.events]
+        qs = Event.objects.filter(pk__in=pks)
+        qs.update(name=data['name'], day=data['day'],
+                  start_time=data['start_time'], end_time=data['end_time'],
+                  manual_time=data['manual_time'])
