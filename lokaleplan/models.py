@@ -115,6 +115,13 @@ class Event(models.Model):
                 manual_time=manual_time)
         return res
 
+    def get_parallel_events(self):
+        """
+        Return a QuerySet containing Event objects parallel with self.
+        """
+        return type(self).objects.filter(
+            name=self.name, day=self.day, start_time=self.start_time,
+            end_time=self.end_time, manual_time=self.manual_time)
 
     class Meta:
         ordering = ['day', 'start_time', 'name', 'end_time']
