@@ -1,6 +1,6 @@
 import re
 
-from django.views.generic import TemplateView, FormView
+from django.views.generic import TemplateView, FormView, ListView
 from django.shortcuts import redirect, get_object_or_404
 
 from lokaleplan.forms import PerlForm
@@ -303,3 +303,7 @@ class EventTable(TemplateView):
 
         context_data['tables'] = tables
         return context_data
+
+
+class EventList(ListView):
+    queryset = Event.objects.all()
