@@ -2,6 +2,7 @@ from django import forms
 
 from lokaleplan.parse import parse_perl, make_objects
 from lokaleplan.models import Event
+from lokaleplan.fields import MinuteTimeField
 
 
 class PerlForm(forms.Form):
@@ -64,8 +65,8 @@ class PerlForm(forms.Form):
 class EventForm(forms.Form):
     name = forms.CharField()
     day = forms.ChoiceField(choices=Event.DAYS)
-    start_time = forms.TimeField()
-    end_time = forms.TimeField()
+    start_time = MinuteTimeField()
+    end_time = MinuteTimeField()
     manual_time = forms.CharField(required=False)
 
     participants = forms.TypedMultipleChoiceField(coerce=int)
