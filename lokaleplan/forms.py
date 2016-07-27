@@ -102,7 +102,8 @@ class EventForm(forms.Form):
         for p in self.participants:
             k = 'locations_%s' % p.pk
             self.fields[k] = forms.TypedMultipleChoiceField(
-                coerce=int, choices=location_choices, label=str(p))
+                coerce=int, choices=location_choices, label=str(p),
+                required=False)
 
     def save(self):
         data = self.cleaned_data
@@ -111,3 +112,6 @@ class EventForm(forms.Form):
         qs.update(name=data['name'], day=data['day'],
                   start_time=data['start_time'], end_time=data['end_time'],
                   manual_time=data['manual_time'])
+
+    def participant_locations(self):
+        return [self['locations_%s' % p.pk] for p in self.participants]

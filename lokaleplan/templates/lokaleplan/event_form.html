@@ -1,9 +1,33 @@
 {% extends "lokaleplan/base.html" %}
+{% load staticfiles %}
 {% block title %}Redigér programpunkt{% endblock %}
+{% block head %}
+<link rel="stylesheet" type="text/css"
+href="{% static 'lokaleplan/event_form.css' %}" />
+{% endblock %}
 {% block content %}
 <h1>Redigér programpunkt</h1>
 <form method="post">{% csrf_token %}
-{{ form.as_p }}
+<div class="event_form">
+<div class="time">
+<div class="field">{{ form.day.label_tag }}{{ form.day }}{{ form.day.errors }}</div>
+<div class="field">{{ form.start_time.label_tag }}{{ form.start_time }}{{ form.start_time.errors }}</div>
+<div class="field">{{ form.end_time.label_tag }}{{ form.end_time }}{{ form.end_time.errors }}</div>
+</div>
+<div class="name">
+<div class="field">{{ form.name.label_tag }}{{ form.name }}{{ form.name.errors }}</div>
+</div>
+<div class="participants">
+<div class="field">
+{{ form.participants }}
+</div>
+</div>
+</div>
+<div id="participant_locations">
+{% for f in form.participant_locations %}
+<div>{{ f.label_tag }}{{ f }}{{ f.errors }}</div>
+{% endfor %}
+</div>
 <input type="submit" value="Gem" />
 </form>
 {% endblock %}
