@@ -144,6 +144,8 @@ class EventForm(forms.Form):
         # First, we disassociate any participants that are no longer part of
         # the event.
         if old_participants - new_participants:
+            logger.debug("Remove old participants: %s",
+                         sorted(old_participants - new_participants))
             qs = Event.participants.through.objects.filter(
                 event_id__in=old_events.keys(),
                 participant_id__in=old_participants - new_participants)
@@ -209,6 +211,9 @@ class EventForm(forms.Form):
                         participant_id=participant_id))
 
         # Finally, we add new participants to the event.
+        if new_participants - old_participants:
+            logger.debug("Add new participants: %s",
+                         sorted(new_participants - old_participants))
         for participant_id in new_participants - old_participants:
             k = 'locations_%s' % participant_id
             new_locs = frozenset(data[k])
@@ -254,24 +259,29 @@ class EventForm(forms.Form):
             remove_parts_qs.delete()
 
         if add_events:
-            logger.debug("Add events: %s", add_events)
             for event in add_events:
                 event.save()
+            logger.debug("Added events: %s",
+                         [(e.pk, e.name) for e in add_events])
 
         for edge in add_loc_objects + add_part_objects:
             edge.event = edge.event  # Update edge.event_id
 
         if add_loc_objects:
-            logger.debug("Add Event-Location edges: %s", add_loc_objects)
+            logger.debug("Add Event-Location edges: %s",
+                         [(e.event_id, e.location_id)
+                          for e in add_loc_objects])
             Event.locations.through.objects.bulk_create(add_loc_objects)
 
         if add_part_objects:
-            logger.debug("Add Event-Participant edges: %s", add_part_objects)
+            logger.debug("Add Event-Participant edges: %s",
+                         [(e.event_id, e.participant_id)
+                          for e in add_part_objects])
             Event.participants.through.objects.bulk_create(add_part_objects)
 
         if old_events:
-            deleted = Event.objects.filter(id__in=old_events.keys()).delete()[0]
-            logger.debug("Deleted %s Events: %s", deleted, old_events)
+            n, o = Event.objects.filter(id__in=old_events.keys()).delete()
+            logger.debug("Deleted %s objects: %s %s", n, old_events, o)
 
         update_event_ids = [
             e.pk for e in events_by_location_set.values()
