@@ -9,6 +9,7 @@ href="{% static 'lokaleplan/event_form.css' %}" />
 {% block content %}
 <h1>Redigér programpunkt</h1>
 <form method="post">{% csrf_token %}
+{{ form.non_field_errors }}
 <div class="event_form">
 <div class="time">
 <div class="field">{{ form.day.label_tag }}{{ form.day }}{{ form.day.errors }}</div>

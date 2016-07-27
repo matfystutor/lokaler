@@ -110,6 +110,18 @@ class EventForm(forms.Form):
                 coerce=int, choices=location_choices, label=str(p),
                 required=False)
 
+    def clean(self):
+        data = self.cleaned_data
+        qs = Event.objects.filter(
+            name=data['name'], day=data['day'], start_time=data['start_time'],
+            end_time=data['end_time'], manual_time=data['manual_time'])
+        my_ids = [e.pk for e in self.events]
+        qs = qs.exclude(pk__in=my_ids)
+        if qs.exists():
+            self.add_error(None,
+                           "Programpunktets navn er allerede i brug " +
+                           "på det valgte tidspunkt.")
+
     def save(self):
         data = self.cleaned_data
         simple_fields = {k: data[k] for k in
