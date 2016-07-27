@@ -16,7 +16,7 @@
 {% for event in event_list %}
 <tr>
     {% ifchanged event.parallel_key %}
-    <td>{{ event.day }}</td>
+    <td>{{ event.get_day_display }}</td>
     <td>{{ event.start_time }}</td>
     <td>{{ event.end_time }}</td>
     <td>{{ event.manual_time }}</td>
