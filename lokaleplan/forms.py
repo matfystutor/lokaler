@@ -69,7 +69,7 @@ class PerlForm(forms.Form):
 
 class EventForm(forms.Form):
     name = forms.CharField(label='Navn')
-    day = forms.ChoiceField(choices=Event.DAYS, label='Dag')
+    day = forms.TypedChoiceField(choices=Event.DAYS, coerce=int, label='Dag')
     start_time = MinuteTimeField(label='Start')
     end_time = MinuteTimeField(label='Slut')
     manual_time = forms.CharField(required=False, label='Vist tid')
