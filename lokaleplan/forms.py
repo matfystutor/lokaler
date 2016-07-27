@@ -63,13 +63,13 @@ class PerlForm(forms.Form):
 
 
 class EventForm(forms.Form):
-    name = forms.CharField()
-    day = forms.ChoiceField(choices=Event.DAYS)
-    start_time = MinuteTimeField()
-    end_time = MinuteTimeField()
-    manual_time = forms.CharField(required=False)
+    name = forms.CharField(label='Navn')
+    day = forms.ChoiceField(choices=Event.DAYS, label='Dag')
+    start_time = MinuteTimeField(label='Start')
+    end_time = MinuteTimeField(label='Slut')
+    manual_time = forms.CharField(required=False, label='Vist tid')
 
-    participants = forms.TypedMultipleChoiceField(coerce=int)
+    participants = forms.TypedMultipleChoiceField(coerce=int, label='Hold')
 
     def __init__(self, **kwargs):
         self.events = kwargs.pop('events')

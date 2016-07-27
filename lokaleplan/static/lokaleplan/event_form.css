@@ -3,8 +3,9 @@
     flex-direction: column;
     max-width: 600px;
 }
-.event_form > .time {
+.event_form > div {
     display: flex;
+    margin: 0px -12px 16px;
 }
 .event_form .field {
     display: flex;
@@ -18,7 +19,4 @@
 .event_form .field > input, .event_form .field > select {
     width: 100%;
     box-sizing: border-box;
-}
-.event_form > div {
-    margin: 0px -12px 16px;
 }

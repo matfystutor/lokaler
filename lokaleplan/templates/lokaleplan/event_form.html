@@ -4,6 +4,7 @@
 {% block head %}
 <link rel="stylesheet" type="text/css"
 href="{% static 'lokaleplan/event_form.css' %}" />
+<script src="{% static 'lokaleplan/event_form.js' %}"></script>
 {% endblock %}
 {% block content %}
 <h1>Redigér programpunkt</h1>
@@ -18,9 +19,7 @@ href="{% static 'lokaleplan/event_form.css' %}" />
 <div class="field">{{ form.name.label_tag }}{{ form.name }}{{ form.name.errors }}</div>
 </div>
 <div class="participants">
-<div class="field">
-{{ form.participants }}
-</div>
+<div class="field">{{ form.participants.label_tag }}{{ form.participants }}{{ form.participants.errors }}</div>
 </div>
 </div>
 <div id="participant_locations">
