@@ -156,3 +156,5 @@ col:target {
 .location-link, .participant-link {
     color: inherit;
 }
+
+select[multiple] { height: 16em; }
