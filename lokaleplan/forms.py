@@ -72,7 +72,7 @@ class EventForm(forms.Form):
     day = forms.TypedChoiceField(choices=Event.DAYS, coerce=int, label='Dag')
     start_time = MinuteTimeField(label='Start')
     end_time = MinuteTimeField(label='Slut')
-    manual_time = forms.CharField(required=False, label='Vist tid')
+    manual_time = forms.CharField(required=False, label='Særligt tidsinterval')
 
     participants = forms.TypedMultipleChoiceField(coerce=int, label='Hold')
 
