@@ -117,4 +117,4 @@ class Event(models.Model):
 
 
     class Meta:
-        ordering = ['day', 'start_time', 'name']
+        ordering = ['day', 'start_time', 'name', 'end_time']
