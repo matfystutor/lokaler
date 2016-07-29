@@ -68,11 +68,6 @@ function make_participant_choices(participantData, locationLabel, locationChoice
         var link = document.createElement('a');
         link.href = 'javascript:void(0)';
 
-        function set_selected(b) {
-            chk.checked = participant.option.selected = b;
-            update_label();
-        }
-
         function update_label() {
             var s = participant.name;
             var locs = participant.locations.filter(
@@ -81,6 +76,11 @@ function make_participant_choices(participantData, locationLabel, locationChoice
             if (locs.length == 0 || !participant.option.selected)
                 link.textContent = participant.name;
             else link.textContent = participant.name + ': ' + locNames.join(', ');
+        }
+
+        function set_selected(b) {
+            chk.checked = participant.option.selected = b;
+            update_label();
         }
 
         function make_location_choice(loc) {
@@ -105,18 +105,75 @@ function make_participant_choices(participantData, locationLabel, locationChoice
             }
         }
 
-        link.addEventListener(
-            'click', show.bind(null, participant, update_label), false);
+        link.addEventListener('click', show, false);
         update_label();
+        container.appendChild(chk);
+        container.appendChild(link);
+        return {container: container, redraw: update_label};
+    }
+
+    var redraw_functions = [];
+    function redraw_all() {
+        for (var i = 0; i < redraw_functions.length; ++i) redraw_functions[i]();
+    }
+
+    function show_location_choice_for_all() {
+        var locations = [];
+        var locationSelected = [];
+        for (var j = 0; j < participantData[0].locations.length; ++j) {
+            locations.push([]);
+            var sel = false;
+            for (var i = 0; i < participantData.length; ++i) {
+                locations[j].push(participantData[i].locations[j]);
+                if (locations[j][i].option.selected)
+                    sel = true;
+            }
+            locationSelected.push(sel);
+        }
+
+        function make_location_choice(index) {
+            var locationChoice = document.createElement('div');
+            var chk = make_linked_checkbox(
+                function () { return locationSelected[index]; },
+                function (b) {
+                    for (var j = 0; j < locations[index].length; ++j)
+                        locations[index][j].option.selected = b;
+                    locationSelected[index] = b;
+                    redraw_all();
+                });
+            var domelement = make_labeled_checkbox(locations[index][0].name, chk);
+            locationChoice.appendChild(domelement);
+            return locationChoice;
+        }
+
+        locationLabel.textContent = 'Alle:';
+        clear_element(locationChoices);
+        for (var i = 0; i < locations.length; ++i) {
+            var locationChoice = make_location_choice(i);
+            locationChoices.appendChild(locationChoice);
+        }
+    }
+
+    function make_all_choice() {
+        var container = document.createElement('div');
+        var chk = document.createElement('input');
+        chk.type = 'checkbox';
+        chk.style.visibility = 'hidden';
+        var link = document.createElement('a');
+        link.href = 'javascript:void(0)';
+        link.textContent = 'Alle';
+        link.addEventListener('click', show_location_choice_for_all, false);
         container.appendChild(chk);
         container.appendChild(link);
         return container;
     }
 
     var choicesDiv = document.createElement('div');
+    choicesDiv.appendChild(make_all_choice());
     for (var i = 0; i < participantData.length; ++i) {
-        var choiceDiv = make_participant_choice(participantData[i]);
-        choicesDiv.appendChild(choiceDiv);
+        var o = make_participant_choice(participantData[i]);
+        redraw_functions.push(o.redraw)
+        choicesDiv.appendChild(o.container);
     }
     return choicesDiv;
 }
