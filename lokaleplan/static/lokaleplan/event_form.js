@@ -1,5 +1,4 @@
-function get_locations(participant_id) {
-    var el = document.getElementById('id_locations_' + participant_id);
+function get_locations(el) {
     var options = [].slice.call(el.options);
     var locations = options.map(
         function (o) {
@@ -7,30 +6,42 @@ function get_locations(participant_id) {
     return locations;
 }
 
+function get_participant_form(participant_id) {
+    var container = document.getElementById('p' + participant_id);
+    var prefix = 'id_p' + participant_id + '-';
+    var field_names = [
+        'name', 'day', 'start_time', 'end_time', 'manual_time', 'locations'];
+    var fields = {container: container};
+    for (var i = 0; i < field_names.length; ++i) {
+        var field_name = field_names[i];
+        fields[field_name] = document.getElementById(prefix + field_name);
+    }
+    return fields;
+}
+
 function get_participants() {
     var el = document.getElementById('id_participants');
     var options = [].slice.call(el.options);
     var participants = options.map(
         function (o) {
-            var locations = get_locations(o.value);
+            var f = get_participant_form(o.value);
+            var locations = get_locations(f['locations']);
             return {'id': o.value, 'name': o.textContent, 'option': o,
-                    'locations': locations}; });
+                    'container': f.container,
+                    'locations': locations, 'form': f}; });
     return participants;
+}
+
+function show(domelement) {
+    if (domelement) domelement.style.display = '';
 }
 
 function hide(domelement) {
     if (domelement) domelement.style.display = 'none';
 }
 
-function get_form_participants_label() {
-    var participantLabel = document.querySelector('.event_form > .participants label');
-    if (participantLabel) {
-        participantLabel.setAttribute('for', '');
-    } else {
-        participantLabel = document.createElement('label');
-        participantLabel.textContent = 'Participants:';
-    }
-    return participantLabel;
+function hide_all(domelements) {
+    [].forEach.call(domelements, hide);
 }
 
 function make_linked_checkbox(get_fn, set_fn) {
@@ -96,7 +107,9 @@ function make_participant_choices(participantData, locationLabel, locationChoice
             return locationChoice;
         }
 
-        function show() {
+        function show_participant() {
+            participantData.forEach(function (p) { hide(p.container); });
+            show(participant.container);
             locationLabel.textContent = participant.name + ':';
             clear_element(locationChoices);
             for (var i = 0; i < participant.locations.length; ++i) {
@@ -105,7 +118,7 @@ function make_participant_choices(participantData, locationLabel, locationChoice
             }
         }
 
-        link.addEventListener('click', show, false);
+        link.addEventListener('click', show_participant, false);
         update_label();
         container.appendChild(chk);
         container.appendChild(link);
@@ -178,34 +191,56 @@ function make_participant_choices(participantData, locationLabel, locationChoice
     return choicesDiv;
 }
 
-function setup_form(participantData, container) {
-    var participantDiv = document.createElement('div');
-    participantDiv.className = 'field';
-    var participantLabel = get_form_participants_label();
+function setup_form(participantData) {
+    var event_form_div = document.createElement('div');
+    event_form_div.className = 'event_form';
+    var container = document.createElement('div');
+
+    var formDiv = document.createElement('div');
+    formDiv.className = 'field event_form';
+
+    participantData.forEach(
+        function (p) {
+            formDiv.appendChild(p.container); })
+
     var locationDiv = document.createElement('div');
-    locationDiv.className = 'field';
+    var locationFieldDiv = document.createElement('div');
+    locationFieldDiv.className = 'field';
     var locationLabel = document.createElement('label');
     var locationChoices = document.createElement('div');
+    locationChoices.className = 'locations';
+
+    var participantList = document.createElement('div');
+    participantList.className = 'field';
+    var participantLabel = document.createElement('label');
+    participantLabel.textContent = 'Hold:';
     var participantChoices = make_participant_choices(
         participantData, locationLabel, locationChoices);
 
-    participantDiv.appendChild(participantLabel);
-    participantDiv.appendChild(participantChoices);
-    locationDiv.appendChild(locationLabel);
-    locationDiv.appendChild(locationChoices);
-    container.appendChild(participantDiv);
-    container.appendChild(locationDiv);
+    participantList.appendChild(participantLabel);
+    participantList.appendChild(participantChoices);
+    locationFieldDiv.appendChild(locationLabel);
+    locationFieldDiv.appendChild(locationChoices);
+    locationDiv.appendChild(locationFieldDiv);
+    formDiv.appendChild(locationDiv);
+
+    container.appendChild(participantList);
+    container.appendChild(formDiv);
+
+    event_form_div.appendChild(container);
+    return event_form_div;
 }
 
 function init() {
     var participants = get_participants();
     console.log(participants);
-    hide(document.getElementById('participant_locations'));
-    hide(document.querySelector('.event_form > .participants'));
-    var event_form_div = document.querySelector('.event_form');
-    var container = document.createElement('div');
-    setup_form(participants, container);
-    event_form_div.appendChild(container);
+    var formelement = participants[0].form.name.form;
+    participants.forEach(function (p) { hide(p.container); });
+    participants.forEach(function (p) { hide(p.form.locations); });
+    hide(document.querySelector('.participants'));
+    hide_all(document.querySelectorAll('.participant-name'));
+    var event_form_div = setup_form(participants);
+    formelement.insertBefore(event_form_div, formelement.firstChild);
 }
 
 window.addEventListener('load', init, false);

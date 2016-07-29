@@ -4,35 +4,32 @@
 {% block head %}
 <link rel="stylesheet" type="text/css"
 href="{% static 'lokaleplan/event_form.css' %}" />
+<script src="{% static 'lokaleplan/event_form.js' %}"></script>
 {% endblock %}
 {% block content %}
 <h1>Redigér programpunkt</h1>
 <form method="post">{% csrf_token %}
-{{ form.non_field_errors }}
-<div class="event_form">
-<div class="participants">
-<div class="field">{{ form.participants.label_tag }}{{ form.participants }}{{ form.participants.errors }}</div>
-</div>
+{{ form.errors }}
+<div class="participants">{{ form.participants }}</div>
 {% for p in form.participant_fields %}
-<h2>
-    {{ p.participant }}
-</h2>
-<div class="time">
-<div class="field">{{ p.day.label_tag }}{{ p.day }}{{ p.day.errors }}</div>
-<div class="field">{{ p.start_time.label_tag }}{{ p.start_time }}{{ p.start_time.errors }}</div>
-<div class="field">{{ p.end_time.label_tag }}{{ p.end_time }}{{ p.end_time.errors }}</div>
+<h2 class="participant-name">{{ p.participant }}</h2>
+<div id="p{{ p.participant.pk }}"><div class="field">
+<div class="participant event_form">
+    <div class="time">
+    <div class="field">{{ p.day.label_tag }}{{ p.day }}</div>
+    <div class="field">{{ p.start_time.label_tag }}{{ p.start_time }}</div>
+    <div class="field">{{ p.end_time.label_tag }}{{ p.end_time }}</div>
+    </div>
+    <div class="name">
+    <div class="field">{{ p.name.label_tag }}{{ p.name }}</div>
+    </div>
+    <div>
+    <div class="field">{{ p.manual_time.label_tag }}{{ p.manual_time }}</div>
+    </div>
+</div></div>
 </div>
-<div class="name">
-<div class="field">{{ p.name.label_tag }}{{ p.name }}{{ p.name.errors }}</div>
-</div>
-<div>
-<div class="field">{{ p.manual_time.label_tag }}{{ p.manual_time }}{{ p.name.errors }}</div>
-</div>
-<div>
-<div class="field">{{ p.locations.label_tag }}{{ p.locations }}{{ p.locations.errors }}</div>
-</div>
+{{ p.locations }}
 {% endfor %}
-</div>
 <input type="submit" value="Gem" />
 </form>
 {% endblock %}
