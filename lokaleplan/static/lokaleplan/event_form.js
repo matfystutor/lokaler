@@ -33,15 +33,23 @@ function get_form_participants_label() {
     return participantLabel;
 }
 
-function make_linked_checkbox(dataSource, update) {
+function make_linked_checkbox(get_fn, set_fn) {
     var chk = document.createElement('input');
     chk.type = 'checkbox';
-    chk.checked = dataSource.selected;
+    chk.checked = get_fn();
     chk.addEventListener(
         'click', function () {
-            dataSource.selected = chk.checked = !dataSource.selected;}, false);
-    if (update) chk.addEventListener('click', update, false);
+            set_fn(!get_fn()); chk.checked = get_fn();}, false);
     return chk;
+}
+
+function make_labeled_checkbox(name, chk) {
+    var label = document.createElement('label');
+    var nameobject = document.createElement('span');
+    nameobject.textContent = name;
+    label.appendChild(chk);
+    label.appendChild(nameobject);
+    return label;
 }
 
 function clear_element(domelement) {
@@ -50,59 +58,64 @@ function clear_element(domelement) {
 }
 
 function make_participant_choices(participantData, locationLabel, locationChoices) {
-    var choicesDiv = document.createElement('div');
-    var participantLabelUpdaters = [];
-    var currentIndex = null;
-
-    function make_location_choice(index, container, onchange) {
-        var label = document.createElement('label');
-        var participant = participantData[currentIndex];
-        var loc = participant.locations[index];
-        var chk = make_linked_checkbox(loc.option, onchange);
-        var name = document.createElement('span');
-        name.textContent = loc.name;
-        label.appendChild(chk);
-        label.appendChild(name);
-        container.appendChild(label);
-    }
-
-    function show(index) {
-        var participant = participantData[index];
-        currentIndex = index;
-        locationLabel.textContent = participant.name + ':';
-        clear_element(locationChoices);
-        for (var i = 0; i < participant.locations.length; ++i) {
-            var locationChoice = document.createElement('div');
-            make_location_choice(i, locationChoice, participantLabelUpdaters[index]);
-            locationChoices.appendChild(locationChoice);
-        }
-    }
-
-    function update_participant_label(participant, link) {
-        var s = participant.name;
-        var locs = participant.locations.filter(
-            function (l) { return l.option.selected; });
-        var locNames = locs.map(function (l) { return l.name; });
-        if (locs.length == 0) link.textContent = participant.name;
-        else link.textContent = participant.name + ': ' + locNames.join(', ');
-    }
-
-    function make_participant_choice(index, container) {
-        var participant = participantData[index];
-        var chk = make_linked_checkbox(participant.option, null);
+    function make_participant_choice(participant) {
+        var container = document.createElement('div');
+        var chk = make_linked_checkbox(
+            function () { return participant.option.selected; },
+            function (b) {
+                participant.option.selected = b;
+                update_label(); });
         var link = document.createElement('a');
         link.href = 'javascript:void(0)';
-        link.addEventListener('click', show.bind(null, index), false);
+
+        function set_selected(b) {
+            chk.checked = participant.option.selected = b;
+            update_label();
+        }
+
+        function update_label() {
+            var s = participant.name;
+            var locs = participant.locations.filter(
+                function (l) { return l.option.selected; });
+            var locNames = locs.map(function (l) { return l.name; });
+            if (locs.length == 0 || !participant.option.selected)
+                link.textContent = participant.name;
+            else link.textContent = participant.name + ': ' + locNames.join(', ');
+        }
+
+        function make_location_choice(loc) {
+            var locationChoice = document.createElement('div');
+            var chk = make_linked_checkbox(
+                function () { return loc.option.selected; },
+                function (b) {
+                    loc.option.selected = b;
+                    set_selected(true);
+                });
+            var domelement = make_labeled_checkbox(loc.name, chk);
+            locationChoice.appendChild(domelement);
+            return locationChoice;
+        }
+
+        function show() {
+            locationLabel.textContent = participant.name + ':';
+            clear_element(locationChoices);
+            for (var i = 0; i < participant.locations.length; ++i) {
+                var locationChoice = make_location_choice(participant.locations[i]);
+                locationChoices.appendChild(locationChoice);
+            }
+        }
+
+        link.addEventListener(
+            'click', show.bind(null, participant, update_label), false);
+        update_label();
         container.appendChild(chk);
         container.appendChild(link);
-        participantLabelUpdaters[index] = update_participant_label.bind(
-            null, participant, link);
-        participantLabelUpdaters[index]();
+        return container;
     }
 
+    var choicesDiv = document.createElement('div');
     for (var i = 0; i < participantData.length; ++i) {
-        var choiceDiv = document.createElement('div');
-        make_participant_choice(i, choiceDiv);
+        var choiceDiv = make_participant_choice(participantData[i]);
         choicesDiv.appendChild(choiceDiv);
     }
     return choicesDiv;
