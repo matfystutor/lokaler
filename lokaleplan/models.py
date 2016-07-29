@@ -100,6 +100,11 @@ class Event(models.Model):
                 self.manual_time)
 
     @classmethod
+    def overlapping(cls, day, start_time, end_time):
+        return cls.objects.filter(
+            day=day, start_time__lt=end_time, end_time__gt=start_time)
+
+    @classmethod
     def add_parallel_events(cls, qs):
         """
         Given a QuerySet over Event objects, construct a new QuerySet
