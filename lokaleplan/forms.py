@@ -68,73 +68,80 @@ class PerlForm(forms.Form):
 
 
 class EventForm(forms.Form):
-    name = forms.CharField(label='Navn')
-    day = forms.TypedChoiceField(choices=Event.DAYS, coerce=int, label='Dag')
-    start_time = MinuteTimeField(label='Start')
-    end_time = MinuteTimeField(label='Slut')
-    manual_time = forms.CharField(required=False, label='Særligt tidsinterval')
-
-    participants = forms.TypedMultipleChoiceField(coerce=int, label='Hold')
-
     def __init__(self, **kwargs):
         self.events = kwargs.pop('events')
         self.locations = kwargs.pop('locations')
         self.participants = kwargs.pop('participants')
-
-        event = self.events[0]
-        initial_participants = []
-        initial_locations = {}
-        for e in self.events:
-            event_locations = [l.pk for l in e.locations.all()]
-            for p in e.participants.all():
-                k = 'locations_%s' % p.pk
-                initial_participants.append(p.pk)
-                initial_locations[k] = event_locations
-
-        initial = dict(
-            name=event.name, day=event.day, start_time=event.start_time,
-            end_time=event.end_time, manual_time=event.manual_time,
-            participants=initial_participants, **initial_locations)
-        initial.update(kwargs.get('initial', {}))
-        kwargs['initial'] = initial
-
         super(EventForm, self).__init__(**kwargs)
 
+        participant_events = {}
+        for e in self.events:
+            for p in e.participants.all():
+                participant_events[p.pk] = e
+        initial_participants = sorted(participant_events.keys())
         participant_choices = [(p.pk, p.name) for p in self.participants]
-        self.fields['participants'].choices = participant_choices
+        self.fields['participants'] = forms.TypedMultipleChoiceField(
+            coerce=int, label='Hold', choices=participant_choices,
+            initial=initial_participants)
 
         location_choices = [(l.pk, l.name) for l in self.locations]
         for p in self.participants:
-            k = 'locations_%s' % p.pk
-            self.fields[k] = forms.TypedMultipleChoiceField(
+            if p.pk in participant_events:
+                event = participant_events[p.pk]
+                event_locations = [l.pk for l in event.locations.all()]
+            else:
+                event = self.events[0]
+                event_locations = []
+            prefix = 'p%s-' % p.pk
+            self.fields[prefix + 'name'] = forms.CharField(
+                label='Navn', initial=event.name)
+            self.fields[prefix + 'day'] = forms.TypedChoiceField(
+                choices=Event.DAYS, coerce=int, label='Dag', initial=event.day)
+            self.fields[prefix + 'start_time'] = MinuteTimeField(
+                label='Start', initial=event.start_time)
+            self.fields[prefix + 'end_time'] = MinuteTimeField(
+                label='Slut', initial=event.end_time)
+            self.fields[prefix + 'manual_time'] = forms.CharField(
+                required=False, label='Særligt tidsinterval',
+                initial=event.manual_time)
+            self.fields[prefix + 'locations'] = forms.TypedMultipleChoiceField(
                 coerce=int, choices=location_choices, label=str(p),
-                required=False)
+                required=False, initial=event_locations)
 
     def clean(self):
         data = self.cleaned_data
-        qs = Event.objects.filter(
-            name=data['name'], day=data['day'], start_time=data['start_time'],
-            end_time=data['end_time'], manual_time=data['manual_time'])
+        qs = Event.objects.none()
+        for p in self.participants:
+            prefix = 'p%s-' % p.pk
+            qs = qs | Event.objects.filter(
+                participants__pk=p.pk,
+                name=data[prefix + 'name'], day=data[prefix + 'day'],
+                start_time=data[prefix + 'start_time'],
+                end_time=data[prefix + 'end_time'],
+                manual_time=data[prefix + 'manual_time'])
         my_ids = [e.pk for e in self.events]
         qs = qs.exclude(pk__in=my_ids)
         if qs.exists():
+            # Saving this form would create two parallel Events with the same
+            # participant.
             self.add_error(None,
                            "Programpunktets navn er allerede i brug " +
                            "på det valgte tidspunkt.")
 
     def save(self):
         data = self.cleaned_data
-        simple_fields = {k: data[k] for k in
-                         'name day start_time end_time manual_time'.split()}
+        simple_fields = 'name day start_time end_time manual_time'.split()
+        # old_event maps event pk to event
         old_events = {event.pk: event for event in self.events}
-        events_by_location_set = {}
-        # Invariant: each event in self.events is in either old_events or
-        # events_by_location_set
+        # new_events maps (name, day, start_time, end_time, manual_time, loc)
+        # to event
+        new_events = {}
 
         participants = {}
         for event in self.events:
             for participant in event.participants.all():
                 if participant.pk in participants:
+                    # Participant in multiple events -- this is bad.
                     event.participants.remove(participant)
                 else:
                     participants[participant.pk] = event
@@ -143,8 +150,10 @@ class EventForm(forms.Form):
         remove_locs_qs = Event.locations.through.objects.none()
         # List of Event-Location edges to add (bulk create)
         add_loc_objects = []
-        # List of Events to bulk create
+        # List of Events to create
         add_events = []
+        # List of Events to save
+        update_events = []
         # QuerySet of Event-Participant edges to remove
         remove_parts_qs = Event.participants.through.objects.none()
         # List of Event-Participant edges to add (bulk create)
@@ -166,15 +175,18 @@ class EventForm(forms.Form):
         # Then, we update events for the participants that were already part of
         # the event.
         for participant_id in old_participants & new_participants:
-            k = 'locations_%s' % participant_id
-            new_locs = frozenset(data[k])
+            prefix = 'p%s-' % participant_id
+            new_locs = frozenset(data[prefix + 'locations'])
+            new_key = tuple(data[prefix + k]
+                            for k in simple_fields) + (new_locs,)
             event = participants.pop(participant_id)
-            current_locs = frozenset(
-                loc.pk for loc in event.locations.all())
-            if new_locs in events_by_location_set:
+            cur_locs = frozenset(loc.pk for loc in event.locations.all())
+            cur_key = tuple(getattr(event, k)
+                            for k in simple_fields) + (cur_locs,)
+            if new_key in new_events:
                 # Someone was nice enough to create exactly the event we
                 # want to be in.
-                new_event = events_by_location_set[new_locs]
+                new_event = new_events[new_key]
                 if new_event != event:
                     # Remove us from the old event.
                     qs = Event.participants.through.objects.filter(
@@ -189,9 +201,13 @@ class EventForm(forms.Form):
                 # This event has not been used yet;
                 # use it for this participant
                 old_events.pop(event.pk)
+                if new_key != cur_key:
+                    for k in simple_fields:
+                        setattr(event, k, data[prefix + k])
+                    update_events.append(event)
 
-                remove_locs = current_locs - new_locs
-                add_locs = new_locs - current_locs
+                remove_locs = cur_locs - new_locs
+                add_locs = new_locs - cur_locs
                 if remove_locs:
                     qs = Event.locations.through.objects.filter(
                         event_id=event.pk, location_id__in=remove_locs)
@@ -200,17 +216,19 @@ class EventForm(forms.Form):
                     Event.locations.through(
                         event=event, location_id=l)
                     for l in add_locs)
-                events_by_location_set[new_locs] = event
+                new_events[new_key] = event
             else:
                 # The event containing this participant was used by another
                 # participant. Create a new event.
-                new_event = Event(**simple_fields)
+                new_event = Event()
+                for k in simple_fields:
+                    setattr(new_event, k, data[prefix + k])
                 add_events.append(new_event)
                 add_loc_objects.extend(
                     Event.locations.through(
                         event=new_event, location_id=l)
                     for l in new_locs)
-                events_by_location_set[new_locs] = new_event
+                new_events[new_key] = new_event
 
                 # Remove us from the old event.
                 qs = Event.participants.through.objects.filter(
@@ -227,12 +245,14 @@ class EventForm(forms.Form):
             logger.debug("Add new participants: %s",
                          sorted(new_participants - old_participants))
         for participant_id in new_participants - old_participants:
-            k = 'locations_%s' % participant_id
-            new_locs = frozenset(data[k])
-            if new_locs in events_by_location_set:
+            prefix = 'p%s-' % participant_id
+            new_locs = frozenset(data[prefix + 'locations'])
+            new_key = tuple(data[prefix + k]
+                            for k in simple_fields) + (new_locs,)
+            if new_key in new_events:
                 # Someone was nice enough to create exactly the event we
                 # want to be in.
-                new_event = events_by_location_set[new_locs]
+                new_event = new_events[new_key]
                 # Add us to the new one.
                 add_part_objects.append(
                     Event.participants.through(
@@ -240,13 +260,15 @@ class EventForm(forms.Form):
                         participant_id=participant_id))
             else:
                 # Create a new event.
-                new_event = Event(**simple_fields)
+                new_event = Event()
+                for k in simple_fields:
+                    setattr(new_event, k, data[prefix + k])
                 add_events.append(new_event)
                 add_loc_objects.extend(
                     Event.locations.through(
                         event=new_event, location_id=l)
                     for l in new_locs)
-                events_by_location_set[new_locs] = new_event
+                new_events[new_key] = new_event
                 # Add us to the new event.
                 add_part_objects.append(
                     Event.participants.through(
@@ -276,6 +298,12 @@ class EventForm(forms.Form):
             logger.debug("Added events: %s",
                          [(e.pk, e.name) for e in add_events])
 
+        if update_events:
+            for event in update_events:
+                event.save()
+            logger.debug("Updated events: %s",
+                         [(e.pk, e.name) for e in update_events])
+
         for edge in add_loc_objects + add_part_objects:
             edge.event = edge.event  # Update edge.event_id
 
@@ -295,13 +323,9 @@ class EventForm(forms.Form):
             n, o = Event.objects.filter(id__in=old_events.keys()).delete()
             logger.debug("Deleted %s objects: %s %s", n, old_events, o)
 
-        update_event_ids = [
-            e.pk for e in events_by_location_set.values()
-            if any(getattr(e, k) != v for k, v in simple_fields.items())]
-        if update_event_ids:
-            update_event_qs = Event.objects.filter(pk__in=update_event_ids)
-            update_count = update_event_qs.update(**simple_fields)
-            logger.debug("Updated %s Events", update_count)
-
-    def participant_locations(self):
-        return [self['locations_%s' % p.pk] for p in self.participants]
+    def participant_fields(self):
+        fields = 'name day start_time end_time manual_time locations'.split()
+        for p in self.participants:
+            prefix = 'p%s-' % p.pk
+            yield dict([('participant', p)] +
+                       [(key, self[prefix + key]) for key in fields])

@@ -4,31 +4,33 @@
 {% block head %}
 <link rel="stylesheet" type="text/css"
 href="{% static 'lokaleplan/event_form.css' %}" />
-<script src="{% static 'lokaleplan/event_form.js' %}"></script>
 {% endblock %}
 {% block content %}
 <h1>Redigér programpunkt</h1>
 <form method="post">{% csrf_token %}
 {{ form.non_field_errors }}
 <div class="event_form">
-<div class="time">
-<div class="field">{{ form.day.label_tag }}{{ form.day }}{{ form.day.errors }}</div>
-<div class="field">{{ form.start_time.label_tag }}{{ form.start_time }}{{ form.start_time.errors }}</div>
-<div class="field">{{ form.end_time.label_tag }}{{ form.end_time }}{{ form.end_time.errors }}</div>
-</div>
-<div class="name">
-<div class="field">{{ form.name.label_tag }}{{ form.name }}{{ form.name.errors }}</div>
-</div>
-<div>
-<div class="field">{{ form.manual_time.label_tag }}{{ form.manual_time }}{{ form.name.errors }}</div>
-</div>
 <div class="participants">
 <div class="field">{{ form.participants.label_tag }}{{ form.participants }}{{ form.participants.errors }}</div>
 </div>
+{% for p in form.participant_fields %}
+<h2>
+    {{ p.participant }}
+</h2>
+<div class="time">
+<div class="field">{{ p.day.label_tag }}{{ p.day }}{{ p.day.errors }}</div>
+<div class="field">{{ p.start_time.label_tag }}{{ p.start_time }}{{ p.start_time.errors }}</div>
+<div class="field">{{ p.end_time.label_tag }}{{ p.end_time }}{{ p.end_time.errors }}</div>
 </div>
-<div id="participant_locations">
-{% for f in form.participant_locations %}
-<div>{{ f.label_tag }}{{ f }}{{ f.errors }}</div>
+<div class="name">
+<div class="field">{{ p.name.label_tag }}{{ p.name }}{{ p.name.errors }}</div>
+</div>
+<div>
+<div class="field">{{ p.manual_time.label_tag }}{{ p.manual_time }}{{ p.name.errors }}</div>
+</div>
+<div>
+<div class="field">{{ p.locations.label_tag }}{{ p.locations }}{{ p.locations.errors }}</div>
+</div>
 {% endfor %}
 </div>
 <input type="submit" value="Gem" />
