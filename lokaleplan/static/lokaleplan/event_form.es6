@@ -14,7 +14,7 @@ function get_participant_form(participant_id) {
     var field_names = [
         'name', 'day', 'start_time', 'end_time', 'manual_time', 'locations'];
     var fields = {container: container};
-    for (let field_name in field_names) {
+    for (let field_name of field_names) {
         fields[field_name] = document.getElementById(prefix + field_name);
     }
     return fields;
@@ -111,7 +111,7 @@ function make_participant_forms(participantData, locationChoices) {
             participantData.forEach((p) => { hide(p.container); });
             make_visible(participant.container);
             clear_element(locationChoices);
-            for (let loc in participant.locations) {
+            for (let loc of participant.locations) {
                 var locationChoice = make_location_choice(loc);
                 locationChoices.appendChild(locationChoice);
             }
@@ -129,7 +129,7 @@ function make_participant_forms(participantData, locationChoices) {
 
     var redraw_functions = [];
     function redraw_all() {
-        for (let f in redraw_functions) f();
+        for (let f of redraw_functions) f();
     }
 
     function show_location_choice_for_all() {
@@ -194,7 +194,7 @@ function make_participant_forms(participantData, locationChoices) {
     var choicesDiv = document.createElement('div');
     choicesDiv.appendChild(allForm.container);
     var participants = [];
-    for (let p in participantData) {
+    for (let p of participantData) {
         var o = make_participant_choice(p);
         participants.push(o);
         redraw_functions.push(o.redraw)
@@ -205,27 +205,27 @@ function make_participant_forms(participantData, locationChoices) {
 
 function link_together_participant_input(participants, field) {
     function oninput(ev) {
-        for (let p in participants)
+        for (let p of participants)
             p.form[field].value = ev.target.value;
     }
-    for (let p in participants)
+    for (let p of participants)
         p.form[field].addEventListener(
             'input', oninput, false);
 }
 
 function link_together_participant_select(participants, field) {
     function onchange(ev) {
-        for (let p in participants)
+        for (let p of participants)
             p.form[field].selectedIndex = ev.target.selectedIndex;
     }
-    for (let p in participants)
+    for (let p of participants)
         p.form[field].addEventListener('change', onchange, false);
 }
 
 function link_together_participant_fields(participants) {
     var field_names = [
         'name', 'start_time', 'end_time', 'manual_time'];
-    for (let f in field_names)
+    for (let f of field_names)
         link_together_participant_input(participants, f);
     link_together_participant_select(participants, 'day');
 }

@@ -20,9 +20,31 @@ function get_participant_form(participant_id) {
     var prefix = 'id_p' + participant_id + '-';
     var field_names = ['name', 'day', 'start_time', 'end_time', 'manual_time', 'locations'];
     var fields = { container: container };
-    for (var field_name in field_names) {
-        fields[field_name] = document.getElementById(prefix + field_name);
+    var _iteratorNormalCompletion = true;
+    var _didIteratorError = false;
+    var _iteratorError = undefined;
+
+    try {
+        for (var _iterator = field_names[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+            var field_name = _step.value;
+
+            fields[field_name] = document.getElementById(prefix + field_name);
+        }
+    } catch (err) {
+        _didIteratorError = true;
+        _iteratorError = err;
+    } finally {
+        try {
+            if (!_iteratorNormalCompletion && _iterator.return) {
+                _iterator.return();
+            }
+        } finally {
+            if (_didIteratorError) {
+                throw _iteratorError;
+            }
+        }
     }
+
     return fields;
 }
 
@@ -129,9 +151,30 @@ function make_participant_forms(participantData, locationChoices) {
             });
             make_visible(participant.container);
             clear_element(locationChoices);
-            for (var loc in participant.locations) {
-                var locationChoice = make_location_choice(loc);
-                locationChoices.appendChild(locationChoice);
+            var _iteratorNormalCompletion2 = true;
+            var _didIteratorError2 = false;
+            var _iteratorError2 = undefined;
+
+            try {
+                for (var _iterator2 = participant.locations[Symbol.iterator](), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
+                    var loc = _step2.value;
+
+                    var locationChoice = make_location_choice(loc);
+                    locationChoices.appendChild(locationChoice);
+                }
+            } catch (err) {
+                _didIteratorError2 = true;
+                _iteratorError2 = err;
+            } finally {
+                try {
+                    if (!_iteratorNormalCompletion2 && _iterator2.return) {
+                        _iterator2.return();
+                    }
+                } finally {
+                    if (_didIteratorError2) {
+                        throw _iteratorError2;
+                    }
+                }
             }
         }
 
@@ -147,8 +190,28 @@ function make_participant_forms(participantData, locationChoices) {
 
     var redraw_functions = [];
     function redraw_all() {
-        for (var f in redraw_functions) {
-            f();
+        var _iteratorNormalCompletion3 = true;
+        var _didIteratorError3 = false;
+        var _iteratorError3 = undefined;
+
+        try {
+            for (var _iterator3 = redraw_functions[Symbol.iterator](), _step3; !(_iteratorNormalCompletion3 = (_step3 = _iterator3.next()).done); _iteratorNormalCompletion3 = true) {
+                var f = _step3.value;
+                f();
+            }
+        } catch (err) {
+            _didIteratorError3 = true;
+            _iteratorError3 = err;
+        } finally {
+            try {
+                if (!_iteratorNormalCompletion3 && _iterator3.return) {
+                    _iterator3.return();
+                }
+            } finally {
+                if (_didIteratorError3) {
+                    throw _iteratorError3;
+                }
+            }
         }
     }
 
@@ -213,42 +276,171 @@ function make_participant_forms(participantData, locationChoices) {
     var choicesDiv = document.createElement('div');
     choicesDiv.appendChild(allForm.container);
     var participants = [];
-    for (var p in participantData) {
-        var o = make_participant_choice(p);
-        participants.push(o);
-        redraw_functions.push(o.redraw);
-        choicesDiv.appendChild(o.container);
+    var _iteratorNormalCompletion4 = true;
+    var _didIteratorError4 = false;
+    var _iteratorError4 = undefined;
+
+    try {
+        for (var _iterator4 = participantData[Symbol.iterator](), _step4; !(_iteratorNormalCompletion4 = (_step4 = _iterator4.next()).done); _iteratorNormalCompletion4 = true) {
+            var p = _step4.value;
+
+            var o = make_participant_choice(p);
+            participants.push(o);
+            redraw_functions.push(o.redraw);
+            choicesDiv.appendChild(o.container);
+        }
+    } catch (err) {
+        _didIteratorError4 = true;
+        _iteratorError4 = err;
+    } finally {
+        try {
+            if (!_iteratorNormalCompletion4 && _iterator4.return) {
+                _iterator4.return();
+            }
+        } finally {
+            if (_didIteratorError4) {
+                throw _iteratorError4;
+            }
+        }
     }
+
     return { container: choicesDiv, all: allForm, participants: participants };
 }
 
 function link_together_participant_input(participants, field) {
     function oninput(ev) {
-        for (var p in participants) {
-            p.form[field].value = ev.target.value;
+        var _iteratorNormalCompletion5 = true;
+        var _didIteratorError5 = false;
+        var _iteratorError5 = undefined;
+
+        try {
+            for (var _iterator5 = participants[Symbol.iterator](), _step5; !(_iteratorNormalCompletion5 = (_step5 = _iterator5.next()).done); _iteratorNormalCompletion5 = true) {
+                var p = _step5.value;
+
+                p.form[field].value = ev.target.value;
+            }
+        } catch (err) {
+            _didIteratorError5 = true;
+            _iteratorError5 = err;
+        } finally {
+            try {
+                if (!_iteratorNormalCompletion5 && _iterator5.return) {
+                    _iterator5.return();
+                }
+            } finally {
+                if (_didIteratorError5) {
+                    throw _iteratorError5;
+                }
+            }
         }
     }
-    for (var p in participants) {
-        p.form[field].addEventListener('input', oninput, false);
+    var _iteratorNormalCompletion6 = true;
+    var _didIteratorError6 = false;
+    var _iteratorError6 = undefined;
+
+    try {
+        for (var _iterator6 = participants[Symbol.iterator](), _step6; !(_iteratorNormalCompletion6 = (_step6 = _iterator6.next()).done); _iteratorNormalCompletion6 = true) {
+            var p = _step6.value;
+
+            p.form[field].addEventListener('input', oninput, false);
+        }
+    } catch (err) {
+        _didIteratorError6 = true;
+        _iteratorError6 = err;
+    } finally {
+        try {
+            if (!_iteratorNormalCompletion6 && _iterator6.return) {
+                _iterator6.return();
+            }
+        } finally {
+            if (_didIteratorError6) {
+                throw _iteratorError6;
+            }
+        }
     }
 }
 
 function link_together_participant_select(participants, field) {
     function onchange(ev) {
-        for (var p in participants) {
-            p.form[field].selectedIndex = ev.target.selectedIndex;
+        var _iteratorNormalCompletion7 = true;
+        var _didIteratorError7 = false;
+        var _iteratorError7 = undefined;
+
+        try {
+            for (var _iterator7 = participants[Symbol.iterator](), _step7; !(_iteratorNormalCompletion7 = (_step7 = _iterator7.next()).done); _iteratorNormalCompletion7 = true) {
+                var p = _step7.value;
+
+                p.form[field].selectedIndex = ev.target.selectedIndex;
+            }
+        } catch (err) {
+            _didIteratorError7 = true;
+            _iteratorError7 = err;
+        } finally {
+            try {
+                if (!_iteratorNormalCompletion7 && _iterator7.return) {
+                    _iterator7.return();
+                }
+            } finally {
+                if (_didIteratorError7) {
+                    throw _iteratorError7;
+                }
+            }
         }
     }
-    for (var p in participants) {
-        p.form[field].addEventListener('change', onchange, false);
+    var _iteratorNormalCompletion8 = true;
+    var _didIteratorError8 = false;
+    var _iteratorError8 = undefined;
+
+    try {
+        for (var _iterator8 = participants[Symbol.iterator](), _step8; !(_iteratorNormalCompletion8 = (_step8 = _iterator8.next()).done); _iteratorNormalCompletion8 = true) {
+            var p = _step8.value;
+
+            p.form[field].addEventListener('change', onchange, false);
+        }
+    } catch (err) {
+        _didIteratorError8 = true;
+        _iteratorError8 = err;
+    } finally {
+        try {
+            if (!_iteratorNormalCompletion8 && _iterator8.return) {
+                _iterator8.return();
+            }
+        } finally {
+            if (_didIteratorError8) {
+                throw _iteratorError8;
+            }
+        }
     }
 }
 
 function link_together_participant_fields(participants) {
     var field_names = ['name', 'start_time', 'end_time', 'manual_time'];
-    for (var f in field_names) {
-        link_together_participant_input(participants, f);
-    }link_together_participant_select(participants, 'day');
+    var _iteratorNormalCompletion9 = true;
+    var _didIteratorError9 = false;
+    var _iteratorError9 = undefined;
+
+    try {
+        for (var _iterator9 = field_names[Symbol.iterator](), _step9; !(_iteratorNormalCompletion9 = (_step9 = _iterator9.next()).done); _iteratorNormalCompletion9 = true) {
+            var f = _step9.value;
+
+            link_together_participant_input(participants, f);
+        }
+    } catch (err) {
+        _didIteratorError9 = true;
+        _iteratorError9 = err;
+    } finally {
+        try {
+            if (!_iteratorNormalCompletion9 && _iterator9.return) {
+                _iterator9.return();
+            }
+        } finally {
+            if (_didIteratorError9) {
+                throw _iteratorError9;
+            }
+        }
+    }
+
+    link_together_participant_select(participants, 'day');
 }
 
 function setup_form(participantData) {
