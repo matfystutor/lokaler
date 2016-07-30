@@ -70,6 +70,12 @@ def babel_compile(source):
     return dukpy.babel.babel_compile(source)['code']
 
 
+def send_message_to_vim(servername, message):
+    cmdline = ['vim', '--servername', servername, '--remote-send',
+               ':<C-U>echom %s<CR>' % json.dumps(message)]
+    subprocess.check_call(cmdline)
+
+
 def pass_exception_to_vim(servername, filename):
     def handle_exception(exn):
         print(exn)
@@ -88,17 +94,19 @@ def pass_exception_to_vim(servername, filename):
                        '[setqflist([%s]), feedkeys(":\<C-U>cc 1\<CR>")]' %
                        json.dumps(quickfix_entry)]
             subprocess.check_call(cmdline)
+        else:
+            first_line = str(exn).splitlines()[0]
+            send_message_to_vim(servername, first_line)
 
     return handle_exception
 
 
-def send_ok_to_vim(servername, message, fn):
+def send_messages_to_vim(servername, fn):
     @functools.wraps(fn)
     def wrapped(*args, **kwargs):
+        send_message_to_vim(servername, 'Compiling...')
         res = fn(*args, **kwargs)
-        cmdline = ['vim', '--servername', servername, '--remote-send',
-                   ':<C-U>echom %s<CR>' % json.dumps(message)]
-        subprocess.check_call(cmdline)
+        send_message_to_vim(servername, 'OK')
         return res
 
     return wrapped
@@ -127,8 +135,7 @@ def main():
     output_filename = base + dest_ext
     exn_fn = None
     if args.vim_servername:
-        fn = send_ok_to_vim(
-            args.vim_servername, "Compiled to %s" % output_filename, fn)
+        fn = send_messages_to_vim(args.vim_servername, fn)
         exn_fn = pass_exception_to_vim(args.vim_servername, args.filename)
     transformer = transform_file(args.filename, output_filename, fn, exn_fn)
     transformer()
