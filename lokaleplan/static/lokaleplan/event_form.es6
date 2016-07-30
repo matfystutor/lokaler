@@ -1,26 +1,19 @@
-'use strict';
-
 // vim:set ft=javascript:
 function get_locations(el) {
     var options = [].slice.call(el.options);
-    var locations = options.map(function (o) {
-        return { 'id': o.value, 'name': o.textContent,
-            get_selected: function get_selected() {
-                return o.selected;
-            },
-            set_selected: function set_selected(b) {
-                o.selected = b;
-            }
-        };
-    });
+    var locations = options.map(
+        (o) => {'id': o.value, 'name': o.textContent,
+                get_selected() {return o.selected;},
+                set_selected(b) {o.selected = b;}});
     return locations;
 }
 
 function get_participant_form(participant_id) {
     var container = document.getElementById('p' + participant_id);
     var prefix = 'id_p' + participant_id + '-';
-    var field_names = ['name', 'day', 'start_time', 'end_time', 'manual_time', 'locations'];
-    var fields = { container: container };
+    var field_names = [
+        'name', 'day', 'start_time', 'end_time', 'manual_time', 'locations'];
+    var fields = {container: container};
     for (var i = 0; i < field_names.length; ++i) {
         var field_name = field_names[i];
         fields[field_name] = document.getElementById(prefix + field_name);
@@ -34,20 +27,16 @@ function get_participants() {
     var el = document.getElementById('id_participants');
     // Map each option of the <select multiple> to a participant object.
     var options = [].slice.call(el.options);
-    var participants = options.map(function (o) {
-        var f = get_participant_form(o.value);
-        var locations = get_locations(f['locations']);
-        function get_fn() {
-            return o.selected;
-        }
-        function set_fn(b) {
-            o.selected = b;
-        }
-        return { 'id': o.value, 'name': o.textContent,
-            'set_selected': set_fn, 'get_selected': get_fn,
-            'container': f.container,
-            'locations': locations, 'form': f };
-    });
+    var participants = options.map(
+        function (o) {
+            var f = get_participant_form(o.value);
+            var locations = get_locations(f['locations']);
+            function get_fn() { return o.selected; }
+            function set_fn(b) { o.selected = b; }
+            return {'id': o.value, 'name': o.textContent,
+                    'set_selected': set_fn, 'get_selected': get_fn,
+                    'container': f.container,
+                    'locations': locations, 'form': f}; });
     return participants;
 }
 
@@ -67,9 +56,9 @@ function make_linked_checkbox(get_fn, set_fn) {
     var chk = document.createElement('input');
     chk.type = 'checkbox';
     chk.checked = get_fn();
-    chk.addEventListener('click', function () {
-        set_fn(!get_fn());chk.checked = get_fn();
-    }, false);
+    chk.addEventListener(
+        'click', function () {
+            set_fn(!get_fn()); chk.checked = get_fn();}, false);
     return chk;
 }
 
@@ -83,51 +72,50 @@ function make_labeled_checkbox(name, chk) {
 }
 
 function clear_element(domelement) {
-    while (domelement.lastChild) {
+    while (domelement.lastChild)
         domelement.removeChild(domelement.lastChild);
-    }
 }
 
 function make_participant_forms(participantData, locationChoices) {
     function make_participant_choice(participant) {
         var container = document.createElement('div');
-        var chk = make_linked_checkbox(participant.get_selected, function (b) {
-            participant.set_selected(b);
-            update_label();
-        });
+        var chk = make_linked_checkbox(
+            participant.get_selected,
+            function (b) {
+                participant.set_selected(b);
+                update_label(); });
         var link = document.createElement('a');
         link.href = 'javascript:void(0)';
 
         function update_label() {
             var s = participant.name;
-            var locs = participant.locations.filter(function (l) {
-                return l.get_selected();
-            });
-            var locNames = locs.map(function (l) {
-                return l.name;
-            });
-            if (locs.length == 0 || !participant.get_selected()) link.textContent = participant.name;else link.textContent = participant.name + ': ' + locNames.join(', ');
+            var locs = participant.locations.filter(
+                function (l) { return l.get_selected(); });
+            var locNames = locs.map(function (l) { return l.name; });
+            if (locs.length == 0 || !participant.get_selected())
+                link.textContent = participant.name;
+            else link.textContent = participant.name + ': ' + locNames.join(', ');
         }
 
         function set_participant_selected(b) {
-            chk.checked = b;participant.set_selected(b);update_label();
+            chk.checked = b; participant.set_selected(b); update_label();
         }
 
         function make_location_choice(loc) {
             var locationChoice = document.createElement('div');
-            var chk = make_linked_checkbox(loc.get_selected, function (b) {
-                loc.set_selected(b);
-                set_participant_selected(true);
-            });
+            var chk = make_linked_checkbox(
+                loc.get_selected,
+                function (b) {
+                    loc.set_selected(b);
+                    set_participant_selected(true);
+                });
             var domelement = make_labeled_checkbox(loc.name, chk);
             locationChoice.appendChild(domelement);
             return locationChoice;
         }
 
         function show_participant() {
-            participantData.forEach(function (p) {
-                hide(p.container);
-            });
+            participantData.forEach(function (p) { hide(p.container); });
             make_visible(participant.container);
             clear_element(locationChoices);
             for (var i = 0; i < participant.locations.length; ++i) {
@@ -140,17 +128,15 @@ function make_participant_forms(participantData, locationChoices) {
         update_label();
         container.appendChild(chk);
         container.appendChild(link);
-        return { show: show_participant,
-            container: container,
-            redraw: update_label,
-            participant: participant };
+        return {show: show_participant,
+                container: container,
+                redraw: update_label,
+                participant: participant};
     }
 
     var redraw_functions = [];
     function redraw_all() {
-        for (var i = 0; i < redraw_functions.length; ++i) {
-            redraw_functions[i]();
-        }
+        for (var i = 0; i < redraw_functions.length; ++i) redraw_functions[i]();
     }
 
     function show_location_choice_for_all() {
@@ -161,21 +147,22 @@ function make_participant_forms(participantData, locationChoices) {
             var sel = false;
             for (var i = 0; i < participantData.length; ++i) {
                 locations[j].push(participantData[i].locations[j]);
-                if (locations[j][i].get_selected()) sel = true;
+                if (locations[j][i].get_selected())
+                    sel = true;
             }
             locationSelected.push(sel);
         }
 
         function make_location_choice(index) {
             var locationChoice = document.createElement('div');
-            var chk = make_linked_checkbox(function () {
-                return locationSelected[index];
-            }, function (b) {
-                for (var j = 0; j < locations[index].length; ++j) {
-                    locations[index][j].set_selected(b);
-                }locationSelected[index] = b;
-                redraw_all();
-            });
+            var chk = make_linked_checkbox(
+                function () { return locationSelected[index]; },
+                function (b) {
+                    for (var j = 0; j < locations[index].length; ++j)
+                        locations[index][j].set_selected(b);
+                    locationSelected[index] = b;
+                    redraw_all();
+                });
             var domelement = make_labeled_checkbox(locations[index][0].name, chk);
             locationChoice.appendChild(domelement);
             return locationChoice;
@@ -207,7 +194,7 @@ function make_participant_forms(participantData, locationChoices) {
         link.addEventListener('click', show_all_form, false);
         container.appendChild(chk);
         container.appendChild(link);
-        return { container: container, show: show_all_form };
+        return {container: container, show: show_all_form};
     }
 
     var allForm = make_all_form();
@@ -217,39 +204,38 @@ function make_participant_forms(participantData, locationChoices) {
     for (var i = 0; i < participantData.length; ++i) {
         var o = make_participant_choice(participantData[i]);
         participants.push(o);
-        redraw_functions.push(o.redraw);
+        redraw_functions.push(o.redraw)
         choicesDiv.appendChild(o.container);
     }
-    return { container: choicesDiv, all: allForm, participants: participants };
+    return {container: choicesDiv, all: allForm, participants: participants};
 }
 
 function link_together_participant_input(participants, field) {
     function oninput(ev) {
-        for (var i = 0; i < participants.length; ++i) {
+        for (var i = 0; i < participants.length; ++i)
             participants[i].form[field].value = ev.target.value;
-        }
     }
-    for (var i = 0; i < participants.length; ++i) {
-        participants[i].form[field].addEventListener('input', oninput, false);
-    }
+    for (var i = 0; i < participants.length; ++i)
+        participants[i].form[field].addEventListener(
+            'input', oninput, false);
 }
 
 function link_together_participant_select(participants, field) {
     function onchange(ev) {
-        for (var i = 0; i < participants.length; ++i) {
+        for (var i = 0; i < participants.length; ++i)
             participants[i].form[field].selectedIndex = ev.target.selectedIndex;
-        }
     }
-    for (var i = 0; i < participants.length; ++i) {
-        participants[i].form[field].addEventListener('change', onchange, false);
-    }
+    for (var i = 0; i < participants.length; ++i)
+        participants[i].form[field].addEventListener(
+            'change', onchange, false);
 }
 
 function link_together_participant_fields(participants) {
-    var field_names = ['name', 'start_time', 'end_time', 'manual_time'];
-    for (var i = 0; i < field_names.length; ++i) {
+    var field_names = [
+        'name', 'start_time', 'end_time', 'manual_time'];
+    for (var i = 0; i < field_names.length; ++i)
         link_together_participant_input(participants, field_names[i]);
-    }link_together_participant_select(participants, 'day');
+    link_together_participant_select(participants, 'day');
 }
 
 function setup_form(participantData) {
@@ -262,9 +248,9 @@ function setup_form(participantData) {
 
     link_together_participant_fields(participantData);
 
-    participantData.forEach(function (p) {
-        formDiv.appendChild(p.container);
-    });
+    participantData.forEach(
+        function (p) {
+            formDiv.appendChild(p.container); })
 
     var locationDiv = document.createElement('div');
     var locationFieldDiv = document.createElement('div');
@@ -278,7 +264,8 @@ function setup_form(participantData) {
     participantList.className = 'field';
     var participantLabel = document.createElement('label');
     participantLabel.textContent = 'Hold:';
-    var participantForms = make_participant_forms(participantData, locationChoices);
+    var participantForms = make_participant_forms(
+        participantData, locationChoices);
 
     participantList.appendChild(participantLabel);
     participantList.appendChild(participantForms.container);
@@ -299,12 +286,8 @@ function init() {
     var participants = get_participants();
     console.log(participants);
     var formelement = participants[0].form.name.form;
-    participants.forEach(function (p) {
-        hide(p.container);
-    });
-    participants.forEach(function (p) {
-        hide(p.form.locations);
-    });
+    participants.forEach(function (p) { hide(p.container); });
+    participants.forEach(function (p) { hide(p.form.locations); });
     hide(document.querySelector('.participants'));
     hide_all(document.querySelectorAll('.participant-name'));
     var event_form_div = setup_form(participants);
