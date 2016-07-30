@@ -79,7 +79,29 @@ function hide(domelement) {
 }
 
 function hide_all(domelements) {
-    [].forEach.call(domelements, hide);
+    var _iteratorNormalCompletion2 = true;
+    var _didIteratorError2 = false;
+    var _iteratorError2 = undefined;
+
+    try {
+        for (var _iterator2 = domelements[Symbol.iterator](), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
+            var e = _step2.value;
+            hide(e);
+        }
+    } catch (err) {
+        _didIteratorError2 = true;
+        _iteratorError2 = err;
+    } finally {
+        try {
+            if (!_iteratorNormalCompletion2 && _iterator2.return) {
+                _iterator2.return();
+            }
+        } finally {
+            if (_didIteratorError2) {
+                throw _iteratorError2;
+            }
+        }
+    }
 }
 
 function make_linked_checkbox(get_fn, set_fn) {
@@ -130,7 +152,7 @@ function make_participant_forms(participantData, locationChoices) {
         }
 
         function set_participant_selected(b) {
-            chk.checked = b;participant.set_selected(b);update_label();
+            chk.checked = b;participant.selected = b;update_label();
         }
 
         function make_location_choice(loc) {
@@ -151,28 +173,28 @@ function make_participant_forms(participantData, locationChoices) {
             });
             make_visible(participant.container);
             clear_element(locationChoices);
-            var _iteratorNormalCompletion2 = true;
-            var _didIteratorError2 = false;
-            var _iteratorError2 = undefined;
+            var _iteratorNormalCompletion3 = true;
+            var _didIteratorError3 = false;
+            var _iteratorError3 = undefined;
 
             try {
-                for (var _iterator2 = participant.locations[Symbol.iterator](), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
-                    var loc = _step2.value;
+                for (var _iterator3 = participant.locations[Symbol.iterator](), _step3; !(_iteratorNormalCompletion3 = (_step3 = _iterator3.next()).done); _iteratorNormalCompletion3 = true) {
+                    var loc = _step3.value;
 
                     var locationChoice = make_location_choice(loc);
                     locationChoices.appendChild(locationChoice);
                 }
             } catch (err) {
-                _didIteratorError2 = true;
-                _iteratorError2 = err;
+                _didIteratorError3 = true;
+                _iteratorError3 = err;
             } finally {
                 try {
-                    if (!_iteratorNormalCompletion2 && _iterator2.return) {
-                        _iterator2.return();
+                    if (!_iteratorNormalCompletion3 && _iterator3.return) {
+                        _iterator3.return();
                     }
                 } finally {
-                    if (_didIteratorError2) {
-                        throw _iteratorError2;
+                    if (_didIteratorError3) {
+                        throw _iteratorError3;
                     }
                 }
             }
@@ -190,26 +212,26 @@ function make_participant_forms(participantData, locationChoices) {
 
     var redraw_functions = [];
     function redraw_all() {
-        var _iteratorNormalCompletion3 = true;
-        var _didIteratorError3 = false;
-        var _iteratorError3 = undefined;
+        var _iteratorNormalCompletion4 = true;
+        var _didIteratorError4 = false;
+        var _iteratorError4 = undefined;
 
         try {
-            for (var _iterator3 = redraw_functions[Symbol.iterator](), _step3; !(_iteratorNormalCompletion3 = (_step3 = _iterator3.next()).done); _iteratorNormalCompletion3 = true) {
-                var f = _step3.value;
+            for (var _iterator4 = redraw_functions[Symbol.iterator](), _step4; !(_iteratorNormalCompletion4 = (_step4 = _iterator4.next()).done); _iteratorNormalCompletion4 = true) {
+                var f = _step4.value;
                 f();
             }
         } catch (err) {
-            _didIteratorError3 = true;
-            _iteratorError3 = err;
+            _didIteratorError4 = true;
+            _iteratorError4 = err;
         } finally {
             try {
-                if (!_iteratorNormalCompletion3 && _iterator3.return) {
-                    _iterator3.return();
+                if (!_iteratorNormalCompletion4 && _iterator4.return) {
+                    _iterator4.return();
                 }
             } finally {
-                if (_didIteratorError3) {
-                    throw _iteratorError3;
+                if (_didIteratorError4) {
+                    throw _iteratorError4;
                 }
             }
         }
@@ -233,9 +255,31 @@ function make_participant_forms(participantData, locationChoices) {
             var chk = make_linked_checkbox(function () {
                 return locationSelected[index];
             }, function (b) {
-                for (var j = 0; j < locations[index].length; ++j) {
-                    locations[index][j].set_selected(b);
-                }locationSelected[index] = b;
+                var _iteratorNormalCompletion5 = true;
+                var _didIteratorError5 = false;
+                var _iteratorError5 = undefined;
+
+                try {
+                    for (var _iterator5 = locations[index][Symbol.iterator](), _step5; !(_iteratorNormalCompletion5 = (_step5 = _iterator5.next()).done); _iteratorNormalCompletion5 = true) {
+                        var loc = _step5.value;
+                        loc.selected = b;
+                    }
+                } catch (err) {
+                    _didIteratorError5 = true;
+                    _iteratorError5 = err;
+                } finally {
+                    try {
+                        if (!_iteratorNormalCompletion5 && _iterator5.return) {
+                            _iterator5.return();
+                        }
+                    } finally {
+                        if (_didIteratorError5) {
+                            throw _iteratorError5;
+                        }
+                    }
+                }
+
+                locationSelected[index] = b;
                 redraw_all();
             });
             var domelement = make_labeled_checkbox(locations[index][0].name, chk);
@@ -276,73 +320,18 @@ function make_participant_forms(participantData, locationChoices) {
     var choicesDiv = document.createElement('div');
     choicesDiv.appendChild(allForm.container);
     var participants = [];
-    var _iteratorNormalCompletion4 = true;
-    var _didIteratorError4 = false;
-    var _iteratorError4 = undefined;
-
-    try {
-        for (var _iterator4 = participantData[Symbol.iterator](), _step4; !(_iteratorNormalCompletion4 = (_step4 = _iterator4.next()).done); _iteratorNormalCompletion4 = true) {
-            var p = _step4.value;
-
-            var o = make_participant_choice(p);
-            participants.push(o);
-            redraw_functions.push(o.redraw);
-            choicesDiv.appendChild(o.container);
-        }
-    } catch (err) {
-        _didIteratorError4 = true;
-        _iteratorError4 = err;
-    } finally {
-        try {
-            if (!_iteratorNormalCompletion4 && _iterator4.return) {
-                _iterator4.return();
-            }
-        } finally {
-            if (_didIteratorError4) {
-                throw _iteratorError4;
-            }
-        }
-    }
-
-    return { container: choicesDiv, all: allForm, participants: participants };
-}
-
-function link_together_participant_input(participants, field) {
-    function oninput(ev) {
-        var _iteratorNormalCompletion5 = true;
-        var _didIteratorError5 = false;
-        var _iteratorError5 = undefined;
-
-        try {
-            for (var _iterator5 = participants[Symbol.iterator](), _step5; !(_iteratorNormalCompletion5 = (_step5 = _iterator5.next()).done); _iteratorNormalCompletion5 = true) {
-                var p = _step5.value;
-
-                p.form[field].value = ev.target.value;
-            }
-        } catch (err) {
-            _didIteratorError5 = true;
-            _iteratorError5 = err;
-        } finally {
-            try {
-                if (!_iteratorNormalCompletion5 && _iterator5.return) {
-                    _iterator5.return();
-                }
-            } finally {
-                if (_didIteratorError5) {
-                    throw _iteratorError5;
-                }
-            }
-        }
-    }
     var _iteratorNormalCompletion6 = true;
     var _didIteratorError6 = false;
     var _iteratorError6 = undefined;
 
     try {
-        for (var _iterator6 = participants[Symbol.iterator](), _step6; !(_iteratorNormalCompletion6 = (_step6 = _iterator6.next()).done); _iteratorNormalCompletion6 = true) {
+        for (var _iterator6 = participantData[Symbol.iterator](), _step6; !(_iteratorNormalCompletion6 = (_step6 = _iterator6.next()).done); _iteratorNormalCompletion6 = true) {
             var p = _step6.value;
 
-            p.form[field].addEventListener('input', oninput, false);
+            var o = make_participant_choice(p);
+            participants.push(o);
+            redraw_functions.push(o.redraw);
+            choicesDiv.appendChild(o.container);
         }
     } catch (err) {
         _didIteratorError6 = true;
@@ -358,10 +347,12 @@ function link_together_participant_input(participants, field) {
             }
         }
     }
+
+    return { container: choicesDiv, all: allForm, participants: participants };
 }
 
-function link_together_participant_select(participants, field) {
-    function onchange(ev) {
+function link_together_participant_input(participants, field) {
+    function oninput(ev) {
         var _iteratorNormalCompletion7 = true;
         var _didIteratorError7 = false;
         var _iteratorError7 = undefined;
@@ -370,7 +361,7 @@ function link_together_participant_select(participants, field) {
             for (var _iterator7 = participants[Symbol.iterator](), _step7; !(_iteratorNormalCompletion7 = (_step7 = _iterator7.next()).done); _iteratorNormalCompletion7 = true) {
                 var p = _step7.value;
 
-                p.form[field].selectedIndex = ev.target.selectedIndex;
+                p.form[field].value = ev.target.value;
             }
         } catch (err) {
             _didIteratorError7 = true;
@@ -395,7 +386,7 @@ function link_together_participant_select(participants, field) {
         for (var _iterator8 = participants[Symbol.iterator](), _step8; !(_iteratorNormalCompletion8 = (_step8 = _iterator8.next()).done); _iteratorNormalCompletion8 = true) {
             var p = _step8.value;
 
-            p.form[field].addEventListener('change', onchange, false);
+            p.form[field].addEventListener('input', oninput, false);
         }
     } catch (err) {
         _didIteratorError8 = true;
@@ -413,29 +404,82 @@ function link_together_participant_select(participants, field) {
     }
 }
 
-function link_together_participant_fields(participants) {
-    var field_names = ['name', 'start_time', 'end_time', 'manual_time'];
-    var _iteratorNormalCompletion9 = true;
-    var _didIteratorError9 = false;
-    var _iteratorError9 = undefined;
+function link_together_participant_select(participants, field) {
+    function onchange(ev) {
+        var _iteratorNormalCompletion9 = true;
+        var _didIteratorError9 = false;
+        var _iteratorError9 = undefined;
+
+        try {
+            for (var _iterator9 = participants[Symbol.iterator](), _step9; !(_iteratorNormalCompletion9 = (_step9 = _iterator9.next()).done); _iteratorNormalCompletion9 = true) {
+                var p = _step9.value;
+
+                p.form[field].selectedIndex = ev.target.selectedIndex;
+            }
+        } catch (err) {
+            _didIteratorError9 = true;
+            _iteratorError9 = err;
+        } finally {
+            try {
+                if (!_iteratorNormalCompletion9 && _iterator9.return) {
+                    _iterator9.return();
+                }
+            } finally {
+                if (_didIteratorError9) {
+                    throw _iteratorError9;
+                }
+            }
+        }
+    }
+    var _iteratorNormalCompletion10 = true;
+    var _didIteratorError10 = false;
+    var _iteratorError10 = undefined;
 
     try {
-        for (var _iterator9 = field_names[Symbol.iterator](), _step9; !(_iteratorNormalCompletion9 = (_step9 = _iterator9.next()).done); _iteratorNormalCompletion9 = true) {
-            var f = _step9.value;
+        for (var _iterator10 = participants[Symbol.iterator](), _step10; !(_iteratorNormalCompletion10 = (_step10 = _iterator10.next()).done); _iteratorNormalCompletion10 = true) {
+            var p = _step10.value;
+
+            p.form[field].addEventListener('change', onchange, false);
+        }
+    } catch (err) {
+        _didIteratorError10 = true;
+        _iteratorError10 = err;
+    } finally {
+        try {
+            if (!_iteratorNormalCompletion10 && _iterator10.return) {
+                _iterator10.return();
+            }
+        } finally {
+            if (_didIteratorError10) {
+                throw _iteratorError10;
+            }
+        }
+    }
+}
+
+function link_together_participant_fields(participants) {
+    var field_names = ['name', 'start_time', 'end_time', 'manual_time'];
+    var _iteratorNormalCompletion11 = true;
+    var _didIteratorError11 = false;
+    var _iteratorError11 = undefined;
+
+    try {
+        for (var _iterator11 = field_names[Symbol.iterator](), _step11; !(_iteratorNormalCompletion11 = (_step11 = _iterator11.next()).done); _iteratorNormalCompletion11 = true) {
+            var f = _step11.value;
 
             link_together_participant_input(participants, f);
         }
     } catch (err) {
-        _didIteratorError9 = true;
-        _iteratorError9 = err;
+        _didIteratorError11 = true;
+        _iteratorError11 = err;
     } finally {
         try {
-            if (!_iteratorNormalCompletion9 && _iterator9.return) {
-                _iterator9.return();
+            if (!_iteratorNormalCompletion11 && _iterator11.return) {
+                _iterator11.return();
             }
         } finally {
-            if (_didIteratorError9) {
-                throw _iteratorError9;
+            if (_didIteratorError11) {
+                throw _iteratorError11;
             }
         }
     }
@@ -453,9 +497,30 @@ function setup_form(participantData) {
 
     link_together_participant_fields(participantData);
 
-    participantData.forEach(function (p) {
-        formDiv.appendChild(p.container);
-    });
+    var _iteratorNormalCompletion12 = true;
+    var _didIteratorError12 = false;
+    var _iteratorError12 = undefined;
+
+    try {
+        for (var _iterator12 = participantData[Symbol.iterator](), _step12; !(_iteratorNormalCompletion12 = (_step12 = _iterator12.next()).done); _iteratorNormalCompletion12 = true) {
+            var p = _step12.value;
+
+            formDiv.appendChild(p.container);
+        }
+    } catch (err) {
+        _didIteratorError12 = true;
+        _iteratorError12 = err;
+    } finally {
+        try {
+            if (!_iteratorNormalCompletion12 && _iterator12.return) {
+                _iterator12.return();
+            }
+        } finally {
+            if (_didIteratorError12) {
+                throw _iteratorError12;
+            }
+        }
+    }
 
     var locationDiv = document.createElement('div');
     var locationFieldDiv = document.createElement('div');
@@ -490,12 +555,30 @@ function init() {
     var participants = get_participants();
     console.log(participants);
     var formelement = participants[0].form.name.form;
-    participants.forEach(function (p) {
-        hide(p.container);
-    });
-    participants.forEach(function (p) {
-        hide(p.form.locations);
-    });
+    var _iteratorNormalCompletion13 = true;
+    var _didIteratorError13 = false;
+    var _iteratorError13 = undefined;
+
+    try {
+        for (var _iterator13 = participants[Symbol.iterator](), _step13; !(_iteratorNormalCompletion13 = (_step13 = _iterator13.next()).done); _iteratorNormalCompletion13 = true) {
+            var p = _step13.value;
+            hide(p.container);hide(p.form.locations);
+        }
+    } catch (err) {
+        _didIteratorError13 = true;
+        _iteratorError13 = err;
+    } finally {
+        try {
+            if (!_iteratorNormalCompletion13 && _iterator13.return) {
+                _iterator13.return();
+            }
+        } finally {
+            if (_didIteratorError13) {
+                throw _iteratorError13;
+            }
+        }
+    }
+
     hide(document.querySelector('.participants'));
     hide_all(document.querySelectorAll('.participant-name'));
     var event_form_div = setup_form(participants);

@@ -26,15 +26,14 @@ function get_participants() {
     var el = document.getElementById('id_participants');
     // Map each option of the <select multiple> to a participant object.
     var options = [].slice.call(el.options);
-    var participants = options.map(
-        function (o) {
-            var f = get_participant_form(o.value);
-            var locations = get_locations(f['locations']);
-            return {id: o.value, name: o.textContent,
-                    set selected(b) { o.selected = b; },
-                    get selected() { return o.selected; },
-                    container: f.container,
-                    locations: locations, form: f}; });
+    var participants = options.map((o) => {
+        var f = get_participant_form(o.value);
+        var locations = get_locations(f['locations']);
+        return {id: o.value, name: o.textContent,
+                set selected(b) { o.selected = b; },
+                get selected() { return o.selected; },
+                container: f.container,
+                locations: locations, form: f}; });
     return participants;
 }
 
@@ -47,7 +46,7 @@ function hide(domelement) {
 }
 
 function hide_all(domelements) {
-    [].forEach.call(domelements, hide);
+    for (let e of domelements) hide(e);
 }
 
 function make_linked_checkbox(get_fn, set_fn) {
@@ -94,7 +93,7 @@ function make_participant_forms(participantData, locationChoices) {
         }
 
         function set_participant_selected(b) {
-            chk.checked = b; participant.set_selected(b); update_label();
+            chk.checked = b; participant.selected = b; update_label();
         }
 
         function make_location_choice(loc) {
@@ -151,8 +150,7 @@ function make_participant_forms(participantData, locationChoices) {
             var chk = make_linked_checkbox(
                 () => locationSelected[index],
                 (b) => {
-                    for (var j = 0; j < locations[index].length; ++j)
-                        locations[index][j].set_selected(b);
+                    for (let loc of locations[index]) loc.selected = b;
                     locationSelected[index] = b;
                     redraw_all();
                 });
@@ -240,8 +238,8 @@ function setup_form(participantData) {
 
     link_together_participant_fields(participantData);
 
-    participantData.forEach(
-        (p) => { formDiv.appendChild(p.container); });
+    for (let p of participantData)
+        formDiv.appendChild(p.container);
 
     var locationDiv = document.createElement('div');
     var locationFieldDiv = document.createElement('div');
@@ -277,8 +275,7 @@ function init() {
     var participants = get_participants();
     console.log(participants);
     var formelement = participants[0].form.name.form;
-    participants.forEach((p) => { hide(p.container); });
-    participants.forEach((p) => { hide(p.form.locations); });
+    for (let p of participants) { hide(p.container); hide(p.form.locations); }
     hide(document.querySelector('.participants'));
     hide_all(document.querySelectorAll('.participant-name'));
     var event_form_div = setup_form(participants);
