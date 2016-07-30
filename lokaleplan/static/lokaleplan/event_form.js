@@ -191,6 +191,34 @@ function make_participant_choices(participantData, locationLabel, locationChoice
     return choicesDiv;
 }
 
+function link_together_participant_input(participants, field) {
+    function oninput(ev) {
+        for (var i = 0; i < participants.length; ++i)
+            participants[i].form[field].value = ev.target.value;
+    }
+    for (var i = 0; i < participants.length; ++i)
+        participants[i].form[field].addEventListener(
+            'input', oninput, false);
+}
+
+function link_together_participant_select(participants, field) {
+    function onchange(ev) {
+        for (var i = 0; i < participants.length; ++i)
+            participants[i].form[field].selectedIndex = ev.target.selectedIndex;
+    }
+    for (var i = 0; i < participants.length; ++i)
+        participants[i].form[field].addEventListener(
+            'change', onchange, false);
+}
+
+function link_together_participant_fields(participants) {
+    var field_names = [
+        'name', 'start_time', 'end_time', 'manual_time'];
+    for (var i = 0; i < field_names.length; ++i)
+        link_together_participant_input(participants, field_names[i]);
+    link_together_participant_select(participants, 'day');
+}
+
 function setup_form(participantData) {
     var event_form_div = document.createElement('div');
     event_form_div.className = 'event_form';
@@ -198,6 +226,8 @@ function setup_form(participantData) {
 
     var formDiv = document.createElement('div');
     formDiv.className = 'field event_form';
+
+    link_together_participant_fields(participantData);
 
     participantData.forEach(
         function (p) {
