@@ -55,7 +55,7 @@ function make_linked_checkbox(get_fn, set_fn) {
     chk.type = 'checkbox';
     chk.checked = get_fn();
     chk.addEventListener(
-        'click', function () {
+        'click', () => {
             set_fn(!get_fn()); chk.checked = get_fn();}, false);
     return chk;
 }
@@ -86,8 +86,8 @@ function make_participant_forms(participantData, locationChoices) {
         function update_label() {
             var s = participant.name;
             var locs = participant.locations.filter(
-                function (l) { return l.selected; });
-            var locNames = locs.map(function (l) { return l.name; });
+                (l) => l.selected);
+            var locNames = locs.map((l) => l.name);
             if (locs.length == 0 || !participant.selected)
                 link.textContent = participant.name;
             else link.textContent = participant.name + ': ' + locNames.join(', ');
@@ -108,7 +108,7 @@ function make_participant_forms(participantData, locationChoices) {
         }
 
         function show_participant() {
-            participantData.forEach(function (p) { hide(p.container); });
+            participantData.forEach((p) => { hide(p.container); });
             make_visible(participant.container);
             clear_element(locationChoices);
             for (var i = 0; i < participant.locations.length; ++i) {
@@ -149,8 +149,8 @@ function make_participant_forms(participantData, locationChoices) {
         function make_location_choice(index) {
             var locationChoice = document.createElement('div');
             var chk = make_linked_checkbox(
-                function () { return locationSelected[index]; },
-                function (b) {
+                () => locationSelected[index],
+                (b) => {
                     for (var j = 0; j < locations[index].length; ++j)
                         locations[index][j].set_selected(b);
                     locationSelected[index] = b;
@@ -242,8 +242,7 @@ function setup_form(participantData) {
     link_together_participant_fields(participantData);
 
     participantData.forEach(
-        function (p) {
-            formDiv.appendChild(p.container); })
+        (p) => { formDiv.appendChild(p.container); });
 
     var locationDiv = document.createElement('div');
     var locationFieldDiv = document.createElement('div');
@@ -279,8 +278,8 @@ function init() {
     var participants = get_participants();
     console.log(participants);
     var formelement = participants[0].form.name.form;
-    participants.forEach(function (p) { hide(p.container); });
-    participants.forEach(function (p) { hide(p.form.locations); });
+    participants.forEach((p) => { hide(p.container); });
+    participants.forEach((p) => { hide(p.form.locations); });
     hide(document.querySelector('.participants'));
     hide_all(document.querySelectorAll('.participant-name'));
     var event_form_div = setup_form(participants);
