@@ -84,8 +84,7 @@ function make_participant_forms(participantData, locationChoices) {
 
         function update_label() {
             const s = participant.name;
-            const locs = participant.locations.filter(
-                (l) => l.selected);
+            const locs = participant.locations.filter((l) => l.selected);
             const locNames = locs.map((l) => l.name);
             if (locs.length == 0 || !participant.selected)
                 link.textContent = participant.name;
@@ -195,8 +194,7 @@ function link_together_participant_input(participants, field) {
             p.form[field].value = ev.target.value;
     }
     for (const p of participants)
-        p.form[field].addEventListener(
-            'input', oninput, false);
+        p.form[field].addEventListener('input', oninput, false);
 }
 
 function link_together_participant_select(participants, field) {
@@ -209,8 +207,7 @@ function link_together_participant_select(participants, field) {
 }
 
 function link_together_participant_fields(participants) {
-    const field_names = [
-        'name', 'start_time', 'end_time', 'manual_time'];
+    const field_names = ['name', 'start_time', 'end_time', 'manual_time'];
     for (const f of field_names)
         link_together_participant_input(participants, f);
     link_together_participant_select(participants, 'day');

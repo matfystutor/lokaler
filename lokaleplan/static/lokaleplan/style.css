@@ -93,6 +93,7 @@ tr:nth-child(even) {
 
 .event-table th {
     width: 80px;
+    text-align: center;
 }
 .event-table tbody td {
     border: 1px solid rgba(0,0,0,0.137);
@@ -153,7 +154,7 @@ col:target {
     }
 }
 
-.location-link, .participant-link {
+.location-link, .participant-link, .event-link {
     color: inherit;
 }
 
