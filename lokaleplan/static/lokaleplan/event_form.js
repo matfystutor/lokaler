@@ -2,7 +2,10 @@ function get_locations(el) {
     var options = [].slice.call(el.options);
     var locations = options.map(
         function (o) {
-            return {'id': o.value, 'name': o.textContent, 'option': o}; });
+            function get_fn() { return o.selected; }
+            function set_fn(b) { o.selected = b; }
+            return {'id': o.value, 'name': o.textContent,
+                    'get_selected': get_fn, 'set_selected': set_fn}; });
     return locations;
 }
 
@@ -20,13 +23,19 @@ function get_participant_form(participant_id) {
 }
 
 function get_participants() {
+    // Find the <select multiple> that lets us choose which participants
+    // are part of this event.
     var el = document.getElementById('id_participants');
+    // Map each option of the <select multiple> to a participant object.
     var options = [].slice.call(el.options);
     var participants = options.map(
         function (o) {
             var f = get_participant_form(o.value);
             var locations = get_locations(f['locations']);
-            return {'id': o.value, 'name': o.textContent, 'option': o,
+            function get_fn() { return o.selected; }
+            function set_fn(b) { o.selected = b; }
+            return {'id': o.value, 'name': o.textContent,
+                    'set_selected': set_fn, 'get_selected': get_fn,
                     'container': f.container,
                     'locations': locations, 'form': f}; });
     return participants;
@@ -72,9 +81,9 @@ function make_participant_forms(participantData, locationChoices) {
     function make_participant_choice(participant) {
         var container = document.createElement('div');
         var chk = make_linked_checkbox(
-            function () { return participant.option.selected; },
+            participant.get_selected,
             function (b) {
-                participant.option.selected = b;
+                participant.set_selected(b);
                 update_label(); });
         var link = document.createElement('a');
         link.href = 'javascript:void(0)';
@@ -82,25 +91,24 @@ function make_participant_forms(participantData, locationChoices) {
         function update_label() {
             var s = participant.name;
             var locs = participant.locations.filter(
-                function (l) { return l.option.selected; });
+                function (l) { return l.get_selected(); });
             var locNames = locs.map(function (l) { return l.name; });
-            if (locs.length == 0 || !participant.option.selected)
+            if (locs.length == 0 || !participant.get_selected())
                 link.textContent = participant.name;
             else link.textContent = participant.name + ': ' + locNames.join(', ');
         }
 
-        function set_selected(b) {
-            chk.checked = participant.option.selected = b;
-            update_label();
+        function set_participant_selected(b) {
+            chk.checked = b; participant.set_selected(b); update_label();
         }
 
         function make_location_choice(loc) {
             var locationChoice = document.createElement('div');
             var chk = make_linked_checkbox(
-                function () { return loc.option.selected; },
+                loc.get_selected,
                 function (b) {
-                    loc.option.selected = b;
-                    set_selected(true);
+                    loc.set_selected(b);
+                    set_participant_selected(true);
                 });
             var domelement = make_labeled_checkbox(loc.name, chk);
             locationChoice.appendChild(domelement);
@@ -140,7 +148,7 @@ function make_participant_forms(participantData, locationChoices) {
             var sel = false;
             for (var i = 0; i < participantData.length; ++i) {
                 locations[j].push(participantData[i].locations[j]);
-                if (locations[j][i].option.selected)
+                if (locations[j][i].get_selected())
                     sel = true;
             }
             locationSelected.push(sel);
@@ -152,7 +160,7 @@ function make_participant_forms(participantData, locationChoices) {
                 function () { return locationSelected[index]; },
                 function (b) {
                     for (var j = 0; j < locations[index].length; ++j)
-                        locations[index][j].option.selected = b;
+                        locations[index][j].set_selected(b);
                     locationSelected[index] = b;
                     redraw_all();
                 });
