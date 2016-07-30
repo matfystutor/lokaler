@@ -54,6 +54,15 @@ class Location(models.Model):
 
 
 class Event(models.Model):
+    """
+    Represents an event in the calendar in which one or more participants
+    together use zero or more locations.
+
+    Two events are parallel if they have the same name and occur at the same
+    time (that is, if e1.parallel_key() == e2.parallel_key()).
+
+    A participant must not be in two parallel events.
+    """
     WEDNESDAY = 3
     THURSDAY = 4
     FRIDAY = 5
