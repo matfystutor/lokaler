@@ -32,7 +32,7 @@ function get_participants() {
     return participants;
 }
 
-function show(domelement) {
+function make_visible(domelement) {
     if (domelement) domelement.style.display = '';
 }
 
@@ -109,7 +109,7 @@ function make_participant_choices(participantData, locationLabel, locationChoice
 
         function show_participant() {
             participantData.forEach(function (p) { hide(p.container); });
-            show(participant.container);
+            make_visible(participant.container);
             locationLabel.textContent = participant.name + ':';
             clear_element(locationChoices);
             for (var i = 0; i < participant.locations.length; ++i) {
