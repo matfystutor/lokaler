@@ -129,8 +129,8 @@ function make_participant_forms(participantData, locationChoices) {
             });
             make_visible(participant.container);
             clear_element(locationChoices);
-            for (var i = 0; i < participant.locations.length; ++i) {
-                var locationChoice = make_location_choice(participant.locations[i]);
+            for (var loc in participant.locations) {
+                var locationChoice = make_location_choice(loc);
                 locationChoices.appendChild(locationChoice);
             }
         }
@@ -147,8 +147,8 @@ function make_participant_forms(participantData, locationChoices) {
 
     var redraw_functions = [];
     function redraw_all() {
-        for (var i = 0; i < redraw_functions.length; ++i) {
-            redraw_functions[i]();
+        for (var f in redraw_functions) {
+            f();
         }
     }
 
@@ -213,8 +213,8 @@ function make_participant_forms(participantData, locationChoices) {
     var choicesDiv = document.createElement('div');
     choicesDiv.appendChild(allForm.container);
     var participants = [];
-    for (var i = 0; i < participantData.length; ++i) {
-        var o = make_participant_choice(participantData[i]);
+    for (var p in participantData) {
+        var o = make_participant_choice(p);
         participants.push(o);
         redraw_functions.push(o.redraw);
         choicesDiv.appendChild(o.container);
@@ -224,30 +224,30 @@ function make_participant_forms(participantData, locationChoices) {
 
 function link_together_participant_input(participants, field) {
     function oninput(ev) {
-        for (var i = 0; i < participants.length; ++i) {
-            participants[i].form[field].value = ev.target.value;
+        for (var p in participants) {
+            p.form[field].value = ev.target.value;
         }
     }
-    for (var i = 0; i < participants.length; ++i) {
-        participants[i].form[field].addEventListener('input', oninput, false);
+    for (var p in participants) {
+        p.form[field].addEventListener('input', oninput, false);
     }
 }
 
 function link_together_participant_select(participants, field) {
     function onchange(ev) {
-        for (var i = 0; i < participants.length; ++i) {
-            participants[i].form[field].selectedIndex = ev.target.selectedIndex;
+        for (var p in participants) {
+            p.form[field].selectedIndex = ev.target.selectedIndex;
         }
     }
-    for (var i = 0; i < participants.length; ++i) {
-        participants[i].form[field].addEventListener('change', onchange, false);
+    for (var p in participants) {
+        p.form[field].addEventListener('change', onchange, false);
     }
 }
 
 function link_together_participant_fields(participants) {
     var field_names = ['name', 'start_time', 'end_time', 'manual_time'];
-    for (var i = 0; i < field_names.length; ++i) {
-        link_together_participant_input(participants, field_names[i]);
+    for (var f in field_names) {
+        link_together_participant_input(participants, f);
     }link_together_participant_select(participants, 'day');
 }
 

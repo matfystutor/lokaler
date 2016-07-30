@@ -111,8 +111,8 @@ function make_participant_forms(participantData, locationChoices) {
             participantData.forEach((p) => { hide(p.container); });
             make_visible(participant.container);
             clear_element(locationChoices);
-            for (var i = 0; i < participant.locations.length; ++i) {
-                var locationChoice = make_location_choice(participant.locations[i]);
+            for (let loc in participant.locations) {
+                var locationChoice = make_location_choice(loc);
                 locationChoices.appendChild(locationChoice);
             }
         }
@@ -129,7 +129,7 @@ function make_participant_forms(participantData, locationChoices) {
 
     var redraw_functions = [];
     function redraw_all() {
-        for (var i = 0; i < redraw_functions.length; ++i) redraw_functions[i]();
+        for (let f in redraw_functions) f();
     }
 
     function show_location_choice_for_all() {
@@ -138,7 +138,7 @@ function make_participant_forms(participantData, locationChoices) {
         for (var j = 0; j < participantData[0].locations.length; ++j) {
             locations.push([]);
             var sel = false;
-            for (var i = 0; i < participantData.length; ++i) {
+            for (let i = 0; i < participantData.length; ++i) {
                 locations[j].push(participantData[i].locations[j]);
                 if (locations[j][i].selected)
                     sel = true;
@@ -162,7 +162,7 @@ function make_participant_forms(participantData, locationChoices) {
         }
 
         clear_element(locationChoices);
-        for (var i = 0; i < locations.length; ++i) {
+        for (let i = 0; i < locations.length; ++i) {
             var locationChoice = make_location_choice(i);
             locationChoices.appendChild(locationChoice);
         }
@@ -194,8 +194,8 @@ function make_participant_forms(participantData, locationChoices) {
     var choicesDiv = document.createElement('div');
     choicesDiv.appendChild(allForm.container);
     var participants = [];
-    for (var i = 0; i < participantData.length; ++i) {
-        var o = make_participant_choice(participantData[i]);
+    for (let p in participantData) {
+        var o = make_participant_choice(p);
         participants.push(o);
         redraw_functions.push(o.redraw)
         choicesDiv.appendChild(o.container);
@@ -205,29 +205,28 @@ function make_participant_forms(participantData, locationChoices) {
 
 function link_together_participant_input(participants, field) {
     function oninput(ev) {
-        for (var i = 0; i < participants.length; ++i)
-            participants[i].form[field].value = ev.target.value;
+        for (let p in participants)
+            p.form[field].value = ev.target.value;
     }
-    for (var i = 0; i < participants.length; ++i)
-        participants[i].form[field].addEventListener(
+    for (let p in participants)
+        p.form[field].addEventListener(
             'input', oninput, false);
 }
 
 function link_together_participant_select(participants, field) {
     function onchange(ev) {
-        for (var i = 0; i < participants.length; ++i)
-            participants[i].form[field].selectedIndex = ev.target.selectedIndex;
+        for (let p in participants)
+            p.form[field].selectedIndex = ev.target.selectedIndex;
     }
-    for (var i = 0; i < participants.length; ++i)
-        participants[i].form[field].addEventListener(
-            'change', onchange, false);
+    for (let p in participants)
+        p.form[field].addEventListener('change', onchange, false);
 }
 
 function link_together_participant_fields(participants) {
     var field_names = [
         'name', 'start_time', 'end_time', 'manual_time'];
-    for (var i = 0; i < field_names.length; ++i)
-        link_together_participant_input(participants, field_names[i]);
+    for (let f in field_names)
+        link_together_participant_input(participants, f);
     link_together_participant_select(participants, 'day');
 }
 
