@@ -68,7 +68,7 @@ function clear_element(domelement) {
         domelement.removeChild(domelement.lastChild);
 }
 
-function make_participant_choices(participantData, locationLabel, locationChoices) {
+function make_participant_forms(participantData, locationChoices) {
     function make_participant_choice(participant) {
         var container = document.createElement('div');
         var chk = make_linked_checkbox(
@@ -110,7 +110,6 @@ function make_participant_choices(participantData, locationLabel, locationChoice
         function show_participant() {
             participantData.forEach(function (p) { hide(p.container); });
             make_visible(participant.container);
-            locationLabel.textContent = participant.name + ':';
             clear_element(locationChoices);
             for (var i = 0; i < participant.locations.length; ++i) {
                 var locationChoice = make_location_choice(participant.locations[i]);
@@ -122,7 +121,10 @@ function make_participant_choices(participantData, locationLabel, locationChoice
         update_label();
         container.appendChild(chk);
         container.appendChild(link);
-        return {container: container, redraw: update_label};
+        return {show: show_participant,
+                container: container,
+                redraw: update_label,
+                participant: participant};
     }
 
     var redraw_functions = [];
@@ -159,7 +161,6 @@ function make_participant_choices(participantData, locationLabel, locationChoice
             return locationChoice;
         }
 
-        locationLabel.textContent = 'Alle:';
         clear_element(locationChoices);
         for (var i = 0; i < locations.length; ++i) {
             var locationChoice = make_location_choice(i);
@@ -167,7 +168,15 @@ function make_participant_choices(participantData, locationLabel, locationChoice
         }
     }
 
-    function make_all_choice() {
+    function show_all_form() {
+        // Ensure that the name,day,... fields are shown
+        // by showing some participant's form.
+        participants[0].show();
+        // Then, change the location choice to the all choice.
+        show_location_choice_for_all();
+    }
+
+    function make_all_form() {
         var container = document.createElement('div');
         var chk = document.createElement('input');
         chk.type = 'checkbox';
@@ -175,20 +184,23 @@ function make_participant_choices(participantData, locationLabel, locationChoice
         var link = document.createElement('a');
         link.href = 'javascript:void(0)';
         link.textContent = 'Alle';
-        link.addEventListener('click', show_location_choice_for_all, false);
+        link.addEventListener('click', show_all_form, false);
         container.appendChild(chk);
         container.appendChild(link);
-        return container;
+        return {container: container, show: show_all_form};
     }
 
+    var allForm = make_all_form();
     var choicesDiv = document.createElement('div');
-    choicesDiv.appendChild(make_all_choice());
+    choicesDiv.appendChild(allForm.container);
+    var participants = [];
     for (var i = 0; i < participantData.length; ++i) {
         var o = make_participant_choice(participantData[i]);
+        participants.push(o);
         redraw_functions.push(o.redraw)
         choicesDiv.appendChild(o.container);
     }
-    return choicesDiv;
+    return {container: choicesDiv, all: allForm, participants: participants};
 }
 
 function link_together_participant_input(participants, field) {
@@ -237,6 +249,7 @@ function setup_form(participantData) {
     var locationFieldDiv = document.createElement('div');
     locationFieldDiv.className = 'field';
     var locationLabel = document.createElement('label');
+    locationLabel.textContent = 'Lokaler:';
     var locationChoices = document.createElement('div');
     locationChoices.className = 'locations';
 
@@ -244,11 +257,11 @@ function setup_form(participantData) {
     participantList.className = 'field';
     var participantLabel = document.createElement('label');
     participantLabel.textContent = 'Hold:';
-    var participantChoices = make_participant_choices(
-        participantData, locationLabel, locationChoices);
+    var participantForms = make_participant_forms(
+        participantData, locationChoices);
 
     participantList.appendChild(participantLabel);
-    participantList.appendChild(participantChoices);
+    participantList.appendChild(participantForms.container);
     locationFieldDiv.appendChild(locationLabel);
     locationFieldDiv.appendChild(locationChoices);
     locationDiv.appendChild(locationFieldDiv);
@@ -258,6 +271,7 @@ function setup_form(participantData) {
     container.appendChild(formDiv);
 
     event_form_div.appendChild(container);
+    participantForms.all.show();
     return event_form_div;
 }
 
