@@ -2,20 +2,19 @@
 function get_locations(el) {
     var options = [].slice.call(el.options);
     var locations = options.map(
-        (o) => {'id': o.value, 'name': o.textContent,
-                get_selected() {return o.selected;},
-                set_selected(b) {o.selected = b;}});
+        (o) => ({'id': o.value, 'name': o.textContent,
+                 get selected() {return o.selected;},
+                 set selected(b) {o.selected = b;}}));
     return locations;
 }
 
 function get_participant_form(participant_id) {
     var container = document.getElementById('p' + participant_id);
-    var prefix = 'id_p' + participant_id + '-';
+    var prefix = `id_p${participant_id}-`;
     var field_names = [
         'name', 'day', 'start_time', 'end_time', 'manual_time', 'locations'];
     var fields = {container: container};
-    for (var i = 0; i < field_names.length; ++i) {
-        var field_name = field_names[i];
+    for (let field_name in field_names) {
         fields[field_name] = document.getElementById(prefix + field_name);
     }
     return fields;
@@ -31,12 +30,11 @@ function get_participants() {
         function (o) {
             var f = get_participant_form(o.value);
             var locations = get_locations(f['locations']);
-            function get_fn() { return o.selected; }
-            function set_fn(b) { o.selected = b; }
-            return {'id': o.value, 'name': o.textContent,
-                    'set_selected': set_fn, 'get_selected': get_fn,
-                    'container': f.container,
-                    'locations': locations, 'form': f}; });
+            return {id: o.value, name: o.textContent,
+                    set selected(b) { o.selected = b; },
+                    get selected() { return o.selected; },
+                    container: f.container,
+                    locations: locations, form: f}; });
     return participants;
 }
 
@@ -80,19 +78,17 @@ function make_participant_forms(participantData, locationChoices) {
     function make_participant_choice(participant) {
         var container = document.createElement('div');
         var chk = make_linked_checkbox(
-            participant.get_selected,
-            function (b) {
-                participant.set_selected(b);
-                update_label(); });
+            () => {return participant.selected;},
+            (b) => {participant.selected = b; update_label();});
         var link = document.createElement('a');
         link.href = 'javascript:void(0)';
 
         function update_label() {
             var s = participant.name;
             var locs = participant.locations.filter(
-                function (l) { return l.get_selected(); });
+                function (l) { return l.selected; });
             var locNames = locs.map(function (l) { return l.name; });
-            if (locs.length == 0 || !participant.get_selected())
+            if (locs.length == 0 || !participant.selected)
                 link.textContent = participant.name;
             else link.textContent = participant.name + ': ' + locNames.join(', ');
         }
@@ -104,11 +100,8 @@ function make_participant_forms(participantData, locationChoices) {
         function make_location_choice(loc) {
             var locationChoice = document.createElement('div');
             var chk = make_linked_checkbox(
-                loc.get_selected,
-                function (b) {
-                    loc.set_selected(b);
-                    set_participant_selected(true);
-                });
+                () => {return loc.selected;},
+                (b) => {loc.selected = b; set_participant_selected(true); });
             var domelement = make_labeled_checkbox(loc.name, chk);
             locationChoice.appendChild(domelement);
             return locationChoice;
@@ -147,7 +140,7 @@ function make_participant_forms(participantData, locationChoices) {
             var sel = false;
             for (var i = 0; i < participantData.length; ++i) {
                 locations[j].push(participantData[i].locations[j]);
-                if (locations[j][i].get_selected())
+                if (locations[j][i].selected)
                     sel = true;
             }
             locationSelected.push(sel);
