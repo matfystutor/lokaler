@@ -2,7 +2,7 @@
 function get_locations(el) {
     const options = [].slice.call(el.options);
     const locations = options.map(
-        (o) => ({'id': o.value, 'name': o.textContent,
+        (o) => ({id: o.value, name: o.textContent,
                  get selected() {return o.selected;},
                  set selected(b) {o.selected = b;}}));
     return locations;
@@ -14,9 +14,8 @@ function get_participant_form(participant_id) {
     const field_names = [
         'name', 'day', 'start_time', 'end_time', 'manual_time', 'locations'];
     const fields = {container: container};
-    for (const field_name of field_names) {
+    for (const field_name of field_names)
         fields[field_name] = document.getElementById(prefix + field_name);
-    }
     return fields;
 }
 

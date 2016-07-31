@@ -4,7 +4,7 @@
 function get_locations(el) {
     var options = [].slice.call(el.options);
     var locations = options.map(function (o) {
-        return { 'id': o.value, 'name': o.textContent,
+        return { id: o.value, name: o.textContent,
             get selected() {
                 return o.selected;
             },
