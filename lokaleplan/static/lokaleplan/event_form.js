@@ -292,10 +292,10 @@ function make_participant_forms(participantData, locationChoices) {
         }
     }
 
-    function show_location_choice_for_all() {
+    function show_location_choice_for_group(group) {
         var locations = [];
         var locationSelected = [];
-        for (var j = 0; j < participantData[0].locations.length; ++j) {
+        for (var j = 0; j < group[0].locations.length; ++j) {
             locations.push([]);
             var sel = false;
             var _iteratorNormalCompletion7 = true;
@@ -303,7 +303,7 @@ function make_participant_forms(participantData, locationChoices) {
             var _iteratorError7 = undefined;
 
             try {
-                for (var _iterator7 = participantData[Symbol.iterator](), _step7; !(_iteratorNormalCompletion7 = (_step7 = _iterator7.next()).done); _iteratorNormalCompletion7 = true) {
+                for (var _iterator7 = group[Symbol.iterator](), _step7; !(_iteratorNormalCompletion7 = (_step7 = _iterator7.next()).done); _iteratorNormalCompletion7 = true) {
                     var p = _step7.value;
 
                     locations[j].push(p.locations[j]);
@@ -371,15 +371,15 @@ function make_participant_forms(participantData, locationChoices) {
         }
     }
 
-    function show_all_form() {
+    function show_group_form(group) {
         // Ensure that the name,day,... fields are shown
         // by showing some participant's form.
-        participants[participantData[0].id].show();
+        participants[group[0].id].show();
         // Then, change the location choice to the all choice.
-        show_location_choice_for_all();
+        show_location_choice_for_group(group);
     }
 
-    function make_all_form() {
+    function make_group_form(group) {
         var container = document.createElement('div');
         var chk = document.createElement('input');
         chk.type = 'checkbox';
@@ -387,10 +387,17 @@ function make_participant_forms(participantData, locationChoices) {
         var link = document.createElement('a');
         link.href = 'javascript:void(0)';
         link.textContent = 'Alle';
-        link.addEventListener('click', show_all_form, false);
+        var show = function show() {
+            return show_group_form(group);
+        };
+        link.addEventListener('click', show, false);
         container.appendChild(chk);
         container.appendChild(link);
-        return { container: container, show: show_all_form };
+        return { container: container, show: show };
+    }
+
+    function make_all_form() {
+        return make_group_form(participantData);
     }
 
     var allForm = make_all_form();

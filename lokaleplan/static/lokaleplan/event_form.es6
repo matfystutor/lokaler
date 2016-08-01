@@ -138,13 +138,13 @@ function make_participant_forms(participantData, locationChoices) {
         for (const p of participantData) participants[p.id].redraw();
     }
 
-    function show_location_choice_for_all() {
+    function show_location_choice_for_group(group) {
         const locations = [];
         const locationSelected = [];
-        for (let j = 0; j < participantData[0].locations.length; ++j) {
+        for (let j = 0; j < group[0].locations.length; ++j) {
             locations.push([]);
             let sel = false;
-            for (const p of participantData) {
+            for (const p of group) {
                 locations[j].push(p.locations[j]);
                 if (p.locations[j].selected) sel = true;
             }
@@ -167,15 +167,15 @@ function make_participant_forms(participantData, locationChoices) {
         }
     }
 
-    function show_all_form() {
+    function show_group_form(group) {
         // Ensure that the name,day,... fields are shown
         // by showing some participant's form.
-        participants[participantData[0].id].show();
+        participants[group[0].id].show();
         // Then, change the location choice to the all choice.
-        show_location_choice_for_all();
+        show_location_choice_for_group(group);
     }
 
-    function make_all_form() {
+    function make_group_form(group) {
         const container = document.createElement('div');
         const chk = document.createElement('input');
         chk.type = 'checkbox';
@@ -183,11 +183,14 @@ function make_participant_forms(participantData, locationChoices) {
         const link = document.createElement('a');
         link.href = 'javascript:void(0)';
         link.textContent = 'Alle';
-        link.addEventListener('click', show_all_form, false);
+	const show = () => show_group_form(group);
+        link.addEventListener('click', show, false);
         container.appendChild(chk);
         container.appendChild(link);
-        return {container: container, show: show_all_form};
+        return {container: container, show: show};
     }
+
+    function make_all_form() { return make_group_form(participantData); }
 
     const allForm = make_all_form();
     const choicesDiv = document.createElement('div');
