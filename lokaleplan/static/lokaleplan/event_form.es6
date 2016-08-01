@@ -36,6 +36,22 @@ function get_participants() {
     return participants;
 }
 
+function get_participant_groups(participants) {
+    const groups = {};
+    for (const p of participants) {
+        const mo = /^([A-ZÆØÅ]+)(\d+)$/.exec(p.name);
+        if (mo) {
+            const groupName = mo[1];
+            if (!groups[groupName]) groups[groupName] = [];
+            groups[groupName].push(p);
+        }
+    }
+    const groupList = [];
+    for (const k in groups)
+        groupList.push({name: k, participants: groups[k]});
+    return groupList;
+}
+
 function make_visible(domelement) {
     if (domelement) domelement.style.display = '';
 }
@@ -176,6 +192,9 @@ function make_participant_forms(participantData, locationChoices) {
     const allForm = make_all_form();
     const choicesDiv = document.createElement('div');
     choicesDiv.appendChild(allForm.container);
+    for (const g of get_participant_groups(participantData)) {
+        const {name: group_name, participants: group} = g;
+    }
     const participants = {};
     for (const p of participantData) {
         const o = make_participant_choice(p);
