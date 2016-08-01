@@ -129,16 +129,21 @@ function make_participant_forms(participantData, locationChoices) {
         container.appendChild(participantCheckbox);
         container.appendChild(link);
         return {show: show_participant,
+                get selected() { return participant.selected; },
+                set selected(b) {
+                    participant.selected = participantCheckbox.checked = b;
+                    update_label();
+                },
                 container: container,
                 redraw: update_label,
                 participant: participant};
     }
 
-    function redraw_all() {
-        for (const p of participantData) participants[p.id].redraw();
+    function redraw_group(group) {
+        for (const p of group) participants[p.id].redraw();
     }
 
-    function show_location_choice_for_group(group) {
+    function show_location_choice_for_group(group, onchange) {
         const locations = [];
         const locationSelected = [];
         for (let j = 0; j < group[0].locations.length; ++j) {
@@ -159,7 +164,8 @@ function make_participant_forms(participantData, locationChoices) {
                 (b) => {
                     for (const loc of locations[i]) loc.selected = b;
                     locationSelected[i] = b;
-                    redraw_all();
+                    redraw_group(group);
+                    onchange();
                 });
             const domelement = make_labeled_checkbox(locations[i][0].name, chk);
             locationChoice.appendChild(domelement);
@@ -167,15 +173,22 @@ function make_participant_forms(participantData, locationChoices) {
         }
     }
 
-    function show_group_form(group) {
+    function show_group_form(group, enable_onchange) {
         // Ensure that the name,day,... fields are shown
         // by showing some participant's form.
         participants[group[0].id].show();
-        // Then, change the location choice to the all choice.
-        show_location_choice_for_group(group);
+        // Then, change the location choice to the group choice.
+
+        function enable() {
+            for (const p of group)
+                participants[p.id].selected = true;
+        }
+
+        const onchange = enable_onchange ? enable : (() => {});
+        show_location_choice_for_group(group, onchange);
     }
 
-    function make_group_form(group, name) {
+    function make_group_form(group, name, enable_onchange=true) {
         const container = document.createElement('div');
         const chk = document.createElement('input');
         chk.type = 'checkbox';
@@ -183,7 +196,7 @@ function make_participant_forms(participantData, locationChoices) {
         const link = document.createElement('a');
         link.href = 'javascript:void(0)';
         link.textContent = name;
-	const show = () => show_group_form(group);
+	const show = () => show_group_form(group, enable_onchange);
         link.addEventListener('click', show, false);
         container.appendChild(chk);
         container.appendChild(link);
@@ -191,7 +204,7 @@ function make_participant_forms(participantData, locationChoices) {
     }
 
     function make_all_form() {
-        return make_group_form(participantData, 'Alle');
+        return make_group_form(participantData, 'Alle', false);
     }
 
     const allForm = make_all_form();
@@ -199,6 +212,8 @@ function make_participant_forms(participantData, locationChoices) {
     choicesDiv.appendChild(allForm.container);
     for (const g of get_participant_groups(participantData)) {
         const {name: group_name, participants: group} = g;
+        const group_form = make_group_form(group, group_name);
+        choicesDiv.appendChild(group_form.container);
     }
     const participants = {};
     for (const p of participantData) {

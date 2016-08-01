@@ -261,18 +261,25 @@ function make_participant_forms(participantData, locationChoices) {
         container.appendChild(participantCheckbox);
         container.appendChild(link);
         return { show: show_participant,
+            get selected() {
+                return participant.selected;
+            },
+            set selected(b) {
+                participant.selected = participantCheckbox.checked = b;
+                update_label();
+            },
             container: container,
             redraw: update_label,
             participant: participant };
     }
 
-    function redraw_all() {
+    function redraw_group(group) {
         var _iteratorNormalCompletion6 = true;
         var _didIteratorError6 = false;
         var _iteratorError6 = undefined;
 
         try {
-            for (var _iterator6 = participantData[Symbol.iterator](), _step6; !(_iteratorNormalCompletion6 = (_step6 = _iterator6.next()).done); _iteratorNormalCompletion6 = true) {
+            for (var _iterator6 = group[Symbol.iterator](), _step6; !(_iteratorNormalCompletion6 = (_step6 = _iterator6.next()).done); _iteratorNormalCompletion6 = true) {
                 var p = _step6.value;
                 participants[p.id].redraw();
             }
@@ -292,7 +299,7 @@ function make_participant_forms(participantData, locationChoices) {
         }
     }
 
-    function show_location_choice_for_group(group) {
+    function show_location_choice_for_group(group, onchange) {
         var locations = [];
         var locationSelected = [];
         for (var j = 0; j < group[0].locations.length; ++j) {
@@ -359,7 +366,8 @@ function make_participant_forms(participantData, locationChoices) {
                 }
 
                 locationSelected[i] = b;
-                redraw_all();
+                redraw_group(group);
+                onchange();
             });
             var domelement = make_labeled_checkbox(locations[i][0].name, chk);
             locationChoice.appendChild(domelement);
@@ -371,15 +379,46 @@ function make_participant_forms(participantData, locationChoices) {
         }
     }
 
-    function show_group_form(group) {
+    function show_group_form(group, enable_onchange) {
         // Ensure that the name,day,... fields are shown
         // by showing some participant's form.
         participants[group[0].id].show();
-        // Then, change the location choice to the all choice.
-        show_location_choice_for_group(group);
+        // Then, change the location choice to the group choice.
+
+        function enable() {
+            var _iteratorNormalCompletion9 = true;
+            var _didIteratorError9 = false;
+            var _iteratorError9 = undefined;
+
+            try {
+                for (var _iterator9 = group[Symbol.iterator](), _step9; !(_iteratorNormalCompletion9 = (_step9 = _iterator9.next()).done); _iteratorNormalCompletion9 = true) {
+                    var p = _step9.value;
+
+                    participants[p.id].selected = true;
+                }
+            } catch (err) {
+                _didIteratorError9 = true;
+                _iteratorError9 = err;
+            } finally {
+                try {
+                    if (!_iteratorNormalCompletion9 && _iterator9.return) {
+                        _iterator9.return();
+                    }
+                } finally {
+                    if (_didIteratorError9) {
+                        throw _iteratorError9;
+                    }
+                }
+            }
+        }
+
+        var onchange = enable_onchange ? enable : function () {};
+        show_location_choice_for_group(group, onchange);
     }
 
     function make_group_form(group, name) {
+        var enable_onchange = arguments.length <= 2 || arguments[2] === undefined ? true : arguments[2];
+
         var container = document.createElement('div');
         var chk = document.createElement('input');
         chk.type = 'checkbox';
@@ -388,7 +427,7 @@ function make_participant_forms(participantData, locationChoices) {
         link.href = 'javascript:void(0)';
         link.textContent = name;
         var show = function show() {
-            return show_group_form(group);
+            return show_group_form(group, enable_onchange);
         };
         link.addEventListener('click', show, false);
         container.appendChild(chk);
@@ -397,49 +436,24 @@ function make_participant_forms(participantData, locationChoices) {
     }
 
     function make_all_form() {
-        return make_group_form(participantData, 'Alle');
+        return make_group_form(participantData, 'Alle', false);
     }
 
     var allForm = make_all_form();
     var choicesDiv = document.createElement('div');
     choicesDiv.appendChild(allForm.container);
-    var _iteratorNormalCompletion9 = true;
-    var _didIteratorError9 = false;
-    var _iteratorError9 = undefined;
-
-    try {
-        for (var _iterator9 = get_participant_groups(participantData)[Symbol.iterator](), _step9; !(_iteratorNormalCompletion9 = (_step9 = _iterator9.next()).done); _iteratorNormalCompletion9 = true) {
-            var g = _step9.value;
-            var group_name = g.name;
-            var group = g.participants;
-        }
-    } catch (err) {
-        _didIteratorError9 = true;
-        _iteratorError9 = err;
-    } finally {
-        try {
-            if (!_iteratorNormalCompletion9 && _iterator9.return) {
-                _iterator9.return();
-            }
-        } finally {
-            if (_didIteratorError9) {
-                throw _iteratorError9;
-            }
-        }
-    }
-
-    var participants = {};
     var _iteratorNormalCompletion10 = true;
     var _didIteratorError10 = false;
     var _iteratorError10 = undefined;
 
     try {
-        for (var _iterator10 = participantData[Symbol.iterator](), _step10; !(_iteratorNormalCompletion10 = (_step10 = _iterator10.next()).done); _iteratorNormalCompletion10 = true) {
-            var p = _step10.value;
+        for (var _iterator10 = get_participant_groups(participantData)[Symbol.iterator](), _step10; !(_iteratorNormalCompletion10 = (_step10 = _iterator10.next()).done); _iteratorNormalCompletion10 = true) {
+            var g = _step10.value;
+            var group_name = g.name;
+            var group = g.participants;
 
-            var o = make_participant_choice(p);
-            participants[o.participant.id] = o;
-            choicesDiv.appendChild(o.container);
+            var group_form = make_group_form(group, group_name);
+            choicesDiv.appendChild(group_form.container);
         }
     } catch (err) {
         _didIteratorError10 = true;
@@ -456,57 +470,85 @@ function make_participant_forms(participantData, locationChoices) {
         }
     }
 
+    var participants = {};
+    var _iteratorNormalCompletion11 = true;
+    var _didIteratorError11 = false;
+    var _iteratorError11 = undefined;
+
+    try {
+        for (var _iterator11 = participantData[Symbol.iterator](), _step11; !(_iteratorNormalCompletion11 = (_step11 = _iterator11.next()).done); _iteratorNormalCompletion11 = true) {
+            var p = _step11.value;
+
+            var o = make_participant_choice(p);
+            participants[o.participant.id] = o;
+            choicesDiv.appendChild(o.container);
+        }
+    } catch (err) {
+        _didIteratorError11 = true;
+        _iteratorError11 = err;
+    } finally {
+        try {
+            if (!_iteratorNormalCompletion11 && _iterator11.return) {
+                _iterator11.return();
+            }
+        } finally {
+            if (_didIteratorError11) {
+                throw _iteratorError11;
+            }
+        }
+    }
+
     return { container: choicesDiv, all: allForm, participants: participants };
 }
 
 function link_together_participant_input(participants, field) {
     function oninput(ev) {
-        var _iteratorNormalCompletion11 = true;
-        var _didIteratorError11 = false;
-        var _iteratorError11 = undefined;
+        var _iteratorNormalCompletion12 = true;
+        var _didIteratorError12 = false;
+        var _iteratorError12 = undefined;
 
         try {
-            for (var _iterator11 = participants[Symbol.iterator](), _step11; !(_iteratorNormalCompletion11 = (_step11 = _iterator11.next()).done); _iteratorNormalCompletion11 = true) {
-                var p = _step11.value;
+            for (var _iterator12 = participants[Symbol.iterator](), _step12; !(_iteratorNormalCompletion12 = (_step12 = _iterator12.next()).done); _iteratorNormalCompletion12 = true) {
+                var p = _step12.value;
 
                 p.form[field].value = ev.target.value;
             }
         } catch (err) {
-            _didIteratorError11 = true;
-            _iteratorError11 = err;
+            _didIteratorError12 = true;
+            _iteratorError12 = err;
         } finally {
             try {
-                if (!_iteratorNormalCompletion11 && _iterator11.return) {
-                    _iterator11.return();
+                if (!_iteratorNormalCompletion12 && _iterator12.return) {
+                    _iterator12.return();
                 }
             } finally {
-                if (_didIteratorError11) {
-                    throw _iteratorError11;
+                if (_didIteratorError12) {
+                    throw _iteratorError12;
                 }
             }
         }
     }
-    var _iteratorNormalCompletion12 = true;
-    var _didIteratorError12 = false;
-    var _iteratorError12 = undefined;
+    var _iteratorNormalCompletion13 = true;
+    var _didIteratorError13 = false;
+    var _iteratorError13 = undefined;
 
     try {
-        for (var _iterator12 = participants[Symbol.iterator](), _step12; !(_iteratorNormalCompletion12 = (_step12 = _iterator12.next()).done); _iteratorNormalCompletion12 = true) {
-            var p = _step12.value;
+        for (var _iterator13 = participants[Symbol.iterator](), _step13; !(_iteratorNormalCompletion13 = (_step13 = _iterator13.next()).done); _iteratorNormalCompletion13 = true) {
+            var p = _step13.value;
 
             p.form[field].addEventListener('input', oninput, false);
         }
     } catch (err) {
-        _didIteratorError12 = true;
-        _iteratorError12 = err;
+        _didIteratorError13 = true;
+        _iteratorError13 = err;
     } finally {
         try {
-            if (!_iteratorNormalCompletion12 && _iterator12.return) {
-                _iterator12.return();
+            if (!_iteratorNormalCompletion13 && _iterator13.return) {
+                _iterator13.return();
             }
         } finally {
-            if (_didIteratorError12) {
-                throw _iteratorError12;
+            if (_didIteratorError13) {
+                throw _iteratorError13;
             }
         }
     }
@@ -514,68 +556,40 @@ function link_together_participant_input(participants, field) {
 
 function link_together_participant_select(participants, field) {
     function onchange(ev) {
-        var _iteratorNormalCompletion13 = true;
-        var _didIteratorError13 = false;
-        var _iteratorError13 = undefined;
+        var _iteratorNormalCompletion14 = true;
+        var _didIteratorError14 = false;
+        var _iteratorError14 = undefined;
 
         try {
-            for (var _iterator13 = participants[Symbol.iterator](), _step13; !(_iteratorNormalCompletion13 = (_step13 = _iterator13.next()).done); _iteratorNormalCompletion13 = true) {
-                var p = _step13.value;
+            for (var _iterator14 = participants[Symbol.iterator](), _step14; !(_iteratorNormalCompletion14 = (_step14 = _iterator14.next()).done); _iteratorNormalCompletion14 = true) {
+                var p = _step14.value;
 
                 p.form[field].selectedIndex = ev.target.selectedIndex;
             }
         } catch (err) {
-            _didIteratorError13 = true;
-            _iteratorError13 = err;
+            _didIteratorError14 = true;
+            _iteratorError14 = err;
         } finally {
             try {
-                if (!_iteratorNormalCompletion13 && _iterator13.return) {
-                    _iterator13.return();
+                if (!_iteratorNormalCompletion14 && _iterator14.return) {
+                    _iterator14.return();
                 }
             } finally {
-                if (_didIteratorError13) {
-                    throw _iteratorError13;
+                if (_didIteratorError14) {
+                    throw _iteratorError14;
                 }
             }
         }
     }
-    var _iteratorNormalCompletion14 = true;
-    var _didIteratorError14 = false;
-    var _iteratorError14 = undefined;
-
-    try {
-        for (var _iterator14 = participants[Symbol.iterator](), _step14; !(_iteratorNormalCompletion14 = (_step14 = _iterator14.next()).done); _iteratorNormalCompletion14 = true) {
-            var p = _step14.value;
-
-            p.form[field].addEventListener('change', onchange, false);
-        }
-    } catch (err) {
-        _didIteratorError14 = true;
-        _iteratorError14 = err;
-    } finally {
-        try {
-            if (!_iteratorNormalCompletion14 && _iterator14.return) {
-                _iterator14.return();
-            }
-        } finally {
-            if (_didIteratorError14) {
-                throw _iteratorError14;
-            }
-        }
-    }
-}
-
-function link_together_participant_fields(participants) {
-    var field_names = ['name', 'start_time', 'end_time', 'manual_time'];
     var _iteratorNormalCompletion15 = true;
     var _didIteratorError15 = false;
     var _iteratorError15 = undefined;
 
     try {
-        for (var _iterator15 = field_names[Symbol.iterator](), _step15; !(_iteratorNormalCompletion15 = (_step15 = _iterator15.next()).done); _iteratorNormalCompletion15 = true) {
-            var f = _step15.value;
+        for (var _iterator15 = participants[Symbol.iterator](), _step15; !(_iteratorNormalCompletion15 = (_step15 = _iterator15.next()).done); _iteratorNormalCompletion15 = true) {
+            var p = _step15.value;
 
-            link_together_participant_input(participants, f);
+            p.form[field].addEventListener('change', onchange, false);
         }
     } catch (err) {
         _didIteratorError15 = true;
@@ -588,6 +602,34 @@ function link_together_participant_fields(participants) {
         } finally {
             if (_didIteratorError15) {
                 throw _iteratorError15;
+            }
+        }
+    }
+}
+
+function link_together_participant_fields(participants) {
+    var field_names = ['name', 'start_time', 'end_time', 'manual_time'];
+    var _iteratorNormalCompletion16 = true;
+    var _didIteratorError16 = false;
+    var _iteratorError16 = undefined;
+
+    try {
+        for (var _iterator16 = field_names[Symbol.iterator](), _step16; !(_iteratorNormalCompletion16 = (_step16 = _iterator16.next()).done); _iteratorNormalCompletion16 = true) {
+            var f = _step16.value;
+
+            link_together_participant_input(participants, f);
+        }
+    } catch (err) {
+        _didIteratorError16 = true;
+        _iteratorError16 = err;
+    } finally {
+        try {
+            if (!_iteratorNormalCompletion16 && _iterator16.return) {
+                _iterator16.return();
+            }
+        } finally {
+            if (_didIteratorError16) {
+                throw _iteratorError16;
             }
         }
     }
@@ -605,27 +647,27 @@ function setup_form(participantData) {
 
     link_together_participant_fields(participantData);
 
-    var _iteratorNormalCompletion16 = true;
-    var _didIteratorError16 = false;
-    var _iteratorError16 = undefined;
+    var _iteratorNormalCompletion17 = true;
+    var _didIteratorError17 = false;
+    var _iteratorError17 = undefined;
 
     try {
-        for (var _iterator16 = participantData[Symbol.iterator](), _step16; !(_iteratorNormalCompletion16 = (_step16 = _iterator16.next()).done); _iteratorNormalCompletion16 = true) {
-            var p = _step16.value;
+        for (var _iterator17 = participantData[Symbol.iterator](), _step17; !(_iteratorNormalCompletion17 = (_step17 = _iterator17.next()).done); _iteratorNormalCompletion17 = true) {
+            var p = _step17.value;
 
             formDiv.appendChild(p.container);
         }
     } catch (err) {
-        _didIteratorError16 = true;
-        _iteratorError16 = err;
+        _didIteratorError17 = true;
+        _iteratorError17 = err;
     } finally {
         try {
-            if (!_iteratorNormalCompletion16 && _iterator16.return) {
-                _iterator16.return();
+            if (!_iteratorNormalCompletion17 && _iterator17.return) {
+                _iterator17.return();
             }
         } finally {
-            if (_didIteratorError16) {
-                throw _iteratorError16;
+            if (_didIteratorError17) {
+                throw _iteratorError17;
             }
         }
     }
@@ -663,26 +705,26 @@ function init() {
     var participants = get_participants();
     console.log(participants);
     var formelement = participants[0].form.name.form;
-    var _iteratorNormalCompletion17 = true;
-    var _didIteratorError17 = false;
-    var _iteratorError17 = undefined;
+    var _iteratorNormalCompletion18 = true;
+    var _didIteratorError18 = false;
+    var _iteratorError18 = undefined;
 
     try {
-        for (var _iterator17 = participants[Symbol.iterator](), _step17; !(_iteratorNormalCompletion17 = (_step17 = _iterator17.next()).done); _iteratorNormalCompletion17 = true) {
-            var p = _step17.value;
+        for (var _iterator18 = participants[Symbol.iterator](), _step18; !(_iteratorNormalCompletion18 = (_step18 = _iterator18.next()).done); _iteratorNormalCompletion18 = true) {
+            var p = _step18.value;
             hide(p.container);hide(p.form.locations);
         }
     } catch (err) {
-        _didIteratorError17 = true;
-        _iteratorError17 = err;
+        _didIteratorError18 = true;
+        _iteratorError18 = err;
     } finally {
         try {
-            if (!_iteratorNormalCompletion17 && _iterator17.return) {
-                _iterator17.return();
+            if (!_iteratorNormalCompletion18 && _iterator18.return) {
+                _iterator18.return();
             }
         } finally {
-            if (_didIteratorError17) {
-                throw _iteratorError17;
+            if (_didIteratorError18) {
+                throw _iteratorError18;
             }
         }
     }
