@@ -118,9 +118,8 @@ function make_participant_forms(participantData, locationChoices) {
                 participant: participant};
     }
 
-    const redraw_functions = [];
     function redraw_all() {
-        for (const f of redraw_functions) f();
+        for (const p of participantData) participants[p.id].redraw();
     }
 
     function show_location_choice_for_all() {
@@ -155,7 +154,7 @@ function make_participant_forms(participantData, locationChoices) {
     function show_all_form() {
         // Ensure that the name,day,... fields are shown
         // by showing some participant's form.
-        participants[0].show();
+        participants[participantData[0].id].show();
         // Then, change the location choice to the all choice.
         show_location_choice_for_all();
     }
@@ -177,11 +176,10 @@ function make_participant_forms(participantData, locationChoices) {
     const allForm = make_all_form();
     const choicesDiv = document.createElement('div');
     choicesDiv.appendChild(allForm.container);
-    const participants = [];
+    const participants = {};
     for (const p of participantData) {
         const o = make_participant_choice(p);
-        participants.push(o);
-        redraw_functions.push(o.redraw)
+        participants[o.participant.id] = o;
         choicesDiv.appendChild(o.container);
     }
     return {container: choicesDiv, all: allForm, participants: participants};
