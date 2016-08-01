@@ -175,14 +175,14 @@ function make_participant_forms(participantData, locationChoices) {
         show_location_choice_for_group(group);
     }
 
-    function make_group_form(group) {
+    function make_group_form(group, name) {
         const container = document.createElement('div');
         const chk = document.createElement('input');
         chk.type = 'checkbox';
         chk.style.visibility = 'hidden';
         const link = document.createElement('a');
         link.href = 'javascript:void(0)';
-        link.textContent = 'Alle';
+        link.textContent = name;
 	const show = () => show_group_form(group);
         link.addEventListener('click', show, false);
         container.appendChild(chk);
@@ -190,7 +190,9 @@ function make_participant_forms(participantData, locationChoices) {
         return {container: container, show: show};
     }
 
-    function make_all_form() { return make_group_form(participantData); }
+    function make_all_form() {
+        return make_group_form(participantData, 'Alle');
+    }
 
     const allForm = make_all_form();
     const choicesDiv = document.createElement('div');

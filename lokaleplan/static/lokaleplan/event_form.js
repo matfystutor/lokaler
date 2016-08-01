@@ -379,14 +379,14 @@ function make_participant_forms(participantData, locationChoices) {
         show_location_choice_for_group(group);
     }
 
-    function make_group_form(group) {
+    function make_group_form(group, name) {
         var container = document.createElement('div');
         var chk = document.createElement('input');
         chk.type = 'checkbox';
         chk.style.visibility = 'hidden';
         var link = document.createElement('a');
         link.href = 'javascript:void(0)';
-        link.textContent = 'Alle';
+        link.textContent = name;
         var show = function show() {
             return show_group_form(group);
         };
@@ -397,7 +397,7 @@ function make_participant_forms(participantData, locationChoices) {
     }
 
     function make_all_form() {
-        return make_group_form(participantData);
+        return make_group_form(participantData, 'Alle');
     }
 
     var allForm = make_all_form();
