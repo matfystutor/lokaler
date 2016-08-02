@@ -21,7 +21,7 @@
     <td>{{ event.start_time }}</td>
     <td>{{ event.end_time }}</td>
     <td>{{ event.manual_time }}</td>
-    <td><a href="{% url 'event_update' pk=event.pk %}">{{ event.name }}</a></td>
+    <td><a href="{% url 'event_update' pk=event.pk %}">{{ event.name|default:"(blank)" }}</a></td>
     {% else %}
     <td></td>
     <td></td>
