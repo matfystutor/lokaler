@@ -77,6 +77,10 @@ class EventForm(forms.Form):
         participant_events = {}
         for e in self.events:
             for p in e.participants.all():
+                if p.pk in participant_events:
+                    raise ValueError(
+                        'Participant %s in multiple events: %s, %s' %
+                        (p, participant_events[p.pk].pk, e.pk))
                 participant_events[p.pk] = e
         initial_participants = sorted(participant_events.keys())
         participant_choices = [(p.pk, p.name) for p in self.participants]
