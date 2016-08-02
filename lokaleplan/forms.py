@@ -97,7 +97,7 @@ class EventForm(forms.Form):
                 event_locations = []
             prefix = 'p%s-' % p.pk
             self.fields[prefix + 'name'] = forms.CharField(
-                label='Navn', initial=event.name)
+                required=False, label='Navn', initial=event.name)
             self.fields[prefix + 'day'] = forms.TypedChoiceField(
                 choices=Event.DAYS, coerce=int, label='Dag', initial=event.day)
             self.fields[prefix + 'start_time'] = MinuteTimeField(
