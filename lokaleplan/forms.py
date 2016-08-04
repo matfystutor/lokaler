@@ -111,7 +111,9 @@ class EventForm(forms.Form):
     def clean(self):
         data = self.cleaned_data
         qs = Event.objects.none()
-        for p in self.participants:
+        chosen_participants = [p for p in self.participants
+                               if p.pk in data['participants']]
+        for p in chosen_participants:
             prefix = 'p%s-' % p.pk
             qs = qs | Event.objects.filter(
                 participants__pk=p.pk,
