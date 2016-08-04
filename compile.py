@@ -23,10 +23,13 @@ def await_changes(filename, events=()):
         stdout=subprocess.PIPE,
         universal_newlines=True)
     with p:
-        for line in p.stdout:
-            n = line.split()[2]
-            if n == name:
-                yield
+        try:
+            for line in p.stdout:
+                n = line.split()[2]
+                if n == name:
+                    yield
+        except KeyboardInterrupt:
+            return
 
 
 compilers = {}
