@@ -1,6 +1,6 @@
 'use strict';
 
-// vim:set ft=javascript:
+// vim:set ft=javascript sw=4 et:
 function get_locations(el) {
     var options = [].slice.call(el.options);
     var locations = options.map(function (o) {
@@ -167,7 +167,7 @@ function clear_element(domelement) {
     }
 }
 
-function make_participant_forms(participantData, locationChoices) {
+function make_participant_forms(participantData, locationChoices, set_active) {
     function make_participant_choice(participant) {
         var container = document.createElement('div');
         var participantCheckbox = make_linked_checkbox(function () {
@@ -190,6 +190,7 @@ function make_participant_forms(participantData, locationChoices) {
         }
 
         function show_participant() {
+            set_active([participant], 'Data for ' + participant.name + ':');
             var _iteratorNormalCompletion4 = true;
             var _didIteratorError4 = false;
             var _iteratorError4 = undefined;
@@ -383,7 +384,11 @@ function make_participant_forms(participantData, locationChoices) {
         // Ensure that the name,day,... fields are shown
         // by showing some participant's form.
         participants[group[0].id].show();
-        // Then, change the location choice to the group choice.
+
+        var target = enable_onchange ? group[0].name.substring(0, group[0].name.length - 1) : 'alle';
+        var label = 'Data for ' + target + ':';
+
+        if (enable_onchange) set_active(group, label);else set_active(participantData, label);
 
         function enable() {
             var _iteratorNormalCompletion9 = true;
@@ -501,14 +506,14 @@ function make_participant_forms(participantData, locationChoices) {
     return { container: choicesDiv, all: allForm, participants: participants };
 }
 
-function link_together_participant_input(participants, field) {
+function link_together_participant_input(participants, field, get_active) {
     function oninput(ev) {
         var _iteratorNormalCompletion12 = true;
         var _didIteratorError12 = false;
         var _iteratorError12 = undefined;
 
         try {
-            for (var _iterator12 = participants[Symbol.iterator](), _step12; !(_iteratorNormalCompletion12 = (_step12 = _iterator12.next()).done); _iteratorNormalCompletion12 = true) {
+            for (var _iterator12 = get_active()[Symbol.iterator](), _step12; !(_iteratorNormalCompletion12 = (_step12 = _iterator12.next()).done); _iteratorNormalCompletion12 = true) {
                 var p = _step12.value;
 
                 p.form[field].value = ev.target.value;
@@ -554,14 +559,14 @@ function link_together_participant_input(participants, field) {
     }
 }
 
-function link_together_participant_select(participants, field) {
+function link_together_participant_select(participants, field, get_active) {
     function onchange(ev) {
         var _iteratorNormalCompletion14 = true;
         var _didIteratorError14 = false;
         var _iteratorError14 = undefined;
 
         try {
-            for (var _iterator14 = participants[Symbol.iterator](), _step14; !(_iteratorNormalCompletion14 = (_step14 = _iterator14.next()).done); _iteratorNormalCompletion14 = true) {
+            for (var _iterator14 = get_active()[Symbol.iterator](), _step14; !(_iteratorNormalCompletion14 = (_step14 = _iterator14.next()).done); _iteratorNormalCompletion14 = true) {
                 var p = _step14.value;
 
                 p.form[field].selectedIndex = ev.target.selectedIndex;
@@ -607,7 +612,7 @@ function link_together_participant_select(participants, field) {
     }
 }
 
-function link_together_participant_fields(participants) {
+function link_together_participant_fields(participants, get_active) {
     var field_names = ['name', 'start_time', 'end_time', 'manual_time'];
     var _iteratorNormalCompletion16 = true;
     var _didIteratorError16 = false;
@@ -617,7 +622,7 @@ function link_together_participant_fields(participants) {
         for (var _iterator16 = field_names[Symbol.iterator](), _step16; !(_iteratorNormalCompletion16 = (_step16 = _iterator16.next()).done); _iteratorNormalCompletion16 = true) {
             var f = _step16.value;
 
-            link_together_participant_input(participants, f);
+            link_together_participant_input(participants, f, get_active);
         }
     } catch (err) {
         _didIteratorError16 = true;
@@ -634,7 +639,7 @@ function link_together_participant_fields(participants) {
         }
     }
 
-    link_together_participant_select(participants, 'day');
+    link_together_participant_select(participants, 'day', get_active);
 }
 
 function setup_form(participantData) {
@@ -645,7 +650,14 @@ function setup_form(participantData) {
     var formDiv = document.createElement('div');
     formDiv.className = 'field event_form';
 
-    link_together_participant_fields(participantData);
+    var formLabel = document.createElement('label');
+    formLabel.textContent = 'Data for alle:';
+    formDiv.appendChild(formLabel);
+
+    var active_participants = [];
+    link_together_participant_fields(participantData, function () {
+        return active_participants;
+    });
 
     var _iteratorNormalCompletion17 = true;
     var _didIteratorError17 = false;
@@ -684,7 +696,9 @@ function setup_form(participantData) {
     participantList.className = 'field';
     var participantLabel = document.createElement('label');
     participantLabel.textContent = 'Hold:';
-    var participantForms = make_participant_forms(participantData, locationChoices);
+    var participantForms = make_participant_forms(participantData, locationChoices, function (p, l) {
+        active_participants = p;formLabel.textContent = l;
+    });
 
     participantList.appendChild(participantLabel);
     participantList.appendChild(participantForms.container);
