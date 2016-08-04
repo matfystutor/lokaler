@@ -88,7 +88,7 @@ function clear_element(domelement) {
         domelement.removeChild(domelement.lastChild);
 }
 
-function make_participant_forms(participantData, locationChoices) {
+function make_participant_forms(participantData, locationChoices, set_active) {
     function make_participant_choice(participant) {
         const container = document.createElement('div');
         const participantCheckbox = make_linked_checkbox(
@@ -107,6 +107,7 @@ function make_participant_forms(participantData, locationChoices) {
         }
 
         function show_participant() {
+            set_active([participant], 'Data for ' + participant.name + ':');
             for (const p of participantData) hide(p.container);
             make_visible(participant.container);
             clear_element(locationChoices);
@@ -177,7 +178,15 @@ function make_participant_forms(participantData, locationChoices) {
         // Ensure that the name,day,... fields are shown
         // by showing some participant's form.
         participants[group[0].id].show();
-        // Then, change the location choice to the group choice.
+
+        const target = (enable_onchange ?
+            group[0].name.substring(0, group[0].name.length - 1) : 'alle');
+        const label = 'Data for ' + target + ':';
+
+        if (enable_onchange)
+            set_active(group, label);
+        else
+            set_active(participantData, label);
 
         function enable() {
             for (const p of group)
@@ -224,29 +233,29 @@ function make_participant_forms(participantData, locationChoices) {
     return {container: choicesDiv, all: allForm, participants: participants};
 }
 
-function link_together_participant_input(participants, field) {
+function link_together_participant_input(participants, field, get_active) {
     function oninput(ev) {
-        for (const p of participants)
+        for (const p of get_active())
             p.form[field].value = ev.target.value;
     }
     for (const p of participants)
         p.form[field].addEventListener('input', oninput, false);
 }
 
-function link_together_participant_select(participants, field) {
+function link_together_participant_select(participants, field, get_active) {
     function onchange(ev) {
-        for (const p of participants)
+        for (const p of get_active())
             p.form[field].selectedIndex = ev.target.selectedIndex;
     }
     for (const p of participants)
         p.form[field].addEventListener('change', onchange, false);
 }
 
-function link_together_participant_fields(participants) {
+function link_together_participant_fields(participants, get_active) {
     const field_names = ['name', 'start_time', 'end_time', 'manual_time'];
     for (const f of field_names)
-        link_together_participant_input(participants, f);
-    link_together_participant_select(participants, 'day');
+        link_together_participant_input(participants, f, get_active);
+    link_together_participant_select(participants, 'day', get_active);
 }
 
 function setup_form(participantData) {
@@ -257,7 +266,13 @@ function setup_form(participantData) {
     const formDiv = document.createElement('div');
     formDiv.className = 'field event_form';
 
-    link_together_participant_fields(participantData);
+    const formLabel = document.createElement('label');
+    formLabel.textContent = 'Data for alle:';
+    formDiv.appendChild(formLabel);
+
+    let active_participants = [];
+    link_together_participant_fields(
+        participantData, () => active_participants);
 
     for (const p of participantData)
         formDiv.appendChild(p.container);
@@ -275,7 +290,8 @@ function setup_form(participantData) {
     const participantLabel = document.createElement('label');
     participantLabel.textContent = 'Hold:';
     const participantForms = make_participant_forms(
-        participantData, locationChoices);
+        participantData, locationChoices,
+        (p, l) => {active_participants = p; formLabel.textContent = l;});
 
     participantList.appendChild(participantLabel);
     participantList.appendChild(participantForms.container);
