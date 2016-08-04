@@ -1,4 +1,4 @@
-// vim:set ft=javascript:
+// vim:set ft=javascript sw=4 et:
 function get_locations(el) {
     const options = [].slice.call(el.options);
     const locations = options.map(
