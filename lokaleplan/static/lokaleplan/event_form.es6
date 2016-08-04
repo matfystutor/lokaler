@@ -93,7 +93,7 @@ function make_participant_forms(participantData, locationChoices) {
         const container = document.createElement('div');
         const participantCheckbox = make_linked_checkbox(
             () => participant.selected,
-            (b) => {participant.selected = b; update_label();});
+            b => {participant.selected = b; update_label();});
         const link = document.createElement('a');
         link.href = 'javascript:void(0)';
 
@@ -114,7 +114,7 @@ function make_participant_forms(participantData, locationChoices) {
                 const locationChoice = document.createElement('div');
                 const locationCheckbox = make_linked_checkbox(
                     () => loc.selected,
-                    (b) => {loc.selected = b;
+                    b => {loc.selected = b;
                             participantCheckbox.checked =
                                 participant.selected = true;
                             update_label(); });
@@ -161,7 +161,7 @@ function make_participant_forms(participantData, locationChoices) {
             const locationChoice = document.createElement('div');
             const chk = make_linked_checkbox(
                 () => locationSelected[i],
-                (b) => {
+                b => {
                     for (const loc of locations[i]) loc.selected = b;
                     locationSelected[i] = b;
                     redraw_group(group);
