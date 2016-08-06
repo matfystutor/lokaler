@@ -297,6 +297,12 @@ class EventTable(TemplateView):
         # Transpose columns to get rows
         row_cells = list(zip(*column_cells))
 
+        # Remove rows and time slices where no cells contain any events
+        row_times_and_cells = [(time, cells)
+                               for time, cells in zip(time_slices, row_cells)
+                               if any(cells)]
+        time_slices, row_cells = zip(*row_times_and_cells)
+
         # Transpose rows to get columns
         column_cells = list(zip(*row_cells))
 
