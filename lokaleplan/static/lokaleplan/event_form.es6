@@ -57,6 +57,11 @@ function make_visible(domelement) {
     if (domelement) domelement.style.display = '';
 }
 
+function all(xs) {
+    for (const x of xs) if (!x) return false;
+    return true;
+}
+
 function hide(domelement) {
     if (domelement) domelement.style.display = 'none';
 }
@@ -200,21 +205,35 @@ function make_participant_forms(participantData, locationChoices, set_active) {
 
     function make_group_form(group, name, enable_onchange=true) {
         const container = document.createElement('div');
+        const groupCheckbox = make_linked_checkbox(
+            () => all(group.map((p) => p.selected)),
+            b => {for (const p of group) participants[p.id].selected = b;});
+        const link = document.createElement('a');
+        link.href = 'javascript:void(0)';
+        link.textContent = name;
+        const show = () => show_group_form(group, enable_onchange);
+        link.addEventListener('click', show, false);
+        container.appendChild(groupCheckbox);
+        container.appendChild(link);
+        return {container: container, show: show};
+    }
+
+    function make_all_form() {
+        const group = participantData;
+        const name = 'Alle';
+
+        const container = document.createElement('div');
         const chk = document.createElement('input');
         chk.type = 'checkbox';
         chk.style.visibility = 'hidden';
         const link = document.createElement('a');
         link.href = 'javascript:void(0)';
         link.textContent = name;
-	const show = () => show_group_form(group, enable_onchange);
+        const show = () => show_group_form(group, false);
         link.addEventListener('click', show, false);
         container.appendChild(chk);
         container.appendChild(link);
         return {container: container, show: show};
-    }
-
-    function make_all_form() {
-        return make_group_form(participantData, 'Alle', false);
     }
 
     const allForm = make_all_form();
