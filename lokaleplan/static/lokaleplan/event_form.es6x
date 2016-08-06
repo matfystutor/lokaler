@@ -339,4 +339,119 @@ function init() {
     formelement.insertBefore(event_form_div, formelement.firstChild);
 }
 
+class ParticipantOption extends React.Component {
+    render() {
+        const checked = all(this.props.group.map(p => p.selected));
+        return <div>
+            <input type='checkbox' value={checked} onChange={e => this.props.onToggle(!checked)} />
+            <a href='javascript:void(0)' onClick={this.props.onClick}>
+                {this.props.label}
+            </a>
+        </div>;
+    }
+}
+
+class EventForm extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = {active: this.props.participants};
+    }
+    static defaultProps = {
+    }
+    static propTypes = {
+        participants: React.PropTypes.array.isRequired,
+    }
+    state = {
+    }
+    setParticipantsSelected(participants, selected) {
+        console.log(participants, selected);
+        for (const p of participants) p.selected = selected;
+        this.forceUpdate();
+    }
+
+    render() {
+        const participantList = [];
+        for (const p of this.props.participants)
+            participantList.push(
+                <ParticipantOption key={p.id} group={[p]} label={p.name}
+                    onToggle={b => this.setParticipantsSelected([p], b)}
+                    onClick={() => this.setState({active: [p]})} />
+            );
+        const activeLabel = this.state.active[0].name;
+        return <div className='event_form'>
+            <div ref='container'>
+                <div className='field' ref='participantList'>
+                    {participantList}
+                </div>
+                <div className='field event_form' ref='formDiv'>
+                    <label ref='formLabel'>Data for {activeLabel}:</label>
+                    <div>
+                        <div className='field'>
+                            <div className='event_form'>
+    <div className="time">
+        <div className="field">
+            <label>Dag:</label>
+            <select value={'3'}>
+                <option value={'3'}>Onsdag</option>
+                <option value={'4'}>Torsdag</option>
+                <option value={'5'}>Fredag</option>
+            </select>
+        </div>
+        <div className="field">
+            <label>Start:</label>
+            <input value="09:00" />
+        </div>
+        <div className="field">
+            <label>Slut:</label>
+            <input value="10:00" />
+        </div>
+    </div>
+    <div className="name">
+        <div className="field">
+            <label>Navn:</label>
+            <input value="Hej" />
+        </div>
+    </div>
+    <div>
+        <div className="field">
+            <label>Tid:</label>
+            <input value="" />
+        </div>
+    </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div>
+                        <div className='field'>
+                            <label>Lokaler:</label>
+                            <div className='locations'>
+                                <div><label>
+                                    <input type='checkbox' />
+                                    <span>Hej</span>
+                                </label></div>
+                                <div><label>
+                                    <input type='checkbox' />
+                                    <span>Farvel</span>
+                                </label></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>;
+    }
+}
+
+function init_react() {
+    const participants = get_participants();
+    console.log(participants);
+    const formelement = participants[0].form.name.form;
+    for (const p of participants) { hide(p.container); hide(p.form.locations); }
+    hide(document.querySelector('.participants'));
+    hide_all(document.querySelectorAll('.participant-name'));
+    const event_form_div = document.createElement('div');
+    formelement.insertBefore(event_form_div, formelement.firstChild);
+    ReactDOM.render(<EventForm participants={participants} />, event_form_div);
+}
+
 window.addEventListener('load', init, false);
