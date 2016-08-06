@@ -291,12 +291,20 @@ class EventTable(TemplateView):
     def remove_uninteresting_rows(self, row_cells, time_slices):
         # A row is uninteresting if no event starts or ends in it.
         # Remove uninteresting rows and their time slices.
-        row_times_and_cells = zip(time_slices, row_cells)
-        row_times_and_cells = [
+        if len(row_cells) < 2:
+            return row_cells, time_slices
+        row_times_and_cells = list(zip(time_slices, row_cells))
+        first = row_times_and_cells[0]
+        last = row_times_and_cells[-1]
+        prev_next_cur = zip(row_cells[:-2], row_cells[2:],
+                            row_times_and_cells[1:-1])
+        mid = [
             ((start, end), cells)
-            for (start, end), cells in row_times_and_cells
-            if any(e.start_time == start or e.end_time == end
-                   for cell in cells for e in cell)]
+            for prev, next, ((start, end), cells) in prev_next_cur
+            if any(c and (p != c or c != n)
+                   for p, n, c in zip(prev, next, cells))
+        ]
+        row_times_and_cells = [first] + mid + [last]
         time_slices, row_cells = zip(*row_times_and_cells)
         return row_cells, time_slices
 
