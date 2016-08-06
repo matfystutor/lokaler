@@ -39,7 +39,8 @@ function get_participants() {
 function get_participant_groups(participants) {
     const groups = {};
     for (const p of participants) {
-        const mo = /^([A-ZÆØÅ]+)(\d+)$/.exec(p.name);
+        // Hack to support DATAM => DAT group
+        const mo = /^([A-ZÆØÅ]+)(\d+|AM)$/.exec(p.name);
         if (mo) {
             const groupName = mo[1];
             if (!groups[groupName]) groups[groupName] = [];
