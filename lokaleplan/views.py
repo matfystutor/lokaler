@@ -8,7 +8,7 @@ from django.template.loader import render_to_string
 
 from lokaleplan.forms import PerlForm, EventForm
 from lokaleplan.models import Participant, Event, Location
-from lokaleplan.texrender import tex_to_pdf
+from lokaleplan.texrender import tex_to_pdf, RenderError
 
 
 class Home(TemplateView):
@@ -131,7 +131,11 @@ class ParticipantPlans(View):
             return HttpResponse(source,
                                 content_type='text/plain; charset=utf8')
         elif mode == 'pdf':
-            pdf = tex_to_pdf(source)
+            try:
+                pdf = tex_to_pdf(source)
+            except RenderError as exn:
+                return HttpResponse(
+                    exn.output, content_type='text/plain', status=500)
             return HttpResponse(pdf, content_type='application/pdf')
         else:
             raise ValueError(mode)
