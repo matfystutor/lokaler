@@ -291,6 +291,10 @@ class EventTable(TemplateView):
             cells = self.put_events_in_time_slices(events, time_slices)
             column_cells.append(cells)
 
+        if not any(any(cells) for cells in column_cells):
+            # Handle this specially to avoid zipping an empty list below
+            return []
+
         assert len(column_cells) == len(header)
         assert all(len(c) == len(time_slices) for c in column_cells)
 
