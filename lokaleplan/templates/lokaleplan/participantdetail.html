@@ -3,49 +3,33 @@
 {% block title %}{{ participant }}{% endblock %}
 {% block content %}
 <h1>{{ participant }}</h1>
+<div class="participant-schedule">
 {% for day in days %}
-<table class="participant-schedule">
+<table>
 <thead>
     <tr>
         <th>{{ day.name }}</th>
-        <th>Navn</th>
-        <th>Sted</th>
-        <th>Hold</th>
+        <th></th>
     </tr>
 </thead>
 <tbody>
 {% for event in day.events %}
 <tr><td class="time">{{ event.get_display_time }}</td>
-    <td class="name"><a class="event-link" href="{% url 'event_update' pk=event.pk %}">
-        {{ event.name }}</a></td>
-    <td class="location">
+    <td class="name">
+        <div>
+        <a class="event-link" href="{% url 'event_update' pk=event.pk %}">
+        {{ event.name }}</a>
+        </div>
         <div>
         {% for location in event.locations.all %}
         {% table_link day.key location %}
         {% endfor %}
         </div>
-        {% for e in event.extra %}
-        <div class="extra">
-        {% for l in e.locations.all %}{% table_link day.key l %}
-        {% endfor %}
-        </div>
-        {% endfor %}
-    </td>
-    <td class="participants">
-        <div>
-        {% for p in event.participants.all %}{% table_link day.key p %}
-        {% endfor %}
-        </div>
-        {% for e in event.extra %}
-        <div class="extra">
-        {% for p in e.participants.all %}{% table_link day.key p %}
-        {% endfor %}
-        </div>
-        {% endfor %}
     </td>
 </tr>
 {% endfor %}
 </tbody>
 </table>
 {% endfor %}
+</div>
 {% endblock %}

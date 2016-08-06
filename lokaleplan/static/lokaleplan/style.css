@@ -111,18 +111,18 @@ tr:nth-child(even) {
 
 .participant-schedule {
     width: 100%;
+    display: flex;
+    flex-wrap: wrap;
+}
+.participant-schedule > table {
+    margin-right: 10px;
+    margin-bottom: 10px;
+}
+.participant-schedule > table:last-child {
+    margin-right: 0px;
 }
 .participant-schedule td {
     vertical-align: top;
-}
-.participant-schedule .extra {
-    color: #666;
-}
-.participant-schedule .time {
-    width: 90px;
-}
-.participant-schedule .name, .participant-schedule .location {
-    width: 150px;
 }
 
 col {
