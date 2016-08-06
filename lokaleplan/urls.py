@@ -38,5 +38,5 @@ urlpatterns = [
     url(r'^participants-tex/$', ParticipantPlans.as_view(),
         name='participants-tex', kwargs=dict(mode='source')),
     url(r'^participants-pdf/$', ParticipantPlans.as_view(),
-        name='participants-tex', kwargs=dict(mode='pdf')),
+        name='participants-pdf', kwargs=dict(mode='pdf')),
 ]

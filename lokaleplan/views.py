@@ -16,7 +16,14 @@ class Home(TemplateView):
 
     def get_context_data(self, **kwargs):
         context_data = super().get_context_data(**kwargs)
-        context_data['participants'] = Participant.objects.all()
+        groups = {}
+        for p in Participant.objects.all():
+            if p.kind == Participant.PARTNER:
+                k = 'z'
+            else:
+                k = p.name[0]
+            groups.setdefault(k, []).append(p)
+        context_data['groups'] = [groups[k] for k in sorted(groups)]
         return context_data
 
 
