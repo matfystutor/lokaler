@@ -20,7 +20,7 @@
 </thead>
 <tbody>
 {% for row in table.rows %}
-<tr>
+<tr class="{{ row.class }}">
     <th>{{ row.time_display }}</th>
     {% for cell in row.cells %}
     {% if cell.rowspan %}

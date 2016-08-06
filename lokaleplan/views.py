@@ -314,25 +314,33 @@ class EventTable(TemplateView):
         assert sum(spans) == len(cells)
         return spans
 
-    def remove_uninteresting_rows(self, row_cells, time_slices):
-        # A row is uninteresting if no event starts or ends in it.
-        # Remove uninteresting rows and their time slices.
-        if len(row_cells) < 2:
-            return row_cells, time_slices
-        row_times_and_cells = list(zip(time_slices, row_cells))
-        first = row_times_and_cells[0]
-        last = row_times_and_cells[-1]
-        prev_next_cur = zip(row_cells[:-2], row_cells[2:],
-                            row_times_and_cells[1:-1])
-        mid = [
-            ((start, end), cells)
-            for prev, next, ((start, end), cells) in prev_next_cur
-            if any(c and (p != c or c != n)
-                   for p, n, c in zip(prev, next, cells))
+    def collapse_equal_rows(self, row_cells, time_slices):
+        # This transformation only makes sense if time slices are adjacent.
+        assert all(xb == ya for (xa, xb), (ya, yb) in
+                   zip(time_slices[:-1], time_slices[1:]))
+        spans = self.merge_repeating_cells(row_cells)
+        row_cells_and_times = [
+            (cells, (time_slices[i][0], time_slices[i + span - 1][1]))
+            for i, (cells, span) in enumerate(zip(row_cells, spans))
+            if span > 0
         ]
-        row_times_and_cells = [first] + mid + [last]
-        time_slices, row_cells = zip(*row_times_and_cells)
+        row_cells, time_slices = zip(*row_cells_and_times)
         return row_cells, time_slices
+
+    def compute_interesting_rows(self, row_cells):
+        # A row is uninteresting if no event starts or ends in it.
+        # Compute a list u such that u[i] is False iff row i is uninteresting.
+        if len(row_cells) < 2:
+            return [True] * len(row_cells)
+        first = [any(row_cells[0])]
+        last = [any(row_cells[-1])]
+        prev_cur_next = zip(row_cells[:-2], row_cells[1:-1], row_cells[2:])
+        mid = [
+            any(c and (c != p or c != n)
+                for p, c, n in zip(prev, cur, next))
+            for prev, cur, next in prev_cur_next
+        ]
+        return first + mid + last
 
     def construct_table(self, header, events_by_key, time_slices):
         column_cells = []
@@ -352,8 +360,9 @@ class EventTable(TemplateView):
         # Transpose columns to get rows
         row_cells = list(zip(*column_cells))
 
-        row_cells, time_slices = self.remove_uninteresting_rows(
+        row_cells, time_slices = self.collapse_equal_rows(
             row_cells, time_slices)
+        interesting = self.compute_interesting_rows(row_cells)
 
         # Transpose rows to get columns
         column_cells = list(zip(*row_cells))
@@ -382,16 +391,23 @@ class EventTable(TemplateView):
         ) == len(header) * len(time_slices)
 
         rows = []
-        row_data = zip(time_slices, row_cells, row_rowspans, row_colspans)
-        for (start, end), cells, rowspans, colspans in row_data:
+        row_data = zip(time_slices, row_cells, row_rowspans, row_colspans,
+                       interesting)
+        for (start, end), cells, rowspans, colspans, i in row_data:
             row = []
             for cell, rowspan, colspan in zip(cells, rowspans, colspans):
                 text, class_, events = cell
                 row.append({'rowspan': rowspan, 'colspan': colspan,
                             'events': events, 'text': text, 'class': class_})
-            time_display = Event.display_time_interval(start, end)
-            rows.append(dict(
-                time_display=time_display, start=start, end=end, cells=row))
+            if i:
+                time_display = Event.display_time_interval(start, end)
+                row_class = ''
+            else:
+                time_display = ''
+                row_class = 'uninteresting'
+            rows.append({
+                'class': row_class, 'time_display': time_display,
+                'start': start, 'end': end, 'cells': row})
         return rows
 
     def get_context_data(self, **kwargs):
