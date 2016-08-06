@@ -1,5 +1,13 @@
 'use strict';
 
+var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
 // vim:set ft=javascript sw=4 et:
 function get_locations(el) {
     var options = [].slice.call(el.options);
@@ -818,6 +826,334 @@ function init() {
     hide_all(document.querySelectorAll('.participant-name'));
     var event_form_div = setup_form(participants);
     formelement.insertBefore(event_form_div, formelement.firstChild);
+}
+
+var ParticipantOption = (function (_React$Component) {
+    _inherits(ParticipantOption, _React$Component);
+
+    function ParticipantOption() {
+        _classCallCheck(this, ParticipantOption);
+
+        return _possibleConstructorReturn(this, Object.getPrototypeOf(ParticipantOption).apply(this, arguments));
+    }
+
+    _createClass(ParticipantOption, [{
+        key: 'render',
+        value: function render() {
+            var _this2 = this;
+
+            var checked = all(this.props.group.map(function (p) {
+                return p.selected;
+            }));
+            return React.createElement(
+                'div',
+                null,
+                React.createElement('input', { type: 'checkbox', value: checked, onChange: function onChange(e) {
+                        return _this2.props.onToggle(!checked);
+                    } }),
+                React.createElement(
+                    'a',
+                    { href: 'javascript:void(0)', onClick: this.props.onClick },
+                    this.props.label
+                )
+            );
+        }
+    }]);
+
+    return ParticipantOption;
+})(React.Component);
+
+var EventForm = (function (_React$Component2) {
+    _inherits(EventForm, _React$Component2);
+
+    function EventForm(props) {
+        _classCallCheck(this, EventForm);
+
+        var _this3 = _possibleConstructorReturn(this, Object.getPrototypeOf(EventForm).call(this, props));
+
+        _this3.state = {};
+
+        _this3.state = { active: _this3.props.participants };
+        return _this3;
+    }
+
+    _createClass(EventForm, [{
+        key: 'setParticipantsSelected',
+        value: function setParticipantsSelected(participants, selected) {
+            console.log(participants, selected);
+            var _iteratorNormalCompletion21 = true;
+            var _didIteratorError21 = false;
+            var _iteratorError21 = undefined;
+
+            try {
+                for (var _iterator21 = participants[Symbol.iterator](), _step21; !(_iteratorNormalCompletion21 = (_step21 = _iterator21.next()).done); _iteratorNormalCompletion21 = true) {
+                    var p = _step21.value;
+                    p.selected = selected;
+                }
+            } catch (err) {
+                _didIteratorError21 = true;
+                _iteratorError21 = err;
+            } finally {
+                try {
+                    if (!_iteratorNormalCompletion21 && _iterator21.return) {
+                        _iterator21.return();
+                    }
+                } finally {
+                    if (_didIteratorError21) {
+                        throw _iteratorError21;
+                    }
+                }
+            }
+
+            this.forceUpdate();
+        }
+    }, {
+        key: 'render',
+        value: function render() {
+            var _this4 = this;
+
+            var participantList = [];
+            var _iteratorNormalCompletion22 = true;
+            var _didIteratorError22 = false;
+            var _iteratorError22 = undefined;
+
+            try {
+                var _loop3 = function _loop3() {
+                    var p = _step22.value;
+
+                    participantList.push(React.createElement(ParticipantOption, { key: p.id, group: [p], label: p.name,
+                        onToggle: function onToggle(b) {
+                            return _this4.setParticipantsSelected([p], b);
+                        },
+                        onClick: function onClick() {
+                            return _this4.setState({ active: [p] });
+                        } }));
+                };
+
+                for (var _iterator22 = this.props.participants[Symbol.iterator](), _step22; !(_iteratorNormalCompletion22 = (_step22 = _iterator22.next()).done); _iteratorNormalCompletion22 = true) {
+                    _loop3();
+                }
+            } catch (err) {
+                _didIteratorError22 = true;
+                _iteratorError22 = err;
+            } finally {
+                try {
+                    if (!_iteratorNormalCompletion22 && _iterator22.return) {
+                        _iterator22.return();
+                    }
+                } finally {
+                    if (_didIteratorError22) {
+                        throw _iteratorError22;
+                    }
+                }
+            }
+
+            var activeLabel = this.state.active[0].name;
+            return React.createElement(
+                'div',
+                { className: 'event_form' },
+                React.createElement(
+                    'div',
+                    { ref: 'container' },
+                    React.createElement(
+                        'div',
+                        { className: 'field', ref: 'participantList' },
+                        participantList
+                    ),
+                    React.createElement(
+                        'div',
+                        { className: 'field event_form', ref: 'formDiv' },
+                        React.createElement(
+                            'label',
+                            { ref: 'formLabel' },
+                            'Data for ',
+                            activeLabel,
+                            ':'
+                        ),
+                        React.createElement(
+                            'div',
+                            null,
+                            React.createElement(
+                                'div',
+                                { className: 'field' },
+                                React.createElement(
+                                    'div',
+                                    { className: 'event_form' },
+                                    React.createElement(
+                                        'div',
+                                        { className: 'time' },
+                                        React.createElement(
+                                            'div',
+                                            { className: 'field' },
+                                            React.createElement(
+                                                'label',
+                                                null,
+                                                'Dag:'
+                                            ),
+                                            React.createElement(
+                                                'select',
+                                                { value: '3' },
+                                                React.createElement(
+                                                    'option',
+                                                    { value: '3' },
+                                                    'Onsdag'
+                                                ),
+                                                React.createElement(
+                                                    'option',
+                                                    { value: '4' },
+                                                    'Torsdag'
+                                                ),
+                                                React.createElement(
+                                                    'option',
+                                                    { value: '5' },
+                                                    'Fredag'
+                                                )
+                                            )
+                                        ),
+                                        React.createElement(
+                                            'div',
+                                            { className: 'field' },
+                                            React.createElement(
+                                                'label',
+                                                null,
+                                                'Start:'
+                                            ),
+                                            React.createElement('input', { value: '09:00' })
+                                        ),
+                                        React.createElement(
+                                            'div',
+                                            { className: 'field' },
+                                            React.createElement(
+                                                'label',
+                                                null,
+                                                'Slut:'
+                                            ),
+                                            React.createElement('input', { value: '10:00' })
+                                        )
+                                    ),
+                                    React.createElement(
+                                        'div',
+                                        { className: 'name' },
+                                        React.createElement(
+                                            'div',
+                                            { className: 'field' },
+                                            React.createElement(
+                                                'label',
+                                                null,
+                                                'Navn:'
+                                            ),
+                                            React.createElement('input', { value: 'Hej' })
+                                        )
+                                    ),
+                                    React.createElement(
+                                        'div',
+                                        null,
+                                        React.createElement(
+                                            'div',
+                                            { className: 'field' },
+                                            React.createElement(
+                                                'label',
+                                                null,
+                                                'Tid:'
+                                            ),
+                                            React.createElement('input', { value: '' })
+                                        )
+                                    )
+                                )
+                            )
+                        ),
+                        React.createElement(
+                            'div',
+                            null,
+                            React.createElement(
+                                'div',
+                                { className: 'field' },
+                                React.createElement(
+                                    'label',
+                                    null,
+                                    'Lokaler:'
+                                ),
+                                React.createElement(
+                                    'div',
+                                    { className: 'locations' },
+                                    React.createElement(
+                                        'div',
+                                        null,
+                                        React.createElement(
+                                            'label',
+                                            null,
+                                            React.createElement('input', { type: 'checkbox' }),
+                                            React.createElement(
+                                                'span',
+                                                null,
+                                                'Hej'
+                                            )
+                                        )
+                                    ),
+                                    React.createElement(
+                                        'div',
+                                        null,
+                                        React.createElement(
+                                            'label',
+                                            null,
+                                            React.createElement('input', { type: 'checkbox' }),
+                                            React.createElement(
+                                                'span',
+                                                null,
+                                                'Farvel'
+                                            )
+                                        )
+                                    )
+                                )
+                            )
+                        )
+                    )
+                )
+            );
+        }
+    }]);
+
+    return EventForm;
+})(React.Component);
+
+EventForm.defaultProps = {};
+EventForm.propTypes = {
+    participants: React.PropTypes.array.isRequired
+};
+
+function init_react() {
+    var participants = get_participants();
+    console.log(participants);
+    var formelement = participants[0].form.name.form;
+    var _iteratorNormalCompletion23 = true;
+    var _didIteratorError23 = false;
+    var _iteratorError23 = undefined;
+
+    try {
+        for (var _iterator23 = participants[Symbol.iterator](), _step23; !(_iteratorNormalCompletion23 = (_step23 = _iterator23.next()).done); _iteratorNormalCompletion23 = true) {
+            var _p = _step23.value;
+            hide(_p.container);hide(_p.form.locations);
+        }
+    } catch (err) {
+        _didIteratorError23 = true;
+        _iteratorError23 = err;
+    } finally {
+        try {
+            if (!_iteratorNormalCompletion23 && _iterator23.return) {
+                _iterator23.return();
+            }
+        } finally {
+            if (_didIteratorError23) {
+                throw _iteratorError23;
+            }
+        }
+    }
+
+    hide(document.querySelector('.participants'));
+    hide_all(document.querySelectorAll('.participant-name'));
+    var event_form_div = document.createElement('div');
+    formelement.insertBefore(event_form_div, formelement.firstChild);
+    ReactDOM.render(React.createElement(EventForm, { participants: participants }), event_form_div);
 }
 
 window.addEventListener('load', init, false);
