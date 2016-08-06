@@ -379,3 +379,19 @@ class EventUpdate(FormView):
     def form_valid(self, form):
         form.save()
         return redirect('events')
+
+
+class EventCreate(FormView):
+    form_class = EventForm
+    template_name = 'lokaleplan/event_form.html'
+
+    def get_form_kwargs(self):
+        kwargs = super(EventCreate, self).get_form_kwargs()
+        kwargs['events'] = []
+        kwargs['locations'] = Location.objects.all()
+        kwargs['participants'] = Participant.objects.all()
+        return kwargs
+
+    def form_valid(self, form):
+        form.save()
+        return redirect('events')
