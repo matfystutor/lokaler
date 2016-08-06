@@ -27,7 +27,8 @@
     {% if cell.colspan %}
     <td rowspan="{{ cell.rowspan }}"
         colspan="{{ cell.colspan }}"
-        class="{{ cell.class }}">
+        class="{{ cell.class }}"
+        data-event-pks="{% for e in cell.events %}{{ e.pk }} {% endfor %}">
         {{ cell.text }}
     </td>
     {% endif %}
