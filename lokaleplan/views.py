@@ -388,8 +388,21 @@ class EventTable(TemplateView):
         return context_data
 
 
-class EventList(ListView):
-    queryset = Event.objects.all()
+class EventList(TemplateView):
+    template_name = 'lokaleplan/event_list.html'
+
+    def get_context_data(self, **kwargs):
+        data = super(EventList, self).get_context_data(**kwargs)
+
+        def sort_key(event):
+            return (event.day, event.start_time,
+                    event.name, event.end_time,
+                    event.manual_time,
+                    ' '.join(map(str, event.participants.all())))
+
+        events = sorted(Event.objects.all(), key=sort_key)
+        data['event_list'] = events
+        return data
 
 
 class EventUpdate(FormView):
