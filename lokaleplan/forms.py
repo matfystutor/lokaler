@@ -113,6 +113,8 @@ class EventForm(forms.Form):
 
     def clean(self):
         data = self.cleaned_data
+        if self.errors:
+            return
         qs = Event.objects.none()
         chosen_participants = [p for p in self.participants
                                if p.pk in data['participants']]
