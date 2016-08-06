@@ -20,14 +20,14 @@ def parse_perl(data, time_slices):
     participants = set()
     participant = None
     locations = set()
-    comment = False
+    comment = 0
     comments = {}
     days = []
     day = None
     event_parts = {}  # (participant, day) -> list of (location, name)
     for line in data.splitlines():
         line = line.strip()
-        if not line or line.startswith('#'):
+        if line.startswith('#'):
             continue
         elif line.startswith('HOLD ='):
             if not comment and day is None:
@@ -36,11 +36,15 @@ def parse_perl(data, time_slices):
             participant = line.split()[2]
             participants.add(participant)
         elif line == 'COMMENT':
-            comment = True
+            comment = 1
         elif line == '/COMMENT':
-            comment = False
-        elif comment and line:
-            comments.setdefault(participant, []).append(line)
+            comment = 0
+        elif comment:
+            if comment == 2 or '/%/' in line:
+                comments.setdefault(participant, []).append(
+                    line.replace('/%/', ''))
+            if '/%/' in line:
+                comment = 1 if comment == 2 else 2
         elif line.startswith('LISTSEPARATOR'):
             raise NotImplementedError('LISTSEPARATOR')
         elif line.startswith('DAG ='):
@@ -48,7 +52,7 @@ def parse_perl(data, time_slices):
             days.append(day)
         elif line == '/DAG':
             day = None
-        elif day is not None:
+        elif line and day is not None:
             location, name = line.split(',', 1)
             location = location.strip()
             name = name.strip()
@@ -56,6 +60,8 @@ def parse_perl(data, time_slices):
             event_parts.setdefault(key, []).append((location, name))
             if location:
                 locations.add(location)
+
+    comments = {k: '\n'.join(lines) for k, lines in comments.items()}
 
     # (day, name, location, start_time, end_time) -> list of participants
     events = {}
