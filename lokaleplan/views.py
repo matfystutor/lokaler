@@ -286,19 +286,27 @@ class EventTable(TemplateView):
 
     def construct_table(self, header, events_by_key, time_slices):
         column_cells = []
-        column_rowspans = []
         for key in header:
             events = events_by_key.pop(key, [])
             cells = self.put_events_in_time_slices(events, time_slices)
             column_cells.append(cells)
+
+        assert len(column_cells) == len(header)
+        assert all(len(c) == len(time_slices) for c in column_cells)
+
+        # Transpose columns to get rows
+        row_cells = list(zip(*column_cells))
+
+        # Transpose rows to get columns
+        column_cells = list(zip(*row_cells))
+
+        column_rowspans = []
+        for cells in column_cells:
             column_rowspans.append(self.merge_repeating_cells(cells))
 
-        assert len(column_cells) == len(column_rowspans) == len(header)
-        assert all(len(c) == len(time_slices) for c in column_cells)
+        assert len(column_rowspans) == len(column_cells)
         assert all(len(c) == len(time_slices) for c in column_rowspans)
 
-        # Transpose columns to get row_cells
-        row_cells = list(zip(*column_cells))
         row_rowspans = list(zip(*column_rowspans))
         assert len(row_cells) == len(row_rowspans) == len(time_slices)
         assert all(len(r) == len(header) for r in row_cells)
