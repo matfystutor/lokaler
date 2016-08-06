@@ -1,10 +1,14 @@
 import re
+import itertools
 
-from django.views.generic import TemplateView, FormView, ListView
+from django.views.generic import TemplateView, FormView, ListView, View
+from django.http import HttpResponse
 from django.shortcuts import redirect, get_object_or_404
+from django.template.loader import render_to_string
 
 from lokaleplan.forms import PerlForm, EventForm
 from lokaleplan.models import Participant, Event, Location
+from lokaleplan.texrender import tex_to_pdf
 
 
 class Home(TemplateView):
@@ -74,6 +78,50 @@ def summarize_participants(participants):
     return ' '.join(
         '%s%s' % (k, ','.join(sorted(groups[k])))
         for k in sorted(groups.keys()))
+
+
+def get_plans_tex():
+    template_name = 'lokaleplan/participant_plans.tex'
+
+    qs = Participant.objects.all()
+    qs = qs.filter(kind=Participant.RUSCLASS)
+    participants = []
+    for p in qs:
+        days = []
+        p_events = p.event_set.all()
+        p_events = p_events.order_by('day', 'start_time')
+        events_by_day = itertools.groupby(p_events, lambda e: e.day)
+        for d, events in events_by_day:
+            events = list(events)
+            day_name = events[0].get_day_display()
+            event_dicts = []
+            for e in events:
+                tex_time = e.get_display_time()
+                tex_time = tex_time.replace('\N{INFINITY}', r'$\infty$')
+                tex_time = tex_time.replace('-', '--')
+                event_dicts.append(dict(
+                    time=tex_time,
+                    location=', '.join(l.name for l in e.locations.all()),
+                    name=e.name))
+            days.append(
+                dict(name=day_name, events=event_dicts))
+        participants.append(
+            dict(name=p.name, message=p.message, days=days))
+
+    return render_to_string(template_name, dict(participants=participants))
+
+
+class ParticipantPlans(View):
+    def get(self, request, mode):
+        source = get_plans_tex()
+        if mode == 'source':
+            return HttpResponse(source,
+                                content_type='text/plain; charset=utf8')
+        elif mode == 'pdf':
+            pdf = tex_to_pdf(source)
+            return HttpResponse(pdf, content_type='application/pdf')
+        else:
+            raise ValueError(mode)
 
 
 class EventTable(TemplateView):

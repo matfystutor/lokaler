@@ -1,0 +1,74 @@
+\documentclass[oneside,a4paper,12pt]{memoir}
+
+\usepackage[utf8]{inputenc}
+
+\setlrmarginsandblock{2cm}{*}{1}
+\setulmarginsandblock{2cm}{*}{1}
+\checkandfixthelayout
+
+\pagestyle{empty}
+
+\newenvironment{programday}[1]{\relax%
+  \noindent
+  \begin{minipage}[t]{0.333\linewidth}
+  \noindent
+  {\bfseries#1\par}%
+  \vspace{5pt}%
+}{\end{minipage}}
+
+\newlength{\timewidth}
+\settowidth{\timewidth}{09:00--10:00\ \ }
+\newcommand{\event}[2]{\relax%
+  % \event{time}{nameloc}
+  \noindent
+  \parbox[t]{\timewidth}{\small#1}%
+  \parbox[t]{\dimexpr\linewidth - \timewidth}{\relax%
+    \raggedright
+    #2}%
+    %
+  \par
+  \vspace{10pt}%
+}
+\newcommand{\nameloc}[2]{\relax%
+  {#2}\\[2pt]%
+  {\footnotesize\itshape#1}%
+}
+\newcommand{\onlyname}[1]{\relax%
+  {#1}\\%
+}
+\newcommand{\onlyloc}[1]{\nameloc{-}{#1}}
+
+\newenvironment{programmessages}{\relax%
+  \vspace*{1cm}%
+  \hspace*{1cm}%
+  \begin{minipage}{\dimexpr\linewidth - 2cm}%
+}{\end{minipage}}
+
+\newenvironment{program}[1]{\relax%
+  {\centering\noindent\sffamily\Large\bfseries#1\par\vspace{10pt}}
+}{\clearpage}
+
+\begin{document}
+
+{% autoescape off %}
+{% for participant in participants %}%
+\begin{program}{\relax {{ participant.name }}}
+{% for day in participant.days %}%
+\begin{programday}{\relax {{ day.name }}}%
+{% for event in day.events %}%
+\event{\relax {{ event.time }}}{\relax%
+{% if event.location %}\nameloc{\relax {{ event.name }}}{\relax {{ event.location }}}%
+{% else %}\onlyname{\relax {{ event.name }}}{% endif %}%
+}%
+{% endfor %}%
+\end{programday}%
+{% endfor %}%
+\par
+\begin{programmessages}
+{{ participant.message }}%
+\end{programmessages}
+\end{program}
+{% endfor %}
+{% endautoescape %}
+
+\end{document}
