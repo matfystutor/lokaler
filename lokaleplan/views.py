@@ -137,6 +137,32 @@ class ParticipantPlans(View):
             raise ValueError(mode)
 
 
+class EventTableCell(object):
+    def __init__(self, text, class_, events):
+        self.text = text
+        self.class_ = class_
+        self.events = events
+
+    def __iter__(self):
+        return iter((self.text, self.class_, self.events))
+
+    @property
+    def key(self):
+        return self.text, self.class_
+
+    def __eq__(self, other):
+        return self.key == other.key
+
+    def __lt__(self, other):
+        return self.key < other.key
+
+    def __hash__(self):
+        return hash(self.key)
+
+    def __bool__(self):
+        return bool(self.events)
+
+
 class EventTable(TemplateView):
     template_name = 'lokaleplan/eventtable.html'
 
@@ -163,7 +189,7 @@ class EventTable(TemplateView):
                     text = '(%s)' % ', '.join(str(event) for event in events)
         else:
             raise Exception(mode)
-        return text, class_
+        return EventTableCell(text, class_, events)
 
     def partition_events(self, qs):
         days = Event.DAYS
@@ -313,6 +339,7 @@ class EventTable(TemplateView):
         for key in header:
             events = events_by_key.pop(key, [])
             cells = self.put_events_in_time_slices(events, time_slices)
+            cells = list(map(self.get_cell, cells))
             column_cells.append(cells)
 
         if not any(any(cells) for cells in column_cells):
@@ -358,8 +385,8 @@ class EventTable(TemplateView):
         row_data = zip(time_slices, row_cells, row_rowspans, row_colspans)
         for (start, end), cells, rowspans, colspans in row_data:
             row = []
-            for events, rowspan, colspan in zip(cells, rowspans, colspans):
-                text, class_ = self.get_cell(events)
+            for cell, rowspan, colspan in zip(cells, rowspans, colspans):
+                text, class_, events = cell
                 row.append({'rowspan': rowspan, 'colspan': colspan,
                             'events': events, 'text': text, 'class': class_})
             time_display = Event.display_time_interval(start, end)
