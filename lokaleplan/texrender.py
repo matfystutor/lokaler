@@ -13,6 +13,7 @@ def tex_to_pdf(source):
             ('pdflatex', base + '.tex'),
             cwd=d,
             stdin=subprocess.DEVNULL,
+            stdout=subprocess.PIPE,
             stderr=subprocess.STDOUT,
             universal_newlines=True)
         with p:
