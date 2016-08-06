@@ -305,10 +305,14 @@ class EventTable(TemplateView):
         # Transpose columns to get rows
         row_cells = list(zip(*column_cells))
 
-        # Remove rows and time slices where no cells contain any events
-        row_times_and_cells = [(time, cells)
-                               for time, cells in zip(time_slices, row_cells)
-                               if any(cells)]
+        # A row is uninteresting if no event starts or ends in it.
+        # Remove uninteresting rows and their time slices.
+        row_times_and_cells = zip(time_slices, row_cells)
+        row_times_and_cells = [
+            ((start, end), cells)
+            for (start, end), cells in row_times_and_cells
+            if any(e.start_time == start or e.end_time == end
+                   for cell in cells for e in cell)]
         time_slices, row_cells = zip(*row_times_and_cells)
 
         # Transpose rows to get columns
