@@ -3,6 +3,11 @@
 {% block title %}{{ participant }}{% endblock %}
 {% block content %}
 <h1>{{ participant }}</h1>
+<p>Klik på et lokalenavn for at gå til lokaletabellen.</p>
+<p>Klik på programpunktets navn for at redigere programpunktet.</p>
+<p>Hent programmet for {{ participant }} som
+<a href="{% url 'participant-pdf' pk=participant.pk %}">PDF</a> eller
+<a href="{% url 'participant-tex' pk=participant.pk %}">LaTeX</a>.</p>
 <div class="participant-schedule">
 {% for day in days %}
 <table>

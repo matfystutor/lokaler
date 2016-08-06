@@ -121,8 +121,12 @@ def get_plans_tex(participants=None):
 
 
 class ParticipantPlans(View):
-    def get(self, request, mode):
-        source = get_plans_tex()
+    def get(self, request, mode, pk=None):
+        if pk is None:
+            participants = None
+        else:
+            participants = [get_object_or_404(Participant, pk=pk)]
+        source = get_plans_tex(participants)
         if mode == 'source':
             return HttpResponse(source,
                                 content_type='text/plain; charset=utf8')
