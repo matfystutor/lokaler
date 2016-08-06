@@ -19,9 +19,9 @@ class Home(TemplateView):
         groups = {}
         for p in Participant.objects.all():
             if p.kind == Participant.PARTNER:
-                k = 'z'
+                k = 'ZZ'
             else:
-                k = p.name[0]
+                k = p.name[0:2]
             groups.setdefault(k, []).append(p)
         context_data['groups'] = [groups[k] for k in sorted(groups)]
         return context_data
