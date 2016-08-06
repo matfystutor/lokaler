@@ -89,8 +89,11 @@ class EventForm(forms.Form):
             if p.pk in participant_events:
                 event = participant_events[p.pk]
                 event_locations = [l.pk for l in event.locations.all()]
-            else:
+            elif self.events:
                 event = self.events[0]
+                event_locations = []
+            else:
+                event = Event()
                 event_locations = []
             prefix = 'p%s-' % p.pk
             self.fields[prefix + 'name'] = forms.CharField(
