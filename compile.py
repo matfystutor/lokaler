@@ -75,7 +75,7 @@ def babel_compile(source):
 
 @compiler('.es6x', '.js')
 def babel_jsx_compile(source):
-    r = dukpy.babel.babel_compile(source, presets=['es2015', 'react'])
+    r = dukpy.babel.babel_compile(source, presets=['es2015', 'stage-0', 'react'])
     return r['code']
 
 
