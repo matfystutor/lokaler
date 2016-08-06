@@ -10,7 +10,7 @@ href="{% static 'lokaleplan/event_form.css' %}" />
 {% endblock %}
 {% block content %}
 <h1>Redigér programpunkt</h1>
-<form method="post">{% csrf_token %}
+<form method="post" id="event_form">{% csrf_token %}
 {{ form.errors }}
 <div class="participants">{{ form.participants }}</div>
 {% for p in form.participant_fields %}
