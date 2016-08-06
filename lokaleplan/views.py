@@ -80,13 +80,15 @@ def summarize_participants(participants):
         for k in sorted(groups.keys()))
 
 
-def get_plans_tex():
+def get_plans_tex(participants=None):
     template_name = 'lokaleplan/participant_plans.tex'
 
-    qs = Participant.objects.all()
-    qs = qs.filter(kind=Participant.RUSCLASS)
-    participants = []
-    for p in qs:
+    if participants is None:
+        participants = Participant.objects.all()
+        participants = participants.filter(kind=Participant.RUSCLASS)
+        participants = participants.prefetch_related('event_set')
+    participant_dicts = []
+    for p in participants:
         days = []
         p_events = p.event_set.all()
         p_events = p_events.order_by('day', 'start_time')
@@ -105,10 +107,10 @@ def get_plans_tex():
                     name=e.name))
             days.append(
                 dict(name=day_name, events=event_dicts))
-        participants.append(
+        participant_dicts.append(
             dict(name=p.name, message=p.message, days=days))
 
-    return render_to_string(template_name, dict(participants=participants))
+    return render_to_string(template_name, {'participants': participant_dicts})
 
 
 class ParticipantPlans(View):
