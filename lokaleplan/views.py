@@ -288,6 +288,18 @@ class EventTable(TemplateView):
         assert sum(spans) == len(cells)
         return spans
 
+    def remove_uninteresting_rows(self, row_cells, time_slices):
+        # A row is uninteresting if no event starts or ends in it.
+        # Remove uninteresting rows and their time slices.
+        row_times_and_cells = zip(time_slices, row_cells)
+        row_times_and_cells = [
+            ((start, end), cells)
+            for (start, end), cells in row_times_and_cells
+            if any(e.start_time == start or e.end_time == end
+                   for cell in cells for e in cell)]
+        time_slices, row_cells = zip(*row_times_and_cells)
+        return row_cells, time_slices
+
     def construct_table(self, header, events_by_key, time_slices):
         column_cells = []
         for key in header:
@@ -305,15 +317,8 @@ class EventTable(TemplateView):
         # Transpose columns to get rows
         row_cells = list(zip(*column_cells))
 
-        # A row is uninteresting if no event starts or ends in it.
-        # Remove uninteresting rows and their time slices.
-        row_times_and_cells = zip(time_slices, row_cells)
-        row_times_and_cells = [
-            ((start, end), cells)
-            for (start, end), cells in row_times_and_cells
-            if any(e.start_time == start or e.end_time == end
-                   for cell in cells for e in cell)]
-        time_slices, row_cells = zip(*row_times_and_cells)
+        row_cells, time_slices = self.remove_uninteresting_rows(
+            row_cells, time_slices)
 
         # Transpose rows to get columns
         column_cells = list(zip(*row_cells))
