@@ -73,6 +73,12 @@ def babel_compile(source):
     return dukpy.babel.babel_compile(source)['code']
 
 
+@compiler('.es6x', '.js')
+def babel_jsx_compile(source):
+    r = dukpy.babel.babel_compile(source, presets=['es2015', 'react'])
+    return r['code']
+
+
 def send_message_to_vim(servername, message):
     cmdline = ['vim', '--servername', servername, '--remote-send',
                ':<C-U>echom %s<CR>' % json.dumps(message)]
