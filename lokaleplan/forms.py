@@ -82,7 +82,7 @@ class EventForm(forms.Form):
         participant_choices = [(p.pk, p.name) for p in self.participants]
         self.fields['participants'] = forms.TypedMultipleChoiceField(
             coerce=int, label='Hold', choices=participant_choices,
-            initial=initial_participants)
+            initial=initial_participants, required=False)
 
         location_choices = [(l.pk, l.name) for l in self.locations]
         for p in self.participants:
