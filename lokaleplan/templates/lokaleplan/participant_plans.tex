@@ -10,11 +10,11 @@
 
 \newenvironment{programday}[1]{\relax%
   \noindent
-  \begin{minipage}[t]{0.333\linewidth}
+  \begin{minipage}[t]{\dimexpr 0.333\linewidth - 8pt\relax}
   \noindent
   {\bfseries#1\par}%
   \vspace{5pt}%
-}{\end{minipage}}
+}{\end{minipage}\hspace{8pt}}
 
 \newlength{\timewidth}
 \settowidth{\timewidth}{09:00--10:00\ \ }
@@ -27,7 +27,7 @@
     #2}%
     %
   \par
-  \vspace{10pt}%
+  \vspace{14pt}%
 }
 \newcommand{\nameloc}[2]{\relax%
   {#2}\\%
