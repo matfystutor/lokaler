@@ -3,7 +3,7 @@
 {% block content %}
 <h1>Den store tabel</h1>
 {% for table in tables %}
-<h2>{{ table.name }}</h2>
+<h2>{{ table.name|title }}</h2>
 <table class="event-table">
 <colgroup>
 <col />
