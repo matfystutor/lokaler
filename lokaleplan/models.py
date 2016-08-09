@@ -2,23 +2,14 @@ from django.db import models
 
 
 class Participant(models.Model):
-    RUSCLASS = 'rusclass'
-    PARTNER = 'partner'
-
-    KIND = [
-        (RUSCLASS, 'Hold'),
-        (PARTNER, 'Andre'),
-    ]
-
     name = models.CharField(max_length=50)
-    kind = models.CharField(max_length=10, choices=KIND)
     message = models.TextField(blank=True)
 
     def __str__(self):
         return self.name
 
     class Meta:
-        ordering = ['kind', 'name']
+        ordering = ['name']
 
 
 class Location(models.Model):
