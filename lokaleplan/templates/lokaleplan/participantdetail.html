@@ -1,5 +1,10 @@
 {% extends "lokaleplan/base.html" %}
 {% load lokaleplan %}
+{% load staticfiles %}
+{% block head %}
+<link rel="stylesheet" href="{% static 'lokaleplan/participantdetail.css' %}" />
+<script src="{% static 'lokaleplan/participantdetail.js' %}"></script>
+{% endblock %}
 {% block title %}{{ participant }}{% endblock %}
 {% block content %}
 <h1>{{ participant }}</h1>
@@ -19,7 +24,8 @@
 </thead>
 <tbody>
 {% for event in day.events %}
-<tr><td class="time">{{ event.get_display_time }}</td>
+<tr class="event" data-day="{{ event.day }}" data-start-time="{{ event.start_time }}" data-end-time="{{ event.end_time }}">
+    <td class="time">{{ event.get_display_time }}</td>
     <td class="name">
         <div>
         <a class="event-link" href="{% url 'event_update' pk=event.pk %}">
