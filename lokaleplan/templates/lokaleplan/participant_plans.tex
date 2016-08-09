@@ -54,7 +54,7 @@
 {% for participant in participants %}%
 \begin{program}{\relax {{ participant.name }}}
 {% for day in participant.days %}%
-\begin{programday}{\relax {{ day.name }}}%
+\begin{programday}{\relax {{ day.name|title }}}%
 {% for event in day.events %}%
 \event{\relax {{ event.time }}}{\relax%
 {% if event.location %}\nameloc{\relax {{ event.name }}}{\relax {{ event.location }}}%
