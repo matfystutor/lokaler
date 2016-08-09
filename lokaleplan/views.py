@@ -18,10 +18,7 @@ class Home(TemplateView):
         context_data = super().get_context_data(**kwargs)
         groups = {}
         for p in Participant.objects.all():
-            if p.kind == Participant.PARTNER:
-                k = 'ZZ'
-            else:
-                k = p.name[0:2]
+            k = p.name[0:2]
             groups.setdefault(k, []).append(p)
         context_data['groups'] = [groups[k] for k in sorted(groups)]
         return context_data
@@ -92,7 +89,6 @@ def get_plans_tex(participants=None):
 
     if participants is None:
         participants = Participant.objects.all()
-        participants = participants.filter(kind=Participant.RUSCLASS)
         participants = participants.prefetch_related('event_set')
     participant_dicts = []
     for p in participants:
@@ -219,23 +215,15 @@ class EventTable(TemplateView):
 
     def get_participant_sets(self):
         classes = {}
-        other = []
         for p in Participant.objects.all():
-            if p.kind != Participant.RUSCLASS:
-                other.append(p)
-            else:
-                classes.setdefault(p.name[0], set()).add(p)
+            classes.setdefault(p.name[0], set()).add(p)
         try:
             classes['fysnan'] = classes.pop('F') | classes.pop('N')
         except KeyError:
             pass
         class_lists = [
             sorted(classes[k], key=str) for k in sorted(classes.keys())]
-        n_column = 10
-        other = sorted(other, key=str)
-        other_lists = [other[i:i+n_column]
-                       for i in range(0, len(other), n_column)]
-        return class_lists + other_lists
+        return class_lists
 
     def get_location_sets(self):
         katrinebjerg = []

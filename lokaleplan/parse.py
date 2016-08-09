@@ -89,24 +89,17 @@ def make_objects(parser_output):
 
     participant_objects = {}
     for participant in Participant.objects.all():
-        if participant.kind == Participant.PARTNER:
-            key = '__' + participant.name
-        else:
-            key = participant.name
-        participant_objects[key] = participant
+        participant_objects[participant.name] = participant
 
     for key in participants:
-        m = messages.get(key, '')
         if key.startswith('__'):
-            kind = Participant.PARTNER
-            name = key[2:]
-        else:
-            kind = Participant.RUSCLASS
-            name = key
-        p = participant_objects.setdefault(
-            key, Participant(name=name, kind=kind))
-        if m:
-            p.message = m
+            continue
+        m = messages.get(key, '')
+        if external:
+            p = participant_objects.setdefault(
+                key, Participant(name=key))
+            if m:
+                p.message = m
 
     location_objects = {}
     for location in Location.objects.all():
@@ -130,8 +123,12 @@ def make_objects(parser_output):
             event_locations.append(Event.locations.through(
                 event=o, location=location_objects[location]))
         for participant in p_list:
-            event_participants.append(Event.participants.through(
-                event=o, participant=participant_objects[participant]))
+            if participant.startswith('__'):
+                o.name = participant[2:]
+                o.external = True
+            else:
+                event_participants.append(Event.participants.through(
+                    event=o, participant=participant_objects[participant]))
 
     return (event_objects,
             list(location_objects.values()),
