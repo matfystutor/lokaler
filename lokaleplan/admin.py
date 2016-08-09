@@ -4,8 +4,7 @@ from lokaleplan.models import Participant, Location, Event
 
 
 class ParticipantAdmin(admin.ModelAdmin):
-    list_display = ['name', 'kind']
-    list_filter = ['kind']
+    list_display = ['name']
     search_fields = ['name']
 
 
