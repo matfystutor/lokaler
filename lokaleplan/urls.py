@@ -17,9 +17,9 @@ from django.conf.urls import url
 from django.contrib import admin
 
 from lokaleplan.views import (
-    Home, PerlView, ParticipantDetail,
-    EventTable, EventList, EventUpdate, EventCreate,
-    ParticipantPlans,
+    Home, PerlView, ParticipantDetail, ParticipantPlans,
+    EventTable, EventList, EventDelete,
+    EventUpdate, EventUpdateExternal, EventCreate, EventCreateExternal,
 )
 
 
@@ -38,6 +38,11 @@ urlpatterns = [
         name='participants', kwargs=dict(mode='participants')),
     url(r'^events/$', EventList.as_view(), name='events'),
     url(r'^event/(?P<pk>\d+)/$', EventUpdate.as_view(), name='event_update'),
+    url(r'^event/(?P<pk>\d+)/delete/$', EventDelete.as_view(), name='event_delete'),
+    url(r'^event/external/new/$', EventCreateExternal.as_view(),
+        name='event_create_external'),
+    url(r'^event/external/(?P<pk>\d+)/$', EventUpdateExternal.as_view(),
+        name='event_update_external'),
     url(r'^event/new/$', EventCreate.as_view(), name='event_create'),
     url(r'^lokaleplan\.tex$', ParticipantPlans.as_view(),
         name='participants-tex', kwargs=dict(mode='source')),
