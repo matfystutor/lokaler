@@ -16,6 +16,7 @@ eller <a href="{% lokaleplan_url 'participants-tex' %}">LaTeX</a></p>
 {% endfor %}
 </p>
 {% endfor %}
+<p><a href="{% url 'session_list' %}">Gå til oversigt over lokaleplaner</a></p>
 <p>Hvis du sletter lokaleplanen fra din oversigt, kan du ikke tilgå den medmindre
 du bliver tilføjet igen af en anden bruger eller en administrator.</p>
 <form method="post" action="{% lokaleplan_url 'session_delete' %}">{% csrf_token %}
