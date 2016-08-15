@@ -95,11 +95,9 @@ def make_objects(parser_output):
         if key.startswith('__'):
             continue
         m = messages.get(key, '')
-        if external:
-            p = participant_objects.setdefault(
-                key, Participant(name=key))
-            if m:
-                p.message = m
+        p = participant_objects.setdefault(key, Participant(name=key))
+        if m:
+            p.message = m
 
     location_objects = {}
     for location in Location.objects.all():
