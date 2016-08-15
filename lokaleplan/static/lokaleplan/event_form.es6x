@@ -4,7 +4,7 @@ function get_locations(el) {
     const locations = options.map(option => {
         const loc = {id: option.value, name: option.textContent,
                      _selected: option.selected,
-                     get selected() { return loc.selected; },
+                     get selected() { return loc._selected; },
                      set selected(b) { loc._selected = option.selected = b; }};
         return loc; });
     return locations;
