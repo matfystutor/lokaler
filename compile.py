@@ -149,7 +149,7 @@ def main():
     transformer = transform_file(args.filename, output_filename, fn, exn_fn)
     transformer()
     if args.watch:
-        for _ in await_changes(args.filename, ['modify']):
+        for _ in await_changes(args.filename, ['close_write', 'moved_to']):
             transformer()
 
 
