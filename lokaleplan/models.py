@@ -99,8 +99,11 @@ class Event(models.Model):
         return '%02d:%02d-%02d:%02d' % (h1, m1, h2, m2)
 
     def parallel_key(self):
-        return (self.name, self.day, self.start_time, self.end_time,
-                self.manual_time)
+        if self.participants.all():
+            return (1, self.name, self.day, self.start_time, self.end_time,
+                    self.manual_time)
+        else:
+            return (0, self.pk)
 
     @classmethod
     def overlapping(cls, day, start_time, end_time):
@@ -120,7 +123,7 @@ class Event(models.Model):
         for name, day, start_time, end_time, manual_time in values:
             res = res | cls.objects.filter(
                 name=name, day=day, start_time=start_time, end_time=end_time,
-                manual_time=manual_time)
+                manual_time=manual_time, participants__isnull=False)
         return res
 
     def get_parallel_events(self):
@@ -129,7 +132,8 @@ class Event(models.Model):
         """
         return type(self).objects.filter(
             name=self.name, day=self.day, start_time=self.start_time,
-            end_time=self.end_time, manual_time=self.manual_time)
+            end_time=self.end_time, manual_time=self.manual_time,
+            participants__isnull=False)
 
     class Meta:
         ordering = ['day', 'start_time', 'name', 'end_time']
