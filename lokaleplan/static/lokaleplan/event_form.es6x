@@ -1,10 +1,12 @@
 // vim:set ft=javascript sw=4 et:
 function get_locations(el) {
     const options = [].slice.call(el.options);
-    const locations = options.map(
-        (o) => ({id: o.value, name: o.textContent,
-                 get selected() {return o.selected;},
-                 set selected(b) {o.selected = b;}}));
+    const locations = options.map(option => {
+        const loc = {id: option.value, name: option.textContent,
+                     _selected: option.selected,
+                     get selected() { return loc.selected; },
+                     set selected(b) { loc._selected = option.selected = b; }};
+        return loc; });
     return locations;
 }
 

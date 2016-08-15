@@ -13,14 +13,16 @@ function _typeof(obj) { return obj && typeof Symbol !== "undefined" && obj.const
 // vim:set ft=javascript sw=4 et:
 function get_locations(el) {
     var options = [].slice.call(el.options);
-    var locations = options.map(function (o) {
-        return { id: o.value, name: o.textContent,
+    var locations = options.map(function (option) {
+        var loc = { id: option.value, name: option.textContent,
+            _selected: option.selected,
             get selected() {
-                return o.selected;
+                return loc.selected;
             },
             set selected(b) {
-                o.selected = b;
+                loc._selected = option.selected = b;
             } };
+        return loc;
     });
     return locations;
 }
