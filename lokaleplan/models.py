@@ -1,4 +1,5 @@
 from django.db import models
+from django.core.urlresolvers import reverse
 
 
 class Participant(models.Model):
@@ -89,6 +90,12 @@ class Event(models.Model):
         else:
             return self.display_time_interval(
                 self.start_time, self.end_time)
+
+    def edit_link(self):
+        if self.participants.all():
+            return reverse('event_update', kwargs=dict(pk=self.pk))
+        else:
+            return reverse('event_update_external', kwargs=dict(pk=self.pk))
 
     @staticmethod
     def display_time_interval(start_time, end_time):
