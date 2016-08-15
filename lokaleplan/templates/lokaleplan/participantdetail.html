@@ -1,5 +1,6 @@
 {% extends "lokaleplan/base.html" %}
 {% load lokaleplan %}
+{% load lokaleplan %}
 {% load staticfiles %}
 {% block head %}
 <link rel="stylesheet" href="{% static 'lokaleplan/participantdetail.css' %}" />
@@ -11,8 +12,8 @@
 <p>Klik på et lokalenavn for at gå til lokaletabellen.</p>
 <p>Klik på programpunktets navn for at redigere programpunktet.</p>
 <p>Hent programmet for {{ participant }} som
-<a href="{% url 'participant-pdf' pk=participant.pk %}">PDF</a> eller
-<a href="{% url 'participant-tex' pk=participant.pk %}">LaTeX</a>.</p>
+<a href="{% lokaleplan_url 'participant-pdf' pk=participant.pk %}">PDF</a> eller
+<a href="{% lokaleplan_url 'participant-tex' pk=participant.pk %}">LaTeX</a>.</p>
 <div class="participant-schedule">
 {% for day in days %}
 <table>
@@ -28,7 +29,7 @@
     <td class="time">{{ event.get_display_time }}</td>
     <td class="name">
         <div>
-        <a class="event-link" href="{% url 'event_update' pk=event.pk %}">
+        <a class="event-link" href="{% lokaleplan_url 'event_update' pk=event.pk %}">
         {{ event.name }}</a>
         </div>
         <div>

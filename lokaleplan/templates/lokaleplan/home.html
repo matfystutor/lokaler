@@ -1,15 +1,16 @@
 {% extends "lokaleplan/base.html" %}
+{% load lokaleplan %}
 {% block title %}Lokaleplan{% endblock %}
 {% block content %}
 <h1>Lokaleplan</h1>
-<p>Hent holdprogrammer som <a href="{% url 'participants-pdf' %}">PDF</a>
-eller <a href="{% url 'participants-tex' %}">LaTeX</a></p>
-<p><a href="{% url 'location_list' %}">Tilføj/fjern lokaler</a></p>
+<p>Hent holdprogrammer som <a href="{% lokaleplan_url 'participants-pdf' %}">PDF</a>
+eller <a href="{% lokaleplan_url 'participants-tex' %}">LaTeX</a></p>
+<p><a href="{% lokaleplan_url 'location_list' %}">Tilføj/fjern lokaler</a></p>
 <p>Se program for:</p>
 {% for participants in groups %}
 <p>
 {% for participant in participants %}
-<a href="{% url 'participant_detail' pk=participant.pk %}">
+<a href="{% lokaleplan_url 'participant_detail' pk=participant.pk %}">
 {{ participant }}</a>
 {% endfor %}
 </p>

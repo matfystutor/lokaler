@@ -13,7 +13,7 @@ Including another URLconf
     1. Import the include() function: from django.conf.urls import url, include
     2. Add a URL to urlpatterns:  url(r'^blog/', include('blog.urls'))
 """
-from django.conf.urls import url
+from django.conf.urls import url, include
 from django.contrib import admin
 
 from lokaleplan.views import (
@@ -23,8 +23,7 @@ from lokaleplan.views import (
 )
 
 
-urlpatterns = [
-    url(r'^admin/', admin.site.urls),
+sessions = [
     url(r'^$', Home.as_view(), name='home'),
     url(r'^import/$', PerlView.as_view(), name='import'),
     url(r'^hold/(?P<pk>[0-9]+)/$', ParticipantDetail.as_view(), name='participant_detail'),
@@ -49,4 +48,9 @@ urlpatterns = [
         name='participants-tex', kwargs=dict(mode='source')),
     url(r'^lokaleplan\.pdf$', ParticipantPlans.as_view(),
         name='participants-pdf', kwargs=dict(mode='pdf')),
+]
+
+urlpatterns = [
+    url(r'^admin/', admin.site.urls),
+    url(r'^session/(?P<session>\d+)/', include(sessions)),
 ]

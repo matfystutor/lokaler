@@ -1,4 +1,5 @@
 import re
+import functools
 import itertools
 
 from django.views.generic import (
@@ -8,12 +9,27 @@ from django.http import HttpResponse, HttpResponseBadRequest
 from django.shortcuts import redirect, get_object_or_404
 from django.core.urlresolvers import reverse
 from django.template.loader import render_to_string
+from django.utils.decorators import method_decorator
 
 from lokaleplan.forms import PerlForm, EventForm, EventModelForm
 from lokaleplan.models import Participant, Event, Location
 from lokaleplan.texrender import tex_to_pdf, RenderError
 
 
+def dispatch_session(dispatch):
+    @functools.wraps(dispatch)
+    def wrapper(request, *args, **kwargs):
+        # session_pk = kwargs.pop('session')
+        # session = get_object_or_404(
+        return dispatch(request, *args, **kwargs)
+
+    return wrapper
+
+
+session_view = method_decorator(dispatch_session, name='dispatch')
+
+
+@session_view
 class Home(TemplateView):
     template_name = 'lokaleplan/home.html'
 

@@ -1,11 +1,12 @@
 {% extends "lokaleplan/base.html" %}
+{% load lokaleplan %}
 {% block content %}
 <form method="post">{% csrf_token %}
     {{ form.as_p }}
     <input type="submit" value="Gem ændringer" />
 </form>
 {% if object %}
-<form style="margin-top: 50px" method="post" action="{% url 'event_delete' pk=object.pk %}">{% csrf_token %}
+<form style="margin-top: 50px" method="post" action="{% lokaleplan_url 'event_delete' pk=object.pk %}">{% csrf_token %}
     <input type="submit" value="Slet" />
 </form>
 {% endif %}

@@ -1,4 +1,5 @@
 {% load staticfiles %}
+{% load lokaleplan %}
 <!DOCTYPE html>
 <html>
 <head>
@@ -16,9 +17,9 @@ href="{% static 'lokaleplan/style.css' %}" />
 <nav>
 <ul class="container">
 <a href="/"><li>Lokaleplan</li></a>
-<a href="{% url 'events' %}"><li>Programtabel</li></a>
-<a href="{% url 'locations' %}"><li>Lokaletabel</li></a>
-<a href="{% url 'participants' %}"><li>Holdtabel</li></a>
+<a href="{% lokaleplan_url 'events' %}"><li>Programtabel</li></a>
+<a href="{% lokaleplan_url 'locations' %}"><li>Lokaletabel</li></a>
+<a href="{% lokaleplan_url 'participants' %}"><li>Holdtabel</li></a>
 </ul>
 </nav>
 <div class="container">
