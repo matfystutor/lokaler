@@ -10,9 +10,11 @@ from django.shortcuts import redirect, get_object_or_404
 from django.core.urlresolvers import reverse
 from django.template.loader import render_to_string
 from django.utils.decorators import method_decorator
+from django.contrib.auth.views import redirect_to_login
+from django.db.models import Count
 
 from lokaleplan.forms import PerlForm, EventForm, EventModelForm
-from lokaleplan.models import Participant, Event, Location
+from lokaleplan.models import Participant, Event, Location, Session
 from lokaleplan.texrender import tex_to_pdf, RenderError
 
 
@@ -24,6 +26,38 @@ class SessionReverseMixin(object):
     def lokaleplan_redirect(self, *args, **kwargs):
         kwargs['session'] = self.request.lokaleplan_session.pk
         return redirect(*args, **kwargs)
+
+
+class SessionList(TemplateView):
+    template_name = 'lokaleplan/session_list.html'
+
+    def dispatch(self, request, *args, **kwargs):
+        if not request.user:
+            return redirect_to_login(request.build_absolute_uri())
+        return super(SessionList, self).dispatch(request, *args, **kwargs)
+
+    def get_context_data(self, **kwargs):
+        data = super(SessionList, self).get_context_data(**kwargs)
+        if self.request.user.is_superuser:
+            qs = Session.objects.all()
+        else:
+            qs = Session.objects.filter(users=user)
+        qs = qs.annotate(user_count=Count('users', distinct=True),
+                         participant_count=Count('participant', distinct=True),
+                         location_count=Count('location', distinct=True),
+                         event_count=Count('event', distinct=True))
+        data['sessions'] = qs
+        return data
+
+    def post(self, request):
+        s = Session()
+        s.save()
+        return redirect('home', session=s.pk)
+
+
+class SessionDelete(DeleteView):
+    def get_object(self):
+        return self.request.lokaleplan_session
 
 
 class Home(TemplateView):

@@ -1,0 +1,15 @@
+{% extends "lokaleplan/base.html" %}
+{% load lokaleplan %}
+{% block title %}Lokaleplaner{% endblock %}
+{% block content %}
+<h1>Lokaleplaner</h1>
+<ul>
+    {% for s in sessions %}
+    <li><a href="{% url 'home' session=s.pk %}">
+        {{ s.user_count }}/{{ s.participant_count }}/{{ s.location_count }}/{{ s.event_count }}</a></li>
+    {% endfor %}
+</ul>
+<form method="post">{% csrf_token %}
+    <input type="submit" value="Opret ny" />
+</form>
+{% endblock %}

@@ -3,6 +3,7 @@
 {% block title %}Lokaleplan{% endblock %}
 {% block content %}
 <h1>Lokaleplan</h1>
+<p><a href="{% lokaleplan_url 'import' %}">Importér gammel lokaleplan</a></p>
 <p>Hent holdprogrammer som <a href="{% lokaleplan_url 'participants-pdf' %}">PDF</a>
 eller <a href="{% lokaleplan_url 'participants-tex' %}">LaTeX</a></p>
 <p><a href="{% lokaleplan_url 'location_list' %}">Tilføj/fjern lokaler</a></p>
@@ -15,4 +16,8 @@ eller <a href="{% lokaleplan_url 'participants-tex' %}">LaTeX</a></p>
 {% endfor %}
 </p>
 {% endfor %}
+<p>Hvis du sletter lokaleplanen, kan den kun tilbagekaldes af en administrator.</p>
+<form method="post" action="{% lokaleplan_url 'session_delete' %}">{% csrf_token %}
+    <input type="submit" value="Slet lokaleplan">
+</form>
 {% endblock %}
