@@ -1,8 +1,14 @@
 from django.db import models
 from django.core.urlresolvers import reverse
+from django.contrib.auth.models import User
+
+
+class Session(models.Model):
+    users = models.ManyToManyField(User, blank=True)
 
 
 class Participant(models.Model):
+    session = models.ForeignKey(Session)
     name = models.CharField(max_length=50)
     message = models.TextField(blank=True)
 
@@ -24,6 +30,7 @@ class Location(models.Model):
         (HALL, 'hall'),
     ]
 
+    session = models.ForeignKey(Session)
     name = models.CharField(
         max_length=50,
         verbose_name='internt navn',
@@ -64,6 +71,7 @@ class Event(models.Model):
         (FRIDAY, 'fredag'),
     ]
 
+    session = models.ForeignKey(Session)
     name = models.CharField(max_length=50, verbose_name='navn')
     day = models.IntegerField(choices=DAYS, verbose_name='dag')
     start_time = models.TimeField(verbose_name='starttid')
