@@ -71,6 +71,7 @@ class Home(TemplateView):
             groups.setdefault(k, []).append(p)
         context_data['groups'] = [groups[k] for k in sorted(groups)]
         context_data['add_user_form'] = AddUserForm()
+        context_data['users'] = self.request.lokaleplan_session.users.all()
         return context_data
 
 
