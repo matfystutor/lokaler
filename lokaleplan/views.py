@@ -18,7 +18,7 @@ from lokaleplan.models import Participant, Event, Location, Session
 from lokaleplan.texrender import tex_to_pdf, RenderError
 
 
-class SessionReverseMixin(object):
+class SessionMixin(object):
     def lokaleplan_reverse(self, *args, **kwargs):
         kwargs['session'] = self.request.lokaleplan_session.pk
         return reverse(*args, **kwargs)
@@ -75,7 +75,7 @@ class Home(TemplateView):
         return context_data
 
 
-class PerlView(FormView, SessionReverseMixin):
+class PerlView(FormView, SessionMixin):
     form_class = PerlForm
     template_name = 'lokaleplan/perlform.html'
 
@@ -499,7 +499,7 @@ class EventList(TemplateView):
         return data
 
 
-class EventUpdate(FormView, SessionReverseMixin):
+class EventUpdate(FormView, SessionMixin):
     form_class = EventForm
     template_name = 'lokaleplan/event_form.html'
 
@@ -523,7 +523,7 @@ class EventUpdate(FormView, SessionReverseMixin):
         return self.lokaleplan_redirect('events')
 
 
-class EventUpdateExternal(UpdateView, SessionReverseMixin):
+class EventUpdateExternal(UpdateView, SessionMixin):
     form_class = EventModelForm
     template_name = 'lokaleplan/event_model_form.html'
     model = Event
@@ -532,14 +532,14 @@ class EventUpdateExternal(UpdateView, SessionReverseMixin):
         return self.lokaleplan_reverse('events')
 
 
-class EventDelete(DeleteView, SessionReverseMixin):
+class EventDelete(DeleteView, SessionMixin):
     model = Event
 
     def get_success_url(self):
         return self.lokaleplan_reverse('events')
 
 
-class EventCreate(FormView, SessionReverseMixin):
+class EventCreate(FormView, SessionMixin):
     form_class = EventForm
     template_name = 'lokaleplan/event_form.html'
 
@@ -555,7 +555,7 @@ class EventCreate(FormView, SessionReverseMixin):
         return self.lokaleplan_redirect('events')
 
 
-class EventCreateExternal(CreateView, SessionReverseMixin):
+class EventCreateExternal(CreateView, SessionMixin):
     form_class = EventModelForm
     template_name = 'lokaleplan/event_model_form.html'
     model = Event
@@ -564,14 +564,14 @@ class EventCreateExternal(CreateView, SessionReverseMixin):
         return self.lokaleplan_reverse('events')
 
 
-class LocationDelete(DeleteView, SessionReverseMixin):
+class LocationDelete(DeleteView, SessionMixin):
     queryset = Location.objects.filter(event__isnull=True)
 
     def get_success_url(self):
         return self.lokaleplan_reverse('location_list')
 
 
-class LocationList(ListView, SessionReverseMixin):
+class LocationList(ListView, SessionMixin):
     queryset = Location.objects.all().prefetch_related('event_set')
     template_name = 'lokaleplan/location_list.html'
 
@@ -617,7 +617,7 @@ class LocationList(ListView, SessionReverseMixin):
         return self.lokaleplan_redirect('location_list')
 
 
-class AddUser(FormView, SessionReverseMixin):
+class AddUser(FormView, SessionMixin):
     form_class = AddUserForm
 
     def form_valid(self, form):
