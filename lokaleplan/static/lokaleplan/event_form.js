@@ -17,7 +17,7 @@ function get_locations(el) {
         var loc = { id: option.value, name: option.textContent,
             _selected: option.selected,
             get selected() {
-                return loc.selected;
+                return loc._selected;
             },
             set selected(b) {
                 loc._selected = option.selected = b;
@@ -69,10 +69,10 @@ function get_participants() {
     var participants = options.map(function (o) {
         var f = get_participant_form(o.value);
         var p = {
-            _name: f.name.value, get name() {
+            _name: f.name.value, get event_name() {
                 return p._name;
             },
-            set name(s) {
+            set event_name(s) {
                 p._name = f.name.value = s;
             },
             _day: f.day.value, get day() {
@@ -456,9 +456,9 @@ var ParticipantUpdate = (function (_React$Component4) {
                                         null,
                                         'Navn:'
                                     ),
-                                    React.createElement('input', { value: activeParticipant.name,
+                                    React.createElement('input', { value: activeParticipant.event_name,
                                         onChange: function onChange(e) {
-                                            return _this8.props.onChange('name', e.target.value);
+                                            return _this8.props.onChange('event_name', e.target.value);
                                         } })
                                 )
                             ),
@@ -681,32 +681,13 @@ var EventForm = (function (_React$Component5) {
 
 function init_react() {
     var participants = get_participants();
-    console.log(participants);
-    var formelement = participants[0].form.name.form;
-    var _iteratorNormalCompletion9 = true;
-    var _didIteratorError9 = false;
-    var _iteratorError9 = undefined;
-
-    try {
-        for (var _iterator9 = participants[Symbol.iterator](), _step9; !(_iteratorNormalCompletion9 = (_step9 = _iterator9.next()).done); _iteratorNormalCompletion9 = true) {
-            var _p = _step9.value;
-            hide(_p.container);hide(_p.form.locations);
-        }
-    } catch (err) {
-        _didIteratorError9 = true;
-        _iteratorError9 = err;
-    } finally {
-        try {
-            if (!_iteratorNormalCompletion9 && _iterator9.return) {
-                _iterator9.return();
-            }
-        } finally {
-            if (_didIteratorError9) {
-                throw _iteratorError9;
-            }
-        }
-    }
-
+    var formelement = document.getElementById('id_participants').form;
+    hide_all(participants.map(function (p) {
+        return document.getElementById('id_p' + p.id + '-locations');
+    }));
+    hide_all(participants.map(function (p) {
+        return document.getElementById('p' + p.id);
+    }));
     hide(document.querySelector('.participants'));
     hide_all(document.querySelectorAll('.participant-name'));
     var event_form_div = document.createElement('div');
