@@ -1,0 +1,12 @@
+{% extends "lokaleplan/base.html" %}
+{% block title %}Lokaleplaner: Log ind{% endblock %}
+{% block content %}
+<h1>Lokaleplaner</h1>
+<p>
+Log ind for at fortsætte.
+</p>
+<form method="post">{% csrf_token %}
+{{ form.as_p }}
+<input type="submit" value="Login" />
+</form>
+{% endblock %}
