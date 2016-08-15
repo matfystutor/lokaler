@@ -4,7 +4,7 @@ import itertools
 from django.views.generic import (
     TemplateView, ListView, View, FormView, UpdateView, CreateView, DeleteView,
 )
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseBadRequest
 from django.shortcuts import redirect, get_object_or_404
 from django.core.urlresolvers import reverse
 from django.template.loader import render_to_string
@@ -514,3 +514,56 @@ class EventCreateExternal(CreateView):
 
     def get_success_url(self):
         return reverse('events')
+
+
+class LocationDelete(DeleteView):
+    queryset = Location.objects.filter(event__isnull=True)
+
+    def get_success_url(self):
+        return reverse('location_list')
+
+
+class LocationList(ListView):
+    queryset = Location.objects.all().prefetch_related('event_set')
+    template_name = 'lokaleplan/location_list.html'
+
+    def post(self, request):
+        self.object_list = self.get_queryset()
+        for k in request.POST:
+            mo = re.match(r'(rename|delete)-location-(\d+)', k)
+            if mo is not None:
+                method = getattr(self, 'do_%s' % mo.group(1))
+                location = get_object_or_404(Location, pk=mo.group(2))
+                name = request.POST.get('location-%s' % mo.group(2))
+                return method(location, name)
+            if k == 'create-location-new':
+                name = request.POST.get('location-new')
+                return self.do_create(name)
+        return self.render_to_response(
+            self.get_context_data(error='No action specified'))
+
+    def do_delete(self, location, name):
+        if location.event_set.all():
+            return self.render_to_response(
+                self.get_context_data(
+                    error='Der er programpunkter der bruger dette lokale'))
+        location.delete()
+        return redirect('location_list')
+
+    def do_rename(self, location, name):
+        if not name:
+            return self.render_to_response(
+                self.get_context_data(
+                    error='Navnet må ikke være tomt'))
+        location.name = name
+        location.save()
+        return redirect('location_list')
+
+    def do_create(self, name):
+        if not name:
+            return self.render_to_response(
+                self.get_context_data(
+                    error='Navnet må ikke være tomt'))
+        location = Location(name=name)
+        location.save()
+        return redirect('location_list')
