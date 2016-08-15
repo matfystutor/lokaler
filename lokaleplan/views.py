@@ -44,7 +44,7 @@ class SessionList(TemplateView):
         if self.request.user.is_superuser:
             qs = Session.objects.all()
         else:
-            qs = Session.objects.filter(users=user)
+            qs = Session.objects.filter(users=self.request.user)
         qs = qs.annotate(user_count=Count('users', distinct=True),
                          participant_count=Count('participant', distinct=True),
                          location_count=Count('location', distinct=True),
