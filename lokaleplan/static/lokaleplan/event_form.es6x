@@ -116,6 +116,9 @@ class DaySelect extends React.Component {
 }
 
 class ParticipantLocations extends React.Component {
+    shouldComponentUpdate(nextProps, nextState) {
+        return this.props != nextProps;
+    }
     render() {
         const options = this.props.names.map((name, i) => {
             const s = this.props.selected[i];

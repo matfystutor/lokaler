@@ -328,6 +328,11 @@ var ParticipantLocations = (function (_React$Component3) {
     }
 
     _createClass(ParticipantLocations, [{
+        key: 'shouldComponentUpdate',
+        value: function shouldComponentUpdate(nextProps, nextState) {
+            return this.props != nextProps;
+        }
+    }, {
         key: 'render',
         value: function render() {
             var _this6 = this;
