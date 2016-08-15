@@ -293,7 +293,8 @@ var DaySelect = (function (_React$Component2) {
 
             return React.createElement(
                 'select',
-                { value: this.props.value, onChange: function onChange(e) {
+                { value: this.props.value,
+                    onChange: function onChange(e) {
                         return _this4.props.onChange(e.target.value);
                     } },
                 React.createElement(
@@ -579,6 +580,7 @@ var EventForm = (function (_React$Component5) {
             var _this10 = this;
 
             var participantList = [];
+            var groups = get_participant_groups(this.props.participants);
             var _iteratorNormalCompletion7 = true;
             var _didIteratorError7 = false;
             var _iteratorError7 = undefined;
@@ -601,7 +603,7 @@ var EventForm = (function (_React$Component5) {
                         } }));
                 };
 
-                for (var _iterator7 = get_participant_groups(this.props.participants)[Symbol.iterator](), _step7; !(_iteratorNormalCompletion7 = (_step7 = _iterator7.next()).done); _iteratorNormalCompletion7 = true) {
+                for (var _iterator7 = groups[Symbol.iterator](), _step7; !(_iteratorNormalCompletion7 = (_step7 = _iterator7.next()).done); _iteratorNormalCompletion7 = true) {
                     _loop();
                 }
             } catch (err) {
@@ -629,10 +631,11 @@ var EventForm = (function (_React$Component5) {
 
                     var locations = p.locations.filter(function (l) {
                         return l.selected;
-                    }).map(function (l) {
+                    });
+                    var location_names = locations.map(function (l) {
                         return l.name;
                     }).join(', ');
-                    var label = p.selected && locations ? p.name + ': ' + locations : p.name;
+                    var label = p.selected && locations ? p.name + ': ' + location_names : p.name;
                     participantList.push(React.createElement(ParticipantOption, { key: p.id, selected: p.selected, label: label,
                         onToggle: function onToggle(b) {
                             return _this10.setParticipantsSelected([p], b);
@@ -668,7 +671,8 @@ var EventForm = (function (_React$Component5) {
                     { className: 'field', ref: 'participantList' },
                     participantList
                 ),
-                React.createElement(ParticipantUpdate, { name: this.state.activeName, participants: this.state.active,
+                React.createElement(ParticipantUpdate, {
+                    name: this.state.activeName, participants: this.state.active,
                     onChange: function onChange(k, v) {
                         _this10.state.active.forEach(function (p) {
                             return set_participant_field(p, k, v);

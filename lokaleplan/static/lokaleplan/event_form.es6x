@@ -107,7 +107,8 @@ class ParticipantOption extends React.Component {
 
 class DaySelect extends React.Component {
     render() {
-        return <select value={this.props.value} onChange={e => this.props.onChange(e.target.value) }>
+        return <select value={this.props.value}
+            onChange={e => this.props.onChange(e.target.value) }>
             <option value={'3'}>Onsdag</option>
             <option value={'4'}>Torsdag</option>
             <option value={'5'}>Fredag</option>
@@ -135,14 +136,15 @@ class ParticipantLocations extends React.Component {
 
 class ParticipantUpdate extends React.Component {
     render() {
-        const {value: activeParticipant, done: noActive} = this.props.participants.keys().next();
+        const {value: activeParticipant, done: noActive} =
+            this.props.participants.keys().next();
         if (noActive)
             return <div className='field event_form' ref='formDiv'></div>;
         return <div className='field event_form' ref='formDiv'>
-                    <label ref='formLabel'>Data for {this.props.name}:</label>
-                    <div>
-                        <div className='field'>
-                            <div className='event_form'>
+            <label ref='formLabel'>Data for {this.props.name}:</label>
+            <div>
+                <div className='field'>
+                    <div className='event_form'>
     <div className="time">
         <div className="field">
             <label>Dag:</label>
@@ -174,20 +176,22 @@ class ParticipantUpdate extends React.Component {
                 onChange={e => this.props.onChange('manual_time', e.target.value)} />
         </div>
     </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div>
-                        <div className='field'>
-                            <label>Lokaler:</label>
-                            <ParticipantLocations
-                                names={activeParticipant.locations.map(l => l.name)}
-                                selected={activeParticipant.locations.map((_, i) =>
-                                    any(this.props.participants, p => p.locations[i].selected))}
-                                onChange={(i, b) => this.props.onChange(['locations', i], b)} />
-                        </div>
                     </div>
                 </div>
+            </div>
+            <div>
+                <div className='field'>
+                    <label>Lokaler:</label>
+                    <ParticipantLocations
+                        names={activeParticipant.locations.map(l => l.name)}
+                        selected={activeParticipant.locations.map((_, i) =>
+                            any(this.props.participants,
+                                p => p.locations[i].selected))}
+                        onChange={(i, b) =>
+                            this.props.onChange(['locations', i], b)} />
+                </div>
+            </div>
+        </div>
     }
 }
 
@@ -208,25 +212,29 @@ class EventForm extends React.Component {
 
     render() {
         const participantList = [];
-        for (const {name, participants} of get_participant_groups(this.props.participants))
+        const groups = get_participant_groups(this.props.participants);
+        for (const {name, participants} of groups)
             participantList.push(
                 <ParticipantOption key={name} label={name}
                     selected={any(participants.map(p => p.selected))}
                     onToggle={b => this.setParticipantsSelected(participants, b)}
-                    onClick={() => this.setState({active: new Set(participants), activeName: name})} />)
+                    onClick={() => this.setState(
+                        {active: new Set(participants), activeName: name})} />)
         for (const p of this.props.participants) {
-            const locations = p.locations.filter(l => l.selected).map(l => l.name).join(', ');
-            const label = (p.selected && locations) ? (p.name + ': ' + locations) : p.name;
+            const locations = p.locations.filter(l => l.selected);
+            const location_names = locations.map(l => l.name).join(', ');
+            const label = (p.selected && locations) ?
+                (p.name + ': ' + location_names) : p.name;
             participantList.push(
                 <ParticipantOption key={p.id} selected={p.selected} label={label}
                     onToggle={b => this.setParticipantsSelected([p], b)}
-                    onClick={() => this.setState({active: new Set([p]), activeName: p.name})} />);
+                    onClick={() => this.setState(
+                        {active: new Set([p]), activeName: p.name})} />);
         }
         return <div ref='container'>
-            <div className='field' ref='participantList'>
-                {participantList}
-            </div>
-            <ParticipantUpdate name={this.state.activeName} participants={this.state.active}
+            <div className='field' ref='participantList'>{participantList}</div>
+            <ParticipantUpdate
+                name={this.state.activeName} participants={this.state.active}
                 onChange={(k, v) => {
                     this.state.active.forEach(
                         p => set_participant_field(p, k, v));
