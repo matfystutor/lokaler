@@ -63,13 +63,16 @@ class Event(models.Model):
         (FRIDAY, 'fredag'),
     ]
 
-    name = models.CharField(max_length=50)
-    day = models.IntegerField(choices=DAYS)
-    start_time = models.TimeField()
-    end_time = models.TimeField()
-    manual_time = models.CharField(max_length=100, blank=True)
-    locations = models.ManyToManyField(Location, blank=True)
-    participants = models.ManyToManyField(Participant, blank=True)
+    name = models.CharField(max_length=50, verbose_name='navn')
+    day = models.IntegerField(choices=DAYS, verbose_name='dag')
+    start_time = models.TimeField(verbose_name='starttid')
+    end_time = models.TimeField(verbose_name='sluttid')
+    manual_time = models.CharField(
+        max_length=100, blank=True, verbose_name='vist tid')
+    locations = models.ManyToManyField(
+        Location, blank=True, verbose_name='lokaler')
+    participants = models.ManyToManyField(
+        Participant, blank=True, verbose_name='deltagere')
 
     def __str__(self):
         if self.name:
