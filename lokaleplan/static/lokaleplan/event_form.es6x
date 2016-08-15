@@ -222,20 +222,18 @@ class EventForm extends React.Component {
                     onToggle={b => this.setParticipantsSelected([p], b)}
                     onClick={() => this.setState({active: new Set([p]), activeName: p.name})} />);
         }
-        const rhs = <ParticipantUpdate name={this.state.activeName} participants={this.state.active}
-            onChange={(k, v) => {
-                this.state.active.forEach(
-                    p => set_participant_field(p, k, v));
-                if (this.state.activeName !== 'Alle')
-                    this.setParticipantsSelected(this.state.active, true);
-                this.forceUpdate();}} />
-            ;
         return <div ref='container'>
-                <div className='field' ref='participantList'>
-                    {participantList}
-                </div>
-                {rhs}
-            </div>;
+            <div className='field' ref='participantList'>
+                {participantList}
+            </div>
+            <ParticipantUpdate name={this.state.activeName} participants={this.state.active}
+                onChange={(k, v) => {
+                    this.state.active.forEach(
+                        p => set_participant_field(p, k, v));
+                    if (this.state.activeName !== 'Alle')
+                        this.setParticipantsSelected(this.state.active, true);
+                    this.forceUpdate();}} />
+        </div>;
     }
 }
 

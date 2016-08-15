@@ -660,14 +660,6 @@ var EventForm = (function (_React$Component5) {
                 }
             }
 
-            var rhs = React.createElement(ParticipantUpdate, { name: this.state.activeName, participants: this.state.active,
-                onChange: function onChange(k, v) {
-                    _this10.state.active.forEach(function (p) {
-                        return set_participant_field(p, k, v);
-                    });
-                    if (_this10.state.activeName !== 'Alle') _this10.setParticipantsSelected(_this10.state.active, true);
-                    _this10.forceUpdate();
-                } });
             return React.createElement(
                 'div',
                 { ref: 'container' },
@@ -676,7 +668,14 @@ var EventForm = (function (_React$Component5) {
                     { className: 'field', ref: 'participantList' },
                     participantList
                 ),
-                rhs
+                React.createElement(ParticipantUpdate, { name: this.state.activeName, participants: this.state.active,
+                    onChange: function onChange(k, v) {
+                        _this10.state.active.forEach(function (p) {
+                            return set_participant_field(p, k, v);
+                        });
+                        if (_this10.state.activeName !== 'Alle') _this10.setParticipantsSelected(_this10.state.active, true);
+                        _this10.forceUpdate();
+                    } })
             );
         }
     }]);
