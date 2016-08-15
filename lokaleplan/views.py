@@ -49,7 +49,7 @@ class ParticipantDetail(TemplateView):
         context_data['participant'] = participant
 
         qs = Event.objects.filter(participants=participant)
-        qs = qs.prefetch_related('locations', 'participants')
+        qs = qs.prefetch_related('locations')
 
         events_by_day = {}
         for event in qs:
