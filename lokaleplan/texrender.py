@@ -11,7 +11,7 @@ def tex_to_pdf(source):
     with tempfile.TemporaryDirectory() as d:
         jobname = 'plans'
         base = os.path.join(d, jobname)
-        with open(base + '.tex', 'w') as fp:
+        with open(base + '.tex', 'w', encoding='utf8') as fp:
             fp.write(source)
         cmd = ('pdflatex', base + '.tex')
         p = subprocess.Popen(
