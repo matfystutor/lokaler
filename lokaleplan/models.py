@@ -130,7 +130,8 @@ class Event(models.Model):
         for name, day, start_time, end_time, manual_time in values:
             res = res | cls.objects.filter(
                 name=name, day=day, start_time=start_time, end_time=end_time,
-                manual_time=manual_time, participants__isnull=False)
+                manual_time=manual_time)
+        res = res.exclude(participants__isnull=True)
         return res
 
     def get_parallel_events(self):
@@ -139,8 +140,8 @@ class Event(models.Model):
         """
         return type(self).objects.filter(
             name=self.name, day=self.day, start_time=self.start_time,
-            end_time=self.end_time, manual_time=self.manual_time,
-            participants__isnull=False)
+            end_time=self.end_time, manual_time=self.manual_time).exclude(
+                participants__isnull=True)
 
     class Meta:
         ordering = ['day', 'start_time', 'name', 'end_time']
