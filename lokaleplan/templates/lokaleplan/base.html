@@ -16,10 +16,14 @@ href="{% static 'lokaleplan/style.css' %}" />
 <body>
 <nav>
 <ul class="container">
-<a href="/"><li>Lokaleplan</li></a>
+{% if session %}
+<a href="{% lokaleplan_url 'home' %}"><li>Lokaleplan</li></a>
 <a href="{% lokaleplan_url 'events' %}"><li>Programtabel</li></a>
 <a href="{% lokaleplan_url 'locations' %}"><li>Lokaletabel</li></a>
 <a href="{% lokaleplan_url 'participants' %}"><li>Holdtabel</li></a>
+{% else %}
+<a href="/"><li>Lokaleplaner</li></a>
+{% endif %}
 </ul>
 </nav>
 <div class="container">

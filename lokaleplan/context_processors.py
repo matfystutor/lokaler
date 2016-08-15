@@ -1,5 +1,5 @@
 def lokaleplan_context(request):
     try:
-        return {'session': {'pk': request.session_pk}}
+        return {'session': request.lokaleplan_session}
     except AttributeError:
         return {}

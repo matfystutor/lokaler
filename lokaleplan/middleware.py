@@ -1,3 +1,9 @@
+from django.contrib.auth.views import redirect_to_login
+from django.shortcuts import render_to_response
+
+from lokaleplan.models import Session
+
+
 class LokaleplanMiddleware(object):
     def __init__(self, get_response):
         self.get_response = get_response
@@ -11,4 +17,15 @@ class LokaleplanMiddleware(object):
             session_pk = view_kwargs.pop('session')
         except KeyError:
             return
-        request.session_pk = int(session_pk) + 1
+        user = request.user
+        if not user:
+            return redirect_to_login(request.build_absolute_uri())
+        qs = Session.objects.filter(pk=session_pk)
+        if not user.is_superuser:
+            qs = qs.filter(users=user)
+        try:
+            session = qs.get()
+        except Session.DoesNotExist:
+            return render_to_response(
+                'lokaleplan/session_404.html', status=404)
+        request.lokaleplan_session = session

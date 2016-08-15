@@ -16,20 +16,16 @@ from lokaleplan.models import Participant, Event, Location
 from lokaleplan.texrender import tex_to_pdf, RenderError
 
 
-def dispatch_session(dispatch):
-    @functools.wraps(dispatch)
-    def wrapper(request, *args, **kwargs):
-        # session_pk = kwargs.pop('session')
-        # session = get_object_or_404(
-        return dispatch(request, *args, **kwargs)
+class SessionReverseMixin(object):
+    def lokaleplan_reverse(self, *args, **kwargs):
+        kwargs['session'] = self.request.lokaleplan_session.pk
+        return reverse(*args, **kwargs)
 
-    return wrapper
-
-
-session_view = method_decorator(dispatch_session, name='dispatch')
+    def lokaleplan_redirect(self, *args, **kwargs):
+        kwargs['session'] = self.request.lokaleplan_session.pk
+        return redirect(*args, **kwargs)
 
 
-@session_view
 class Home(TemplateView):
     template_name = 'lokaleplan/home.html'
 
@@ -43,13 +39,13 @@ class Home(TemplateView):
         return context_data
 
 
-class PerlView(FormView):
+class PerlView(FormView, SessionReverseMixin):
     form_class = PerlForm
     template_name = 'lokaleplan/perlform.html'
 
     def form_valid(self, form):
         form.save()
-        return redirect('home')
+        return self.lokaleplan_redirect('home')
 
 
 class ParticipantDetail(TemplateView):
@@ -467,7 +463,7 @@ class EventList(TemplateView):
         return data
 
 
-class EventUpdate(FormView):
+class EventUpdate(FormView, SessionReverseMixin):
     form_class = EventForm
     template_name = 'lokaleplan/event_form.html'
 
@@ -475,7 +471,7 @@ class EventUpdate(FormView):
         event = get_object_or_404(Event, pk=self.kwargs['pk'])
         events = sorted(event.get_parallel_events(), key=lambda e: e.pk)
         if event != events[0]:
-            return redirect('event_update', pk=events[0].pk)
+            return self.lokaleplan_redirect('event_update', pk=events[0].pk)
         self.events = events
         return super(EventUpdate, self).dispatch(request, *args, **kwargs)
 
@@ -488,26 +484,26 @@ class EventUpdate(FormView):
 
     def form_valid(self, form):
         form.save()
-        return redirect('events')
+        return self.lokaleplan_redirect('events')
 
 
-class EventUpdateExternal(UpdateView):
+class EventUpdateExternal(UpdateView, SessionReverseMixin):
     form_class = EventModelForm
     template_name = 'lokaleplan/event_model_form.html'
     model = Event
 
     def get_success_url(self):
-        return reverse('events')
+        return self.lokaleplan_reverse('events')
 
 
-class EventDelete(DeleteView):
+class EventDelete(DeleteView, SessionReverseMixin):
     model = Event
 
     def get_success_url(self):
-        return reverse('events')
+        return self.lokaleplan_reverse('events')
 
 
-class EventCreate(FormView):
+class EventCreate(FormView, SessionReverseMixin):
     form_class = EventForm
     template_name = 'lokaleplan/event_form.html'
 
@@ -520,26 +516,26 @@ class EventCreate(FormView):
 
     def form_valid(self, form):
         form.save()
-        return redirect('events')
+        return self.lokaleplan_redirect('events')
 
 
-class EventCreateExternal(CreateView):
+class EventCreateExternal(CreateView, SessionReverseMixin):
     form_class = EventModelForm
     template_name = 'lokaleplan/event_model_form.html'
     model = Event
 
     def get_success_url(self):
-        return reverse('events')
+        return self.lokaleplan_reverse('events')
 
 
-class LocationDelete(DeleteView):
+class LocationDelete(DeleteView, SessionReverseMixin):
     queryset = Location.objects.filter(event__isnull=True)
 
     def get_success_url(self):
-        return reverse('location_list')
+        return self.lokaleplan_reverse('location_list')
 
 
-class LocationList(ListView):
+class LocationList(ListView, SessionReverseMixin):
     queryset = Location.objects.all().prefetch_related('event_set')
     template_name = 'lokaleplan/location_list.html'
 
@@ -564,7 +560,7 @@ class LocationList(ListView):
                 self.get_context_data(
                     error='Der er programpunkter der bruger dette lokale'))
         location.delete()
-        return redirect('location_list')
+        return self.lokaleplan_redirect('location_list')
 
     def do_rename(self, location, name):
         if not name:
@@ -573,7 +569,7 @@ class LocationList(ListView):
                     error='Navnet må ikke være tomt'))
         location.name = name
         location.save()
-        return redirect('location_list')
+        return self.lokaleplan_redirect('location_list')
 
     def do_create(self, name):
         if not name:
@@ -582,4 +578,4 @@ class LocationList(ListView):
                     error='Navnet må ikke være tomt'))
         location = Location(name=name)
         location.save()
-        return redirect('location_list')
+        return self.lokaleplan_redirect('location_list')

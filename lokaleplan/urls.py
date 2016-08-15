@@ -52,5 +52,6 @@ sessions = [
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
+    url('^', include('django.contrib.auth.urls')),
     url(r'^session/(?P<session>\d+)/', include(sessions)),
 ]

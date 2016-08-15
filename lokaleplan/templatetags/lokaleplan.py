@@ -12,10 +12,10 @@ register = template.Library()
 @register.simple_tag
 def table_link(day_key, object):
     if isinstance(object, Location):
-        url = reverse('locations')
+        url = reverse('locations', kwargs=dict(session=object.session_id))
         class_ = 'location-link'
     elif isinstance(object, Participant):
-        url = reverse('participants')
+        url = reverse('participants', kwargs=dict(session=object.session_id))
         class_ = 'participant-link'
     else:
         raise TypeError(type(object))
