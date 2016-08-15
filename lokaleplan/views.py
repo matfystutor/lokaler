@@ -180,7 +180,11 @@ class EventTable(TemplateView):
         if mode == 'locations':
             participants = set(p for event in events
                                for p in event.participants.all())
-            text = summarize_participants(participants)
+            if participants:
+                text = summarize_participants(participants)
+            else:
+                text = ' '.join(event.name for event in events)
+                class_ = 'external'
             if not text:
                 class_ = 'empty'
         elif mode == 'participants':
