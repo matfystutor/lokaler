@@ -340,3 +340,12 @@ class EventForm(forms.Form):
             prefix = 'p%s-' % p.pk
             yield dict([('participant', p)] +
                        [(key, self[prefix + key]) for key in fields])
+
+
+class EventModelForm(forms.ModelForm):
+    class Meta:
+        model = Event
+        fields = ('name', 'day', 'start_time', 'end_time', 'locations')
+
+    start_time = MinuteTimeField(label='Starttid')
+    end_time = MinuteTimeField(label='Sluttid')

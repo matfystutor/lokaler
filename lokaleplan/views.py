@@ -1,12 +1,15 @@
 import re
 import itertools
 
-from django.views.generic import TemplateView, FormView, ListView, View
+from django.views.generic import (
+    TemplateView, ListView, View, FormView, UpdateView, CreateView, DeleteView,
+)
 from django.http import HttpResponse
 from django.shortcuts import redirect, get_object_or_404
+from django.core.urlresolvers import reverse
 from django.template.loader import render_to_string
 
-from lokaleplan.forms import PerlForm, EventForm
+from lokaleplan.forms import PerlForm, EventForm, EventModelForm
 from lokaleplan.models import Participant, Event, Location
 from lokaleplan.texrender import tex_to_pdf, RenderError
 
@@ -477,6 +480,22 @@ class EventUpdate(FormView):
         return redirect('events')
 
 
+class EventUpdateExternal(UpdateView):
+    form_class = EventModelForm
+    template_name = 'lokaleplan/event_model_form.html'
+    model = Event
+
+    def get_success_url(self):
+        return reverse('events')
+
+
+class EventDelete(DeleteView):
+    model = Event
+
+    def get_success_url(self):
+        return reverse('events')
+
+
 class EventCreate(FormView):
     form_class = EventForm
     template_name = 'lokaleplan/event_form.html'
@@ -491,3 +510,12 @@ class EventCreate(FormView):
     def form_valid(self, form):
         form.save()
         return redirect('events')
+
+
+class EventCreateExternal(CreateView):
+    form_class = EventModelForm
+    template_name = 'lokaleplan/event_model_form.html'
+    model = Event
+
+    def get_success_url(self):
+        return reverse('events')
