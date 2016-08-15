@@ -36,6 +36,13 @@ function get_participants() {
     return participants;
 }
 
+function set_participant_field(participant, key, value) {
+    if (key in participant.form) participant.form[key].value = value;
+    else if (typeof(key) === typeof([]) && key[0] === 'locations')
+        participant.locations[key[1]].selected = value;
+    else throw 'Unknown key ' + key;
+}
+
 function get_participant_groups(participants) {
     const groups = {};
     for (const p of participants) {
@@ -48,6 +55,7 @@ function get_participant_groups(participants) {
         }
     }
     const groupList = [];
+    groupList.push({name: 'Alle', participants: participants});
     for (const k in groups)
         groupList.push({name: k, participants: groups[k]});
     return groupList;
@@ -60,6 +68,11 @@ function make_visible(domelement) {
 function all(xs) {
     for (const x of xs) if (!x) return false;
     return true;
+}
+
+function any(xs, f=null) {
+    for (const x of xs) if (f ? f(x) : x) return true;
+    return false;
 }
 
 function hide(domelement) {
@@ -342,7 +355,8 @@ function init() {
 class ParticipantOption extends React.Component {
     render() {
         return <div>
-            <input type='checkbox' value={this.props.selected} onChange={e => this.props.onToggle(!this.props.selected)} />
+            <input type='checkbox' checked={this.props.selected}
+                onChange={e => this.props.onToggle(e.target.checked)} />
             <a href='javascript:void(0)' onClick={this.props.onClick}>
                 {this.props.label}
             </a>
@@ -350,41 +364,70 @@ class ParticipantOption extends React.Component {
     }
 }
 
-class SingleParticipant extends React.Component {
+class DaySelect extends React.Component {
     render() {
+        return <select value={this.props.value} onChange={e => this.props.onChange(e.target.value) }>
+            <option value={'3'}>Onsdag</option>
+            <option value={'4'}>Torsdag</option>
+            <option value={'5'}>Fredag</option>
+        </select>
+    }
+}
+
+class ParticipantLocations extends React.Component {
+    render() {
+        const options = this.props.names.map((name, i) => {
+            const s = this.props.selected[i];
+            return <div key={i}><label>
+                <input type='checkbox' checked={s}
+                    onChange={e => this.props.onChange(i, e.target.checked)} />
+                <span>{name}</span>
+            </label></div>});
+        return <div className='locations'>
+            {options}
+        </div>
+    }
+}
+
+class ParticipantUpdate extends React.Component {
+    render() {
+        const {value: activeParticipant, done: noActive} = this.props.participants.keys().next();
+        if (noActive)
+            return <div className='field event_form' ref='formDiv'></div>;
         return <div className='field event_form' ref='formDiv'>
-                    <label ref='formLabel'>Data for {this.props.value.name}:</label>
+                    <label ref='formLabel'>Data for {this.props.name}:</label>
                     <div>
                         <div className='field'>
                             <div className='event_form'>
     <div className="time">
         <div className="field">
             <label>Dag:</label>
-            <select value={'3'}>
-                <option value={'3'}>Onsdag</option>
-                <option value={'4'}>Torsdag</option>
-                <option value={'5'}>Fredag</option>
-            </select>
+            <DaySelect value={activeParticipant.form.day.value}
+                onChange={v => this.props.onChange('day', v)} />
         </div>
         <div className="field">
             <label>Start:</label>
-            <input value="09:00" />
+            <input value={activeParticipant.form.start_time.value}
+                onChange={e => this.props.onChange('start_time', e.target.value)} />
         </div>
         <div className="field">
             <label>Slut:</label>
-            <input value="10:00" />
+            <input value={activeParticipant.form.end_time.value}
+                onChange={e => this.props.onChange('end_time', e.target.value)} />
         </div>
     </div>
     <div className="name">
         <div className="field">
             <label>Navn:</label>
-            <input value="Hej" />
+            <input value={activeParticipant.form.name.value}
+                onChange={e => this.props.onChange('name', e.target.value)} />
         </div>
     </div>
     <div>
         <div className="field">
             <label>Tid:</label>
-            <input value="" />
+            <input value={activeParticipant.form.manual_time.value}
+                onChange={e => this.props.onChange('manual_time', e.target.value)} />
         </div>
     </div>
                             </div>
@@ -393,16 +436,11 @@ class SingleParticipant extends React.Component {
                     <div>
                         <div className='field'>
                             <label>Lokaler:</label>
-                            <div className='locations'>
-                                <div><label>
-                                    <input type='checkbox' />
-                                    <span>Hej</span>
-                                </label></div>
-                                <div><label>
-                                    <input type='checkbox' />
-                                    <span>Farvel</span>
-                                </label></div>
-                            </div>
+                            <ParticipantLocations
+                                names={activeParticipant.locations.map(l => l.name)}
+                                selected={activeParticipant.locations.map((_, i) =>
+                                    any(this.props.participants, p => p.locations[i].selected))}
+                                onChange={(i, b) => this.props.onChange(['locations', i], b)} />
                         </div>
                     </div>
                 </div>
@@ -416,26 +454,37 @@ class EventForm extends React.Component {
     //    participants: React.PropTypes.array.isRequired,
     //}
     state = {
-        active: new Set(),
+        active: new Set(this.props.participants),
+        activeName: 'Alle',
     }
     setParticipantsSelected(participants, selected) {
-        console.log(participants, selected);
         for (const p of participants) p.selected = selected;
         this.forceUpdate();
     }
 
     render() {
         const participantList = [];
-        for (const p of this.props.participants)
+        for (const {name, participants} of get_participant_groups(this.props.participants))
             participantList.push(
-                <ParticipantOption key={p.id} selected={p.selected} label={p.name}
+                <ParticipantOption key={name} label={name}
+                    selected={any(participants.map(p => p.selected))}
+                    onToggle={b => this.setParticipantsSelected(participants, b)}
+                    onClick={() => this.setState({active: new Set(participants), activeName: name})} />)
+        for (const p of this.props.participants) {
+            const locations = p.locations.filter(l => l.selected).map(l => l.name).join(', ');
+            const label = (p.selected && locations) ? (p.name + ': ' + locations) : p.name;
+            participantList.push(
+                <ParticipantOption key={p.id} selected={p.selected} label={label}
                     onToggle={b => this.setParticipantsSelected([p], b)}
-                    onClick={() => this.setState({active: new Set([p])})} />
-            );
-        const {value: activeParticipant, done: noActive} = this.state.active.keys().next();
-        const rhs = noActive ? <div className='field event_form' ref='formDiv'></div> :
-            <SingleParticipant value={activeParticipant}
-                onChange={(k, v) => {this.state.active.forEach(p => p[k] = v); this.forceUpdate();}} />
+                    onClick={() => this.setState({active: new Set([p]), activeName: p.name})} />);
+        }
+        const rhs = <ParticipantUpdate name={this.state.activeName} participants={this.state.active}
+            onChange={(k, v) => {
+                this.state.active.forEach(
+                    p => set_participant_field(p, k, v));
+                if (this.state.activeName !== 'Alle')
+                    this.setParticipantsSelected(this.state.active, true);
+                this.forceUpdate();}} />
             ;
         return <div ref='container'>
                 <div className='field' ref='participantList'>
