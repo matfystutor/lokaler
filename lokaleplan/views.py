@@ -60,7 +60,7 @@ class SessionDelete(DeleteView):
         return self.request.lokaleplan_session
 
 
-class Home(TemplateView):
+class Home(TemplateView, SessionMixin):
     template_name = 'lokaleplan/home.html'
 
     def get_context_data(self, **kwargs):
@@ -84,12 +84,13 @@ class PerlView(FormView, SessionMixin):
         return self.lokaleplan_redirect('home')
 
 
-class ParticipantDetail(TemplateView):
+class ParticipantDetail(TemplateView, SessionMixin):
     template_name = 'lokaleplan/participantdetail.html'
 
     def get_participant(self):
         return get_object_or_404(
-            Participant, pk=self.kwargs['pk'])
+            Participant.objects.all(),
+            pk=self.kwargs['pk'])
 
     def get_context_data(self, **kwargs):
         context_data = super().get_context_data(**kwargs)
@@ -126,12 +127,9 @@ def summarize_participants(participants):
         for k in sorted(groups.keys()))
 
 
-def get_plans_tex(participants=None):
+def get_plans_tex(participants):
     template_name = 'lokaleplan/participant_plans.tex'
 
-    if participants is None:
-        participants = Participant.objects.all()
-        participants = participants.prefetch_related('event_set')
     participant_dicts = []
     for p in participants:
         days = []
@@ -158,12 +156,13 @@ def get_plans_tex(participants=None):
     return render_to_string(template_name, {'participants': participant_dicts})
 
 
-class ParticipantPlans(View):
+class ParticipantPlans(View, SessionMixin):
     def get(self, request, mode, pk=None):
+        participants = Participant.objects.all()
         if pk is None:
-            participants = None
+            participants = participants.prefetch_related('event_set')
         else:
-            participants = [get_object_or_404(Participant, pk=pk)]
+            participants = [get_object_or_404(participants, pk=pk)]
         source = get_plans_tex(participants)
         if mode == 'source':
             return HttpResponse(source,
@@ -205,7 +204,7 @@ class EventTableCell(object):
         return bool(self.events)
 
 
-class EventTable(TemplateView):
+class EventTable(TemplateView, SessionMixin):
     template_name = 'lokaleplan/eventtable.html'
 
     def get_events(self):
@@ -482,7 +481,7 @@ class EventTable(TemplateView):
         return context_data
 
 
-class EventList(TemplateView):
+class EventList(TemplateView, SessionMixin):
     template_name = 'lokaleplan/event_list.html'
 
     def get_context_data(self, **kwargs):
@@ -494,7 +493,8 @@ class EventList(TemplateView):
                     event.manual_time,
                     ' '.join(map(str, event.participants.all())))
 
-        events = sorted(Event.objects.all(), key=sort_key)
+        qs = Event.objects.all()
+        events = sorted(qs, key=sort_key)
         data['event_list'] = events
         return data
 
@@ -504,7 +504,8 @@ class EventUpdate(FormView, SessionMixin):
     template_name = 'lokaleplan/event_form.html'
 
     def dispatch(self, request, *args, **kwargs):
-        event = get_object_or_404(Event, pk=self.kwargs['pk'])
+        qs = Event.objects.all()
+        event = get_object_or_404(qs, pk=self.kwargs['pk'])
         events = sorted(event.get_parallel_events(), key=lambda e: e.pk)
         if event != events[0]:
             return self.lokaleplan_redirect('event_update', pk=events[0].pk)
@@ -515,7 +516,8 @@ class EventUpdate(FormView, SessionMixin):
         kwargs = super(EventUpdate, self).get_form_kwargs()
         kwargs['events'] = self.events
         kwargs['locations'] = Location.objects.all()
-        kwargs['participants'] = Participant.objects.all()
+        kwargs['participants'] = (
+            Participant.objects.all())
         return kwargs
 
     def form_valid(self, form):
@@ -547,7 +549,8 @@ class EventCreate(FormView, SessionMixin):
         kwargs = super(EventCreate, self).get_form_kwargs()
         kwargs['events'] = []
         kwargs['locations'] = Location.objects.all()
-        kwargs['participants'] = Participant.objects.all()
+        kwargs['participants'] = (
+            Participant.objects.all())
         return kwargs
 
     def form_valid(self, form):
@@ -565,15 +568,21 @@ class EventCreateExternal(CreateView, SessionMixin):
 
 
 class LocationDelete(DeleteView, SessionMixin):
-    queryset = Location.objects.filter(event__isnull=True)
+    def get_queryset(self):
+        qs = Location.objects.filter(event__isnull=True)
+        return qs
 
     def get_success_url(self):
         return self.lokaleplan_reverse('location_list')
 
 
 class LocationList(ListView, SessionMixin):
-    queryset = Location.objects.all().prefetch_related('event_set')
     template_name = 'lokaleplan/location_list.html'
+
+    def get_queryset(self):
+        qs = Location.objects.all()
+        qs = qs.prefetch_related('event_set')
+        return qs
 
     def post(self, request):
         self.object_list = self.get_queryset()
