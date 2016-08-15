@@ -101,9 +101,11 @@ class Event(models.Model):
 
     def edit_link(self):
         if self.participants.all():
-            return reverse('event_update', kwargs=dict(pk=self.pk))
+            return reverse('event_update',
+                           kwargs=dict(session=self.session_id, pk=self.pk))
         else:
-            return reverse('event_update_external', kwargs=dict(pk=self.pk))
+            return reverse('event_update_external',
+                           kwargs=dict(session=self.session_id, pk=self.pk))
 
     @staticmethod
     def display_time_interval(start_time, end_time):
