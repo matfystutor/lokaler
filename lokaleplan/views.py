@@ -59,9 +59,10 @@ class SessionList(TemplateView):
         return redirect('home', session=s.pk)
 
 
-class SessionDelete(DeleteView):
-    def get_object(self):
-        return self.request.lokaleplan_session
+class SessionDelete(View):
+    def post(self, request):
+        request.lokaleplan_session.users.remove(request.user)
+        return redirect('session_list')
 
 
 class Home(TemplateView, SessionMixin):
