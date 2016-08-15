@@ -55,6 +55,7 @@ class SessionList(TemplateView):
     def post(self, request):
         s = Session()
         s.save()
+        s.users.add(request.user)
         return redirect('home', session=s.pk)
 
 
