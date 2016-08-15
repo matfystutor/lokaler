@@ -13,7 +13,7 @@ from django.utils.decorators import method_decorator
 from django.contrib.auth.views import redirect_to_login
 from django.db.models import Count
 
-from lokaleplan.forms import PerlForm, EventForm, EventModelForm
+from lokaleplan.forms import PerlForm, EventForm, EventModelForm, AddUserForm
 from lokaleplan.models import Participant, Event, Location, Session
 from lokaleplan.texrender import tex_to_pdf, RenderError
 
@@ -70,6 +70,7 @@ class Home(TemplateView):
             k = p.name[0:2]
             groups.setdefault(k, []).append(p)
         context_data['groups'] = [groups[k] for k in sorted(groups)]
+        context_data['add_user_form'] = AddUserForm()
         return context_data
 
 
@@ -613,3 +614,14 @@ class LocationList(ListView, SessionReverseMixin):
         location = Location(name=name)
         location.save()
         return self.lokaleplan_redirect('location_list')
+
+
+class AddUser(FormView, SessionReverseMixin):
+    form_class = AddUserForm
+
+    def form_valid(self, form):
+        self.request.lokaleplan_session.users.add(form.cleaned_data['user'])
+        return self.lokaleplan_redirect('home')
+
+    def form_invalid(self, form):
+        return self.lokaleplan_redirect('home')

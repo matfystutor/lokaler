@@ -20,4 +20,9 @@ eller <a href="{% lokaleplan_url 'participants-tex' %}">LaTeX</a></p>
 <form method="post" action="{% lokaleplan_url 'session_delete' %}">{% csrf_token %}
     <input type="submit" value="Slet lokaleplan">
 </form>
+<p>Med nedenstående formular kan du tilføje andre brugere til at se og redigere lokaleplanen.</p>
+<form method="post" action="{% lokaleplan_url 'add_user' %}">{% csrf_token %}
+    {{ add_user_form.as_p }}
+    <input type="submit" value="Tilføj bruger">
+</form>
 {% endblock %}

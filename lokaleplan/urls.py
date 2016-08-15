@@ -17,7 +17,7 @@ from django.conf.urls import url, include
 from django.contrib import admin
 
 from lokaleplan.views import (
-    SessionList, SessionDelete, Home, PerlView,
+    SessionList, SessionDelete, Home, PerlView, AddUser,
     ParticipantDetail, ParticipantPlans,
     EventTable, EventList, EventDelete, LocationList,
     EventUpdate, EventUpdateExternal, EventCreate, EventCreateExternal,
@@ -28,6 +28,7 @@ sessions = [
     url(r'^$', Home.as_view(), name='home'),
     url(r'^delete/$', SessionDelete.as_view(), name='session_delete'),
     url(r'^import/$', PerlView.as_view(), name='import'),
+    url(r'^adduser/$', AddUser.as_view(), name='add_user'),
     url(r'^hold/(?P<pk>[0-9]+)/$', ParticipantDetail.as_view(), name='participant_detail'),
     url(r'^lokaleplan-(?P<pk>[0-9]+)\.tex$', ParticipantPlans.as_view(),
         name='participant-tex', kwargs=dict(mode='source')),

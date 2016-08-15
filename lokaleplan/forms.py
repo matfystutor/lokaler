@@ -1,6 +1,7 @@
 import logging
 from django import forms
 from django.db.models.sql.datastructures import EmptyResultSet
+from django.contrib.auth.models import User
 
 from lokaleplan.parse import parse_perl, make_objects
 from lokaleplan.models import Event
@@ -351,3 +352,7 @@ class EventModelForm(forms.ModelForm):
 
     start_time = MinuteTimeField(label='Starttid')
     end_time = MinuteTimeField(label='Sluttid')
+
+
+class AddUserForm(forms.Form):
+    user = forms.ModelChoiceField(User.objects)
