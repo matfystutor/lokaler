@@ -35,7 +35,7 @@ class SessionList(TemplateView):
     template_name = 'lokaleplan/session_list.html'
 
     def dispatch(self, request, *args, **kwargs):
-        if not request.user:
+        if not request.user.is_authenticated:
             return redirect_to_login(request.build_absolute_uri())
         return super(SessionList, self).dispatch(request, *args, **kwargs)
 
