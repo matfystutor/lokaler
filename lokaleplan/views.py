@@ -49,30 +49,21 @@ class ParticipantDetail(TemplateView):
         context_data['participant'] = participant
 
         qs = Event.objects.filter(participants=participant)
-        qs = Event.add_parallel_events(qs)
         qs = qs.prefetch_related('locations', 'participants')
 
         events_by_day = {}
-        extra_by_key = {}
         for event in qs:
-            if participant not in event.participants.all():
-                extra_by_key.setdefault(event.parallel_key(), []).append(event)
-            else:
-                events_by_day.setdefault(event.day, []).append(event)
+            events_by_day.setdefault(event.day, []).append(event)
 
         days = []
         for day_key, day_name in Event.DAYS:
             events = events_by_day.pop(day_key, [])
             events.sort(key=lambda event: event.start_time)
-            for e in events:
-                e.extra = extra_by_key.pop(e.parallel_key(), [])
-                e.extra.sort(key=lambda ex: str(ex.participants.all()[0]))
             days.append({
                 'key': day_key,
                 'name': day_name,
                 'events': events,
             })
-        assert not extra_by_key, extra_by_key
 
         context_data['days'] = days
         return context_data
