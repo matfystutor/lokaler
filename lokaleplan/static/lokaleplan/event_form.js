@@ -68,22 +68,53 @@ function get_participants() {
     var options = [].slice.call(el.options);
     var participants = options.map(function (o) {
         var f = get_participant_form(o.value);
-        var locations = get_locations(f['locations']);
-        return { id: o.value, name: o.textContent,
+        var p = {
+            _name: f.name.value, get name() {
+                return p._name;
+            },
+            set name(s) {
+                p._name = f.name.value = s;
+            },
+            _day: f.day.value, get day() {
+                return p._day;
+            },
+            set day(s) {
+                p._day = f.day.value = s;
+            },
+            _start_time: f.start_time.value, get start_time() {
+                return p._start_time;
+            },
+            set start_time(s) {
+                p._start_time = f.start_time.value = s;
+            },
+            _end_time: f.end_time.value, get end_time() {
+                return p._end_time;
+            },
+            set end_time(s) {
+                p._end_time = f.end_time.value = s;
+            },
+            _manual_time: f.manual_time.value, get manual_time() {
+                return p._manual_time;
+            },
+            set manual_time(s) {
+                p._manual_time = f.manual_time.value = s;
+            },
+            _selected: o.selected, get selected() {
+                return p._selected;
+            },
             set selected(b) {
-                o.selected = b;
+                p._selected = o.selected = b;
             },
-            get selected() {
-                return o.selected;
-            },
-            container: f.container,
-            locations: locations, form: f };
+            locations: get_locations(f['locations']),
+            id: o.value, name: o.textContent
+        };
+        return p;
     });
     return participants;
 }
 
 function set_participant_field(participant, key, value) {
-    if (key in participant.form) participant.form[key].value = value;else if ((typeof key === 'undefined' ? 'undefined' : _typeof(key)) === _typeof([]) && key[0] === 'locations') participant.locations[key[1]].selected = value;else throw 'Unknown key ' + key;
+    if ((typeof key === 'undefined' ? 'undefined' : _typeof(key)) === _typeof([]) && key[0] === 'locations') participant.locations[key[1]].selected = value;else if (key in participant) participant[key] = value;else throw 'Unknown key ' + key;
 }
 
 function get_participant_groups(participants) {
@@ -382,7 +413,7 @@ var ParticipantUpdate = (function (_React$Component4) {
                                         null,
                                         'Dag:'
                                     ),
-                                    React.createElement(DaySelect, { value: activeParticipant.form.day.value,
+                                    React.createElement(DaySelect, { value: activeParticipant.day,
                                         onChange: function onChange(v) {
                                             return _this8.props.onChange('day', v);
                                         } })
@@ -395,7 +426,7 @@ var ParticipantUpdate = (function (_React$Component4) {
                                         null,
                                         'Start:'
                                     ),
-                                    React.createElement('input', { value: activeParticipant.form.start_time.value,
+                                    React.createElement('input', { value: activeParticipant.start_time,
                                         onChange: function onChange(e) {
                                             return _this8.props.onChange('start_time', e.target.value);
                                         } })
@@ -408,7 +439,7 @@ var ParticipantUpdate = (function (_React$Component4) {
                                         null,
                                         'Slut:'
                                     ),
-                                    React.createElement('input', { value: activeParticipant.form.end_time.value,
+                                    React.createElement('input', { value: activeParticipant.end_time,
                                         onChange: function onChange(e) {
                                             return _this8.props.onChange('end_time', e.target.value);
                                         } })
@@ -425,7 +456,7 @@ var ParticipantUpdate = (function (_React$Component4) {
                                         null,
                                         'Navn:'
                                     ),
-                                    React.createElement('input', { value: activeParticipant.form.name.value,
+                                    React.createElement('input', { value: activeParticipant.name,
                                         onChange: function onChange(e) {
                                             return _this8.props.onChange('name', e.target.value);
                                         } })
@@ -442,7 +473,7 @@ var ParticipantUpdate = (function (_React$Component4) {
                                         null,
                                         'Tid:'
                                     ),
-                                    React.createElement('input', { value: activeParticipant.form.manual_time.value,
+                                    React.createElement('input', { value: activeParticipant.manual_time,
                                         onChange: function onChange(e) {
                                             return _this8.props.onChange('manual_time', e.target.value);
                                         } })
