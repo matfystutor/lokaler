@@ -85,7 +85,7 @@ class PerlView(FormView, SessionMixin):
     template_name = 'lokaleplan/perlform.html'
 
     def form_valid(self, form):
-        form.save()
+        form.save(self.request.lokaleplan_session)
         return self.lokaleplan_redirect('home')
 
 

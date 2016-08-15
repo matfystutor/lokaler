@@ -43,7 +43,7 @@ class PerlForm(forms.Form):
             'objects': objects,
         }
 
-    def save(self):
+    def save(self, session):
         objects = self.cleaned_data['objects']
         (events, locations, participants,
          event_locations, event_participants) = objects
@@ -51,10 +51,13 @@ class PerlForm(forms.Form):
         # so we can set up the proper many-to-many relations,
         # so we cannot use bulk_create.
         for event in events:
+            event.session = session
             event.save()
         for location in locations:
+            location.session = session
             location.save()
         for participant in participants:
+            participant.session = session
             participant.save()
         for event_location in event_locations:
             # Update event_id, location_id
