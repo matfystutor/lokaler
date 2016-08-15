@@ -76,6 +76,8 @@ class EventForm(forms.Form):
 
         participant_events = {}
         for e in self.events:
+            if not e.participants:
+                raise ValueError('Event %s has no participants' % e.pk)
             for p in e.participants.all():
                 if p.pk in participant_events:
                     raise ValueError(
