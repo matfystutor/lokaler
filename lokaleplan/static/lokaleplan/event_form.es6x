@@ -30,8 +30,8 @@ function get_participants() {
     const participants = options.map((o) => {
         const f = get_participant_form(o.value);
         const p = {
-            _name: f.name.value, get name() { return p._name; },
-            set name(s) { p._name = f.name.value = s; },
+            _name: f.name.value, get event_name() { return p._name; },
+            set event_name(s) { p._name = f.name.value = s; },
             _day: f.day.value, get day() { return p._day; },
             set day(s) { p._day = f.day.value = s; },
             _start_time: f.start_time.value, get start_time() { return p._start_time; },
@@ -160,8 +160,8 @@ class ParticipantUpdate extends React.Component {
     <div className="name">
         <div className="field">
             <label>Navn:</label>
-            <input value={activeParticipant.name}
-                onChange={e => this.props.onChange('name', e.target.value)} />
+            <input value={activeParticipant.event_name}
+                onChange={e => this.props.onChange('event_name', e.target.value)} />
         </div>
     </div>
     <div>
