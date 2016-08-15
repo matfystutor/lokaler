@@ -238,9 +238,9 @@ class EventForm extends React.Component {
 
 function init_react() {
     const participants = get_participants();
-    console.log(participants);
-    const formelement = participants[0].form.name.form;
-    for (const p of participants) { hide(p.container); hide(p.form.locations); }
+    const formelement = document.getElementById('id_participants').form;
+    hide_all(participants.map(p => document.getElementById(`id_p${p.id}-locations`)));
+    hide_all(participants.map(p => document.getElementById(`p${p.id}`)));
     hide(document.querySelector('.participants'));
     hide_all(document.querySelectorAll('.participant-name'));
     const event_form_div = document.createElement('div');
