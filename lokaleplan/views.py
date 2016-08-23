@@ -21,7 +21,7 @@ from lokaleplan.texrender import tex_to_pdf, RenderError
 class SessionMixin(object):
     def lokaleplan_reverse(self, *args, **kwargs):
         kwargs['session'] = self.request.lokaleplan_session.pk
-        return reverse(*args, **kwargs)
+        return reverse(*args, kwargs=kwargs)
 
     def lokaleplan_redirect(self, *args, **kwargs):
         kwargs['session'] = self.request.lokaleplan_session.pk
