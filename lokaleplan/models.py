@@ -1,4 +1,5 @@
 from django.db import models
+from django.db.models import Q
 from django.core.urlresolvers import reverse
 from django.contrib.auth.models import User
 
@@ -149,7 +150,7 @@ class Event(models.Model):
         Return a QuerySet containing Event objects parallel with self.
         """
         return type(self).objects.filter(
-            name=self.name, day=self.day, start_time=self.start_time,
+            session=self.session, name=self.name, day=self.day, start_time=self.start_time,
             end_time=self.end_time, manual_time=self.manual_time).exclude(
                 participants__isnull=True)
 

@@ -84,28 +84,28 @@ def parse_perl(data, time_slices):
     return participants, comments, locations, events
 
 
-def make_objects(parser_output):
+def make_objects(session, parser_output):
     participants, messages, locations, events = parser_output
 
     participant_objects = {}
-    for participant in Participant.objects.all():
+    for participant in session.participant_set.all():
         participant_objects[participant.name] = participant
 
     for key in participants:
         if key.startswith('__'):
             continue
         m = messages.get(key, '')
-        p = participant_objects.setdefault(key, Participant(name=key))
+        p = participant_objects.setdefault(key, Participant(name=key, session=session))
         if m:
             p.message = m
 
     location_objects = {}
-    for location in Location.objects.all():
+    for location in session.location_set.all():
         location_objects[location.name] = location
 
     for name in locations:
         location_objects.setdefault(name, Location(
-            name=name, official_name=name,
+            name=name, official_name=name, session=session,
             capacity='', kind=Location.CLASSROOM))
 
     event_objects = []
@@ -114,7 +114,7 @@ def make_objects(parser_output):
     for (day, name, location, start_time, end_time), p_list in events.items():
         day = next(number for number, day_name in Event.DAYS
                    if day_name == day.lower())
-        o = Event(name=name, day=day,
+        o = Event(name=name, day=day, session=session,
                   start_time=start_time, end_time=end_time)
         event_objects.append(o)
         if location:

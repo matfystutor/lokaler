@@ -84,8 +84,13 @@ class PerlView(FormView, SessionMixin):
     form_class = PerlForm
     template_name = 'lokaleplan/perlform.html'
 
+    def get_form_kwargs(self, **kwargs):
+        a = super(PerlView, self).get_form_kwargs(**kwargs)
+        a['session'] = self.request.lokaleplan_session
+        return a
+
     def form_valid(self, form):
-        form.save(self.request.lokaleplan_session)
+        form.save()
         return self.lokaleplan_redirect('home')
 
 
@@ -267,7 +272,9 @@ class EventTable(TemplateView, SessionMixin):
 
     def get_participant_sets(self):
         classes = {}
-        for p in Participant.objects.all():
+        qs = Participant.objects.all()
+        qs = self.lokaleplan_filter(qs)
+        for p in qs:
             classes.setdefault(p.name[0], set()).add(p)
         try:
             classes['fysnan'] = classes.pop('F') | classes.pop('N')
@@ -281,7 +288,9 @@ class EventTable(TemplateView, SessionMixin):
         katrinebjerg = []
         campus = []
         katrinebjerg_pattern = r'^(Ada|Chomsky|IT|Ny|PBA|Stibitz|Turing).*$'
-        for l in Location.objects.all():
+        qs = Location.objects.all()
+        qs = self.lokaleplan_filter(qs)
+        for l in qs:
             if re.match(katrinebjerg_pattern, l.name):
                 katrinebjerg.append(l)
             else:
@@ -530,7 +539,7 @@ class EventUpdate(FormView, SessionMixin):
         return kwargs
 
     def form_valid(self, form):
-        form.save()
+        form.save(self.request.lokaleplan_session)
         return self.lokaleplan_redirect('events')
 
 
@@ -541,6 +550,11 @@ class EventUpdateExternal(UpdateView, SessionMixin):
 
     def get_success_url(self):
         return self.lokaleplan_reverse('events')
+
+    def get_form_kwargs(self, **kwargs):
+        a = super(EventUpdateExternal, self).get_form_kwargs(**kwargs)
+        a['session'] = self.request.lokaleplan_session
+        return a
 
 
 class EventDelete(DeleteView, SessionMixin):
@@ -574,6 +588,11 @@ class EventCreateExternal(CreateView, SessionMixin):
 
     def get_success_url(self):
         return self.lokaleplan_reverse('events')
+
+    def get_form_kwargs(self, **kwargs):
+        a = super(EventCreateExternal, self).get_form_kwargs(**kwargs)
+        a['session'] = self.request.lokaleplan_session
+        return a
 
 
 class LocationDelete(DeleteView, SessionMixin):

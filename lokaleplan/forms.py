@@ -4,7 +4,7 @@ from django.db.models.sql.datastructures import EmptyResultSet
 from django.contrib.auth.models import User
 
 from lokaleplan.parse import parse_perl, make_objects
-from lokaleplan.models import Event
+from lokaleplan.models import Event, Location
 from lokaleplan.fields import MinuteTimeField
 
 
@@ -19,6 +19,10 @@ class PerlForm(forms.Form):
 
     data = forms.CharField(widget=forms.Textarea)
     time_slices = forms.ChoiceField(required=True, choices=TIME_SLICES)
+
+    def __init__(self, **kwargs):
+        self.session = kwargs.pop('session')
+        super(PerlForm, self).__init__(**kwargs)
 
     def clean_time_slices(self):
         i = int(self.cleaned_data['time_slices'])
@@ -36,14 +40,14 @@ class PerlForm(forms.Form):
         data = self.cleaned_data['data']
         time_slices = self.cleaned_data['time_slices']
         parser_output = parse_perl(data, time_slices)
-        objects = make_objects(parser_output)
+        objects = make_objects(self.session, parser_output)
         return {
             'data': data,
             'time_slices': time_slices,
             'objects': objects,
         }
 
-    def save(self, session):
+    def save(self):
         objects = self.cleaned_data['objects']
         (events, locations, participants,
          event_locations, event_participants) = objects
@@ -51,13 +55,10 @@ class PerlForm(forms.Form):
         # so we can set up the proper many-to-many relations,
         # so we cannot use bulk_create.
         for event in events:
-            event.session = session
             event.save()
         for location in locations:
-            location.session = session
             location.save()
         for participant in participants:
-            participant.session = session
             participant.save()
         for event_location in event_locations:
             # Update event_id, location_id
@@ -145,7 +146,7 @@ class EventForm(forms.Form):
                            "Programpunktets navn er allerede i brug " +
                            "på det valgte tidspunkt.")
 
-    def save(self):
+    def save(self, session):
         data = self.cleaned_data
         simple_fields = 'name day start_time end_time manual_time'.split()
         # old_event maps event pk to event
@@ -311,12 +312,14 @@ class EventForm(forms.Form):
 
         if add_events:
             for event in add_events:
+                event.session = session
                 event.save()
             logger.debug("Added events: %s",
                          [(e.pk, e.name) for e in add_events])
 
         if update_events:
             for event in update_events:
+                event.session = session
                 event.save()
             logger.debug("Updated events: %s",
                          [(e.pk, e.name) for e in update_events])
@@ -355,6 +358,20 @@ class EventModelForm(forms.ModelForm):
 
     start_time = MinuteTimeField(label='Starttid')
     end_time = MinuteTimeField(label='Sluttid')
+
+    def __init__(self, **kwargs):
+        self.lokaleplan_session = kwargs.pop('session')
+        super(EventModelForm, self).__init__(**kwargs)
+        self.fields['locations'].choices = [
+            (l.id, l.name) for l in
+            Location.objects.filter(session_id=self.lokaleplan_session.id)]
+
+    def save(self, commit=True):
+        instance = super(EventModelForm, self).save(commit=False)
+        instance.session = self.lokaleplan_session
+        if commit:
+            instance.save()
+        return instance
 
 
 class AddUserForm(forms.Form):
