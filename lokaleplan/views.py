@@ -651,7 +651,7 @@ class LocationList(ListView, SessionMixin):
             return self.render_to_response(
                 self.get_context_data(
                     error='Navnet må ikke være tomt'))
-        location = Location(name=name)
+        location = Location(name=name, session=self.request.lokaleplan_session)
         location.save()
         return self.lokaleplan_redirect('location_list')
 
