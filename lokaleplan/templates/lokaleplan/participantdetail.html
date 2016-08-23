@@ -45,4 +45,8 @@
 </div>
 {% endfor %}
 </div>
+<form method="post" action="{% lokaleplan_url 'participant_message' pk=participant.pk %}">{% csrf_token %}
+<textarea name="message" style="width: 100%; font-family: sans-serif; height: 10em">{{ participant.message }}</textarea>
+<input type="submit" value="Gem meddelelse" />
+</form>
 {% endblock %}

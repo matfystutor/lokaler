@@ -18,7 +18,7 @@ from django.contrib import admin
 
 from lokaleplan.views import (
     SessionList, SessionDelete, Home, PerlView, AddUser,
-    ParticipantDetail, ParticipantPlans,
+    ParticipantDetail, ParticipantPlans, ParticipantMessageUpdate,
     EventTable, EventList, EventDelete, LocationList,
     EventUpdate, EventUpdateExternal, EventCreate, EventCreateExternal,
 )
@@ -30,6 +30,7 @@ sessions = [
     url(r'^import/$', PerlView.as_view(), name='import'),
     url(r'^adduser/$', AddUser.as_view(), name='add_user'),
     url(r'^hold/(?P<pk>[0-9]+)/$', ParticipantDetail.as_view(), name='participant_detail'),
+    url(r'^hold/(?P<pk>[0-9]+)/message/$', ParticipantMessageUpdate.as_view(), name='participant_message'),
     url(r'^lokaleplan-(?P<pk>[0-9]+)\.tex$', ParticipantPlans.as_view(),
         name='participant-tex', kwargs=dict(mode='source')),
     url(r'^lokaleplan-(?P<pk>[0-9]+)\.pdf$', ParticipantPlans.as_view(),

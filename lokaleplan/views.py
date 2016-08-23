@@ -665,3 +665,13 @@ class AddUser(FormView, SessionMixin):
 
     def form_invalid(self, form):
         return self.lokaleplan_redirect('home')
+
+
+class ParticipantMessageUpdate(View, SessionMixin):
+    def post(self, request, pk):
+        participant = get_object_or_404(
+            self.lokaleplan_filter(
+                Participant.objects.filter(pk=pk)))
+        participant.message = request.POST.get('message', '')
+        participant.save()
+        return self.lokaleplan_redirect('participant_detail', pk=pk)
