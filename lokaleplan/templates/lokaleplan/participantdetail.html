@@ -16,6 +16,7 @@
 <a href="{% lokaleplan_url 'participant-tex' pk=participant.pk %}">LaTeX</a>.</p>
 <div class="participant-schedule">
 {% for day in days %}
+<div>
 <table>
 <thead>
     <tr>
@@ -42,6 +43,7 @@
 {% endfor %}
 </tbody>
 </table>
+</div>
 {% endfor %}
 </div>
 {% endblock %}
