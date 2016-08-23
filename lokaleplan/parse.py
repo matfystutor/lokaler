@@ -67,14 +67,14 @@ def parse_perl(data, time_slices):
     events = {}
 
     for (participant, day), x in event_parts.items():
+        assert len(x) >= len(times) - 1, (len(x), len(times), x)
         i = 0
-        while i < len(x):
+        while i < len(times) - 1:
             location, name = x[i]
             j = i
-            # I love half-open intervals
-            while j < len(x) and x[i] == x[j]:
+            while j < len(times) - 1 and x[i] == x[j]:
                 j += 1
-            assert 0 <= i < j <= len(x)
+            assert 0 <= i < j < len(times)
             assert all(x[i] == x[k] for k in range(i, j))
             if name or location:
                 key = (day, name, location, times[i], times[j])
