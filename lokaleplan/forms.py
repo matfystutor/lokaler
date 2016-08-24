@@ -371,6 +371,7 @@ class EventModelForm(forms.ModelForm):
         instance.session = self.lokaleplan_session
         if commit:
             instance.save()
+            self.save_m2m()
         return instance
 
 
