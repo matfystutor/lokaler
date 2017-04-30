@@ -1,4 +1,6 @@
 import re
+import base64
+import datetime
 import functools
 import itertools
 
@@ -8,14 +10,19 @@ from django.views.generic import (
 from django.http import HttpResponse, HttpResponseBadRequest
 from django.shortcuts import redirect, get_object_or_404
 from django.core.urlresolvers import reverse
+from django.core.exceptions import ValidationError
 from django.template.loader import render_to_string
 from django.utils.decorators import method_decorator
 from django.contrib.auth.views import redirect_to_login
 from django.db.models import Count
 
-from lokaleplan.forms import PerlForm, EventForm, EventModelForm, AddUserForm
+from lokaleplan.forms import (
+    PerlForm, EventForm, EventModelForm, AddUserForm,
+    SessionEditForm, SessionCreateForm,
+)
 from lokaleplan.models import Participant, Event, Location, Session
 from lokaleplan.texrender import tex_to_pdf, RenderError
+from lokaleplan.csvevents import events_to_csv, flatten_event
 
 
 class SessionMixin(object):
@@ -51,12 +58,6 @@ class SessionList(TemplateView):
                          event_count=Count('event', distinct=True))
         data['sessions'] = qs
         return data
-
-    def post(self, request):
-        s = Session()
-        s.save()
-        s.users.add(request.user)
-        return redirect('home', session=s.pk)
 
 
 class SessionDelete(View):
@@ -670,3 +671,203 @@ class ParticipantMessageUpdate(View, SessionMixin):
         participant.message = request.POST.get('message', '')
         participant.save()
         return self.lokaleplan_redirect('participant_detail', pk=pk)
+
+
+class SessionExport(View, SessionMixin):
+    def get(self, request, **kwargs):
+        event_list = get_event_list(
+            self.lokaleplan_filter(Event.objects.all()))
+        text = events_to_csv(event_list)
+        response = HttpResponse(text, content_type='text/csv')
+        response['Content-Disposition'] = (
+            'attachment; filename=lokaleplan_%s.csv' %
+            request.lokaleplan_session.pk)
+        return response
+
+
+class SessionEditDiff:
+    def get_participant(self, name):
+        try:
+            o = self.participants[name]
+        except KeyError:
+            o = self.participants[name] = Participant(
+                session=self.session, name=name, message='')
+            self.save_participants.append(o)
+        else:
+            self.unused_participants.discard(name)
+        return o
+
+    def get_location(self, name):
+        try:
+            o = self.locations[name]
+        except KeyError:
+            o = self.locations[name] = Location(
+                session=self.session, name=name,
+                official_name=name, capacity='', kind=Location.CLASSROOM)
+            self.save_locations.append(o)
+        else:
+            self.unused_locations.discard(name)
+        return o
+
+    @staticmethod
+    def parse_time(s):
+        return datetime.time(*map(int, s.split(':')))
+
+    def do_it(self):
+        for o in self.delete_events:  # +delete_participants+delete_locations
+            o.delete()
+        save = self.save_events + self.save_locations + self.save_participants
+        for o in save:
+            o.session = o.session  # Update session_id
+            o.save()
+        for r in self.save_location_relations:
+            r.location = r.location  # Update location_id
+            r.event = r.event  # Update event_id
+        for r in self.save_participant_relations:
+            r.participant = r.participant  # Update participant_id
+            r.event = r.event  # Update event_id
+        Event.locations.through.objects.bulk_create(
+            self.save_location_relations)
+        Event.participants.through.objects.bulk_create(
+            self.save_participant_relations)
+
+    def __init__(self, events, base, data,
+                 participant_qs, location_qs, session):
+        errors = []
+        self.session = session
+        self.participants = {o.name: o for o in participant_qs}
+        self.unused_participants = set(self.participants)
+        self.save_participants = []
+        self.locations = {o.name: o for o in location_qs}
+        self.unused_locations = set(self.locations)
+        self.save_locations = []
+
+        added = set(data) - set(base)
+        removed = set(base) - set(data)
+        self.changes = sorted(
+            [(x, False) for x in removed] +
+            [(x, True) for x in added])
+
+        self.delete_events = []
+        # delete_participants = []
+        # delete_locations = []
+        self.save_events = []
+        self.save_location_relations = []
+        self.save_participant_relations = []
+
+        current = {flatten_event(event): event for event in events}
+        for k in added:
+            if k in current:
+                errors.append(
+                    'En anden har ændret/tilføjet %r i mellemtiden' % (k,))
+        for k in removed:
+            if k not in current:
+                errors.append(
+                    'En anden har ændret/fjernet %r i mellemtiden' % (k,))
+
+        if errors:
+            raise ValidationError(errors)
+
+        for k in removed:
+            self.delete_events.append(current.pop(k))
+
+        PARSE_DAY = {v.lower(): k for k, v in Event.DAYS}
+
+        for k in added:
+            e = Event(
+                session=session,
+                name=k.name,
+                day=PARSE_DAY[k.day],
+                start_time=self.parse_time(k.start_time),
+                end_time=self.parse_time(k.end_time),
+                manual_time=k.manual_time,
+            )
+            self.save_events.append(e)
+            locations = k.locations and k.locations.split(',')
+            for s in locations:
+                self.save_location_relations.append(
+                    Event.locations.through(
+                        event=e, location=self.get_location(s)))
+            participants = k.participants and k.participants.split(',')
+            for s in participants:
+                self.save_participant_relations.append(
+                    Event.participants.through(
+                        event=e, participant=self.get_participant(s)))
+
+
+class SessionEdit(FormView, SessionMixin):
+    form_class = SessionEditForm
+    template_name = 'lokaleplan/session_edit_form.html'
+
+    def dispatch(self, request, **kwargs):
+        self.event_list = get_event_list(
+            self.lokaleplan_filter(Event.objects.all()))
+        return super().dispatch(request, **kwargs)
+
+    def get_initial(self):
+        data = events_to_csv(self.event_list)
+        return {'initial': data, 'data': data}
+
+    def get_context_data(self, **kwargs):
+        context_data = super().get_context_data(**kwargs)
+        context_data['base64data'] = base64.b64encode(
+            context_data['form'].initial['initial'].encode()).decode()
+        return context_data
+
+    def form_valid(self, form):
+        base = form.cleaned_data['initial']
+        data = form.cleaned_data['data']
+
+        try:
+            diff = SessionEditDiff(
+                self.event_list, base, data,
+                self.lokaleplan_filter(Participant.objects.all()),
+                self.lokaleplan_filter(Location.objects.all()),
+                self.request.lokaleplan_session)
+        except ValidationError as exn:
+            form.add_error(None, exn)
+            return self.form_invalid(form)
+
+        need_confirm = bool(diff.save_participants or diff.save_locations)
+        confirmed = bool(self.request.POST.get('confirm'))
+        preview = bool(self.request.POST.get('preview'))
+
+        if preview or (need_confirm and not confirmed):
+            return self.render_to_response(self.get_context_data(
+                form=form,
+                need_confirm=True,
+                save_participants=diff.save_participants,
+                save_locations=diff.save_locations,
+                changes=diff.changes,
+            ))
+        diff.do_it()
+        return self.lokaleplan_redirect('events')
+
+
+class SessionCreate(FormView):
+    form_class = SessionCreateForm
+    template_name = 'lokaleplan/session_create_form.html'
+
+    def get_initial(self):
+        data = events_to_csv([])
+        return {'data': data}
+
+    def form_valid(self, form):
+        data = form.cleaned_data['data']
+        session = Session()
+        user = self.request.user
+
+        try:
+            diff = SessionEditDiff(
+                [], [], data,
+                Participant.objects.none(),
+                Location.objects.none(),
+                session)
+        except ValidationError as exn:
+            form.add_error(None, exn)
+            return self.form_invalid(form)
+
+        session.save()
+        diff.do_it()
+        session.users.add(user)
+        return redirect('home', session=session.id)

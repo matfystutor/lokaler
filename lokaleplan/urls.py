@@ -21,6 +21,7 @@ from lokaleplan.views import (
     ParticipantDetail, ParticipantPlans, ParticipantMessageUpdate,
     EventTable, EventList, EventDelete, LocationList,
     EventUpdate, EventUpdateExternal, EventCreate, EventCreateExternal,
+    SessionEdit, SessionCreate,
 )
 
 
@@ -28,6 +29,7 @@ sessions = [
     url(r'^$', Home.as_view(), name='home'),
     url(r'^delete/$', SessionDelete.as_view(), name='session_delete'),
     url(r'^import/$', PerlView.as_view(), name='import'),
+    url(r'^edit/$', SessionEdit.as_view(), name='edit-csv'),
     url(r'^adduser/$', AddUser.as_view(), name='add_user'),
     url(r'^hold/(?P<pk>[0-9]+)/$', ParticipantDetail.as_view(), name='participant_detail'),
     url(r'^hold/(?P<pk>[0-9]+)/message/$', ParticipantMessageUpdate.as_view(), name='participant_message'),
@@ -58,5 +60,6 @@ urlpatterns = [
     url(r'^admin/', admin.site.urls),
     url('^', include('django.contrib.auth.urls')),
     url(r'^$', SessionList.as_view(), name='session_list'),
+    url(r'^new/$', SessionCreate.as_view(), name='session_create'),
     url(r'^session/(?P<session>\d+)/', include(sessions)),
 ]

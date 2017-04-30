@@ -1,0 +1,41 @@
+{% extends "lokaleplan/base.html" %}
+{% load lokaleplan %}
+{% block title %}Redigér lokaleplan som CSV{% endblock %}
+{% block content %}
+<h1>Redigér lokaleplan som CSV</h1>
+<form method="post">{% csrf_token %}
+    {% if need_confirm %}
+    {% if not changes %}
+    <p>Ingen ændringer.</p>
+    {% else %}
+    <p>Bekræft venligst dine ændringer:</p>
+    <ul>
+    {% for o in save_participants %}
+    <li>Opret nyt hold: {{ o }}</li>
+    {% endfor %}
+    {% for o in save_locations %}
+    <li>Opret nyt lokale: {{ o }}</li>
+    {% endfor %}
+    {% for e, added in changes %}
+    <li>{% if added %}Tilføj{% else %}Slet{% endif %} programpunkt:
+        {{ e }}</li>
+    {% endfor %}
+    </ul>
+    <input name="confirm" type="submit" value="Bekræft og gem ændringer">
+    {% endif %}
+    {% endif %}
+    <p>Du kan redigere lokaleplanen på to måder:</p>
+    <ul>
+        <li>Redigér data direkte i tekstfeltet nedenfor, eller</li>
+        <li><a href="data:text/csv;base64,{{ base64data }}" download="lokaleplan.csv">
+                Redigér som regneark</a> og kopiér resultatet ind nedenfor
+            vha. Ctrl-A, Ctrl-C i regnearket og Ctrl-A, Ctrl-V i tekstfeltet.
+        </li>
+    </ul>
+    {{ form.as_p }}
+    <p>
+        <input type="submit" value="Gem ændringer">
+        <input name="preview" type="submit" value="Forhåndsvisning">
+    </p>
+</form>
+{% endblock %}

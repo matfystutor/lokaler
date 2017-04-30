@@ -9,7 +9,7 @@
         {{ s.user_count }}/{{ s.participant_count }}/{{ s.location_count }}/{{ s.event_count }}</a></li>
     {% endfor %}
 </ul>
-<form method="post">{% csrf_token %}
+<form action="{% url 'session_create' %}">
     <input type="submit" value="Opret ny" />
 </form>
 {% endblock %}

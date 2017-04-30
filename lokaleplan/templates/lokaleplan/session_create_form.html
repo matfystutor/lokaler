@@ -1,0 +1,25 @@
+{% extends "lokaleplan/base.html" %}
+{% load lokaleplan %}
+{% block title %}Opret ny lokaleplan{% endblock %}
+{% block content %}
+<h1>Opret ny lokaleplan</h1>
+
+<p>Du kan oprette en ny lokaleplan ud fra to forskellige formater:</p>
+
+<ul>
+    <li>CSV-format (nyt i 2017): Indsæt CSV-tekst nedenfor,
+        f.eks. vha. Ctrl-A, Ctrl-C i regneark og Ctrl-A, Ctrl-V i tekstfeltet.</li>
+    <li>Perl-format (gammelt): Tryk "Opret lokaleplan" nedenfor uden at indsætte noget,
+        og vælg "Importér gammel lokaleplan" på næste side.</li>
+</ul>
+
+<p>Du kan hente <a href="{% url 'session_list' %}">en eksisterende lokaleplan</a>
+som CSV ved at gå ind på den og trykke "Redigér som CSV".</p>
+
+<form method="post">{% csrf_token %}
+    {{ form.as_p }}
+    <p>
+        <input type="submit" value="Opret lokaleplan">
+    </p>
+</form>
+{% endblock %}

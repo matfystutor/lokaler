@@ -6,6 +6,7 @@ from django.contrib.auth.models import User
 from lokaleplan.parse import parse_perl, make_objects
 from lokaleplan.models import Event, Location
 from lokaleplan.fields import MinuteTimeField
+from lokaleplan.csvevents import parse_csv
 
 
 logger = logging.getLogger('lokaleplan')
@@ -377,3 +378,23 @@ class EventModelForm(forms.ModelForm):
 
 class AddUserForm(forms.Form):
     user = forms.ModelChoiceField(User.objects)
+
+
+class SessionCreateForm(forms.Form):
+    data = forms.CharField(
+        widget=forms.Textarea(attrs=dict(cols=120, rows=40)))
+
+    def clean_data(self):
+        return parse_csv(self.cleaned_data['data'])
+
+
+class SessionEditForm(forms.Form):
+    initial = forms.CharField(widget=forms.HiddenInput)
+    data = forms.CharField(
+        widget=forms.Textarea(attrs=dict(cols=120, rows=40)))
+
+    def clean_initial(self):
+        return parse_csv(self.cleaned_data['initial'])
+
+    def clean_data(self):
+        return parse_csv(self.cleaned_data['data'])
