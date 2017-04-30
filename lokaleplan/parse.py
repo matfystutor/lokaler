@@ -98,15 +98,23 @@ def make_objects(session, parser_output):
         p = participant_objects.setdefault(key, Participant(name=key, session=session))
         if m:
             p.message = m
+        try:
+            p.clean()
+        except ValidationError as exn:
+            raise ValidationError("%s: %s" % (p.key, exn))
 
     location_objects = {}
     for location in session.location_set.all():
         location_objects[location.name] = location
 
     for name in locations:
-        location_objects.setdefault(name, Location(
+        l = location_objects.setdefault(name, Location(
             name=name, official_name=name, session=session,
             capacity='', kind=Location.CLASSROOM))
+        try:
+            l.clean()
+        except ValidationError as exn:
+            raise ValidationError("%s: %s" % (name, exn))
 
     event_objects = []
     event_locations = []
@@ -116,6 +124,11 @@ def make_objects(session, parser_output):
                    if day_name == day.lower())
         o = Event(name=name, day=day, session=session,
                   start_time=start_time, end_time=end_time)
+        try:
+            o.clean()
+        except ValidationError as exn:
+            raise ValidationError("%s %s: %s" %
+                                  (o.get_display_time(), o.name, exn))
         event_objects.append(o)
         if location:
             event_locations.append(Event.locations.through(
