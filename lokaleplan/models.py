@@ -13,6 +13,10 @@ class Participant(models.Model):
     name = models.CharField(max_length=50)
     message = models.TextField(blank=True)
 
+    def clean(self):
+        if ',' in self.name:
+            raise ValidationError('Navn må ikke indeholde komma')
+
     def __str__(self):
         return self.name
 
@@ -45,6 +49,10 @@ class Location(models.Model):
         verbose_name='kapacitet',
         help_text='Kapacitetsbegrænsning')
     kind = models.CharField(max_length=10, choices=KIND)
+
+    def clean(self):
+        if ',' in self.name:
+            raise ValidationError('Navn må ikke indeholde komma')
 
     def __str__(self):
         return self.name
