@@ -1,0 +1,25 @@
+from .common import *  # noqa
+# Save this file as lokaleplan/settings/__init__.py and adjust to your needs.
+
+SECRET_KEY = r'''''' generate with pwgen -sy 50 1
+
+DEBUG = True
+
+# ALLOWED_HOSTS = ['lokaleplan.tket.dk']
+
+# DATABASES['default'] = {
+#     'ENGINE': 'django.db.backends.mysql',
+#     'NAME': 'lokaleplan',
+#     'USER': 'lokaleplan',
+#     'PASSWORD': ...,
+#     'HOST': '',
+#     'PORT': '',
+#     'OPTIONS': {
+#         'init_command': "SET sql_mode='STRICT_TRANS_TABLES'",
+#     },
+# }
+
+# STATIC_ROOT = os.path.join(BASE_DIR, '../static')
+
+# LOGGING['handlers']['file']['filename'] = (
+#     os.path.join(BASE_DIR, '../django.log'))
