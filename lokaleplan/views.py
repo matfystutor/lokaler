@@ -497,22 +497,17 @@ class EventTable(TemplateView, SessionMixin):
         return context_data
 
 
+def get_event_list(qs):
+    return sorted(qs, key=Event.sort_key)
+
+
 class EventList(TemplateView, SessionMixin):
     template_name = 'lokaleplan/event_list.html'
 
     def get_context_data(self, **kwargs):
         data = super(EventList, self).get_context_data(**kwargs)
-
-        def sort_key(event):
-            return (event.day, event.start_time,
-                    event.name, event.end_time,
-                    event.manual_time,
-                    ' '.join(map(str, event.participants.all())))
-
-        qs = Event.objects.all()
-        qs = self.lokaleplan_filter(qs)
-        events = sorted(qs, key=sort_key)
-        data['event_list'] = events
+        data['event_list'] = get_event_list(
+            self.lokaleplan_filter(Event.objects.all()))
         return data
 
 

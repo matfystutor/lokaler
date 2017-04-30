@@ -164,3 +164,9 @@ class Event(models.Model):
 
     class Meta:
         ordering = ['day', 'start_time', 'name', 'end_time']
+
+    def sort_key(self):
+        return (self.day, self.start_time,
+                self.name, self.end_time,
+                self.manual_time,
+                ' '.join(map(str, self.participants.all())))
